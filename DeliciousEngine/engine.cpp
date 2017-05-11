@@ -1,7 +1,9 @@
 #include "engine.h"
 
 bool Engine::init(char** argv, int argc) {
-	
+	if (!console.init(this)) {
+		return false;
+	}
 
 	return true;
 }
