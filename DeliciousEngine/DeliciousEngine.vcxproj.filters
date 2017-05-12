@@ -19,6 +19,12 @@
     <Filter Include="Source Files\systems">
       <UniqueIdentifier>{0c715370-5b31-4ef7-892c-6375d0578306}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\system_types">
+      <UniqueIdentifier>{e5d4ba57-a749-4ef7-b5d8-277895f67e51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utilities">
+      <UniqueIdentifier>{2a5c4150-2e98-4cbf-abcc-46f14dcbedf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -43,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="screen.h">
       <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="console_types.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
+    <ClInclude Include="dtypes.h">
+      <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
