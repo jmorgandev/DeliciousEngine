@@ -4,7 +4,10 @@ bool Engine::init(char** argv, int argc) {
 	if (!console.init(this)) {
 		return false;
 	}
-
+	if (!screen.init(this)) {
+		return false;
+	}
+	
 	return true;
 }
 
