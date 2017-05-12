@@ -122,6 +122,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="dcf.cpp" />
+    <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="screen.cpp" />
@@ -129,6 +131,8 @@
   <ItemGroup>
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
+    <ClInclude Include="dcf.h" />
+    <ClInclude Include="dmath.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="screen.h" />

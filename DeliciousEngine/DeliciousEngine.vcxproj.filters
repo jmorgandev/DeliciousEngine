@@ -25,6 +25,9 @@
     <Filter Include="Header Files\utilities">
       <UniqueIdentifier>{2a5c4150-2e98-4cbf-abcc-46f14dcbedf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\utilities">
+      <UniqueIdentifier>{44f97e9a-3a54-43a5-83b5-b3ba676033d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -38,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="screen.cpp">
       <Filter>Source Files\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="dcf.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="dmath.cpp">
+      <Filter>Source Files\utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +63,12 @@
       <Filter>Header Files\system_types</Filter>
     </ClInclude>
     <ClInclude Include="dtypes.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="dcf.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="dmath.h">
       <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>
