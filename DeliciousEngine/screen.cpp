@@ -22,6 +22,11 @@ bool Screen::init(Engine* engine_in) {
 		std::cout << "SDL window could not be created: " << SDL_GetError() << "\n";
 		return false;
 	}
-	SDL_Delay(2000);
 	return true;
+}
+
+void Screen::update() {
+	//
+	// @Todo OpenGL rendering stuff here
+	//
 }

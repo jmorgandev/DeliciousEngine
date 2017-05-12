@@ -18,6 +18,8 @@ private:
 
 	Console	console;
 	Screen	screen;
+
+	void flush_events();
 };
 
 #endif

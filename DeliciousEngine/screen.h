@@ -8,6 +8,8 @@ class Screen {
 public:
 	bool init(Engine* engine_in);
 
+	void update();
+
 private:
 	SDL_Window* window;
 };
