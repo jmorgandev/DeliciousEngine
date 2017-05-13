@@ -13,8 +13,10 @@ public:
 
 private:
 	uchar text_buffer[CON_BUFFER_SIZE];		//Circular buffer
-	uint16 write_index;
+	uint16 front_index;
 	uint16 back_index;
+
+	uint8 line_size;
 
 	std::vector<console_var> variables;
 
