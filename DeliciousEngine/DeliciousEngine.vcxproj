@@ -136,6 +136,7 @@
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="std_cvars.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

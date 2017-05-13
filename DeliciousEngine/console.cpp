@@ -1,8 +1,10 @@
 #include "console.h"
 
-#include "engine.h"
+#include <math.h>
 #include "dcf.h"
 #include "dmath.h"
+#include "engine.h"
+#include "std_cvars.h"
 
 bool Console::init(Engine* engine_in) {
 	engine = engine_in;
@@ -11,11 +13,14 @@ bool Console::init(Engine* engine_in) {
 	line_size = 0;
 	back_index = CON_BUFFER_SIZE;
 
+	for (auto cvar : standard_cvars) {
+		register_variable(cvar);
+	}
+
 	return true;
 }
 
 void Console::write_str(cstring str) { write_str(str, dcf::str_len(str)); }
-
 //
 // Main writing function, handles the buffer and any line deletion / wrapping / overflows
 //
@@ -48,6 +53,9 @@ void Console::write_str(cstring str, uint32 size) {
 		}
 	}
 }
+void Console::write_char(uchar c) {
+
+}
 
 void Console::buffer_alloc(uint32 size) {
 	uint16 space = math::delta(back_index, front_index);
@@ -57,4 +65,47 @@ void Console::buffer_alloc(uint32 size) {
 			back_index = back_index + 1 % CON_BUFFER_SIZE;
 		}
 	}
+}
+
+void Console::register_variable(const console_var& var) {
+	if (fetch_var(var.name)) {
+		//Print an error log to console about already existing variable...
+		return;
+	}
+	variables.push_back(var);
+}
+
+console_var* Console::fetch_var(cstring name) {
+	for (auto it = variables.begin(); it != variables.end(); it++) {
+		if (dcf::str_cmp_exact(name, it->name)) {
+			return &(*it);
+		}
+	}
+	return NULL;
+}
+
+float Console::read_variable(cstring name) {
+	if (console_var* var = fetch_var(name)) {
+		return var->data;
+	}
+	//Error: Variable does not exist...
+}
+
+//
+// Format the variable depending upon it's type whenever it is modified.
+//
+void Console::write_variable(cstring name, float data) {
+	if (console_var* var = fetch_var(name)) {
+		if (var->flags & CVAR_EDIT) {
+			switch (var->type) {
+			case VAR_BOOL:  var->data = (data > 0.0f) ? 1.0f : 0.0f; break;
+			case VAR_INT:   var->data = truncf(data);
+			case VAR_FLOAT: var->data = data;
+			}
+		}
+		else {
+			//Error: variable is read-only
+		}
+	}
+	//Error: variable does not exist.
 }

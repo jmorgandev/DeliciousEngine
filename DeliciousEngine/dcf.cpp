@@ -26,12 +26,24 @@ namespace dcf {
 	}
 	cstring str_next_word(cstring str) {
 		while (*str++ != NULL) {
-			if (*str == ' ' && *(str + 1) != NULL && is_glyph(*str + 1)) return str + 1;
+			if (*str == ' ' && is_glyph(*str + 1)) return str + 1;
 		}
 		return NULL;
 	}
 
 	bool is_glyph(const char c) {
 		return (c > 32 && c < 127);
+	}
+	bool str_cmp(cstring lhs, cstring rhs) {
+		while (*lhs && *rhs) {
+			if (*(lhs++) != *(rhs++)) return false;
+		}
+		return true;
+	}
+	bool str_cmp_exact(cstring lhs, cstring rhs) {
+		while (*lhs && *rhs) {
+			if (*(lhs++) != *(rhs++)) return false;
+		}
+		return (*lhs == *rhs);
 	}
 }

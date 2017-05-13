@@ -28,6 +28,9 @@
     <Filter Include="Source Files\utilities">
       <UniqueIdentifier>{44f97e9a-3a54-43a5-83b5-b3ba676033d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\standards">
+      <UniqueIdentifier>{e4f227d9-c824-4f52-8634-dec3dfb8fcde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="dmath.h">
       <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="std_cvars.h">
+      <Filter>Header Files\standards</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

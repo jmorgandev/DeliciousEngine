@@ -7,7 +7,8 @@ typedef unsigned int uint32, dword;
 typedef signed int int32;
 typedef unsigned short uint16, word;
 typedef signed short int16;
-typedef unsigned char uint8, uchar, byte, *cstring;
+typedef unsigned char uint8, uchar, byte;
 typedef signed char int8;
+typedef const char *cstring;
 
 #endif
