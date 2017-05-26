@@ -127,6 +127,7 @@
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console.h" />
@@ -135,8 +136,10 @@
     <ClInclude Include="dmath.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="std_cvars.h" />
+    <ClInclude Include="std_loaders.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

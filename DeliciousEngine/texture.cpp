@@ -8,7 +8,7 @@ Texture::Texture (GLuint object_in, uint16 width_in, uint16 height_in, uint8 bpp
 }
 
 void Texture::bind() {
-	glBindTexture(GL_TEXTURE_2D, gpu_object);
+	
 }
 
 GLuint Texture::get_gpu_object() {

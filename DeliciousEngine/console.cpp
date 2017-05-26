@@ -13,7 +13,7 @@ bool Console::init(Engine* engine_in) {
 	line_size = 0;
 	back_index = CON_BUFFER_SIZE;
 
-	for (auto cvar : standard_cvars) {
+	for (const auto& cvar : standard_cvars) {
 		register_variable(cvar);
 	}
 

@@ -34,6 +34,9 @@
     <Filter Include="Header Files\components">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\components">
+      <UniqueIdentifier>{c50545e6-f495-408c-bc3e-d830158c72f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="dmath.cpp">
       <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="resources.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="std_loaders.h">
+      <Filter>Header Files\standards</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
