@@ -95,5 +95,8 @@
     <ClInclude Include="std_loaders.h">
       <Filter>Header Files\standards</Filter>
     </ClInclude>
+    <ClInclude Include="resource_types.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

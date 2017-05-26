@@ -137,6 +137,7 @@
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="resources.h" />
+    <ClInclude Include="resource_types.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="std_cvars.h" />
     <ClInclude Include="std_loaders.h" />
