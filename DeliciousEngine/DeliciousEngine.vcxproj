@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
+    <ClCompile Include="dff.cpp" />
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -134,6 +135,7 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />
+    <ClInclude Include="dff.h" />
     <ClInclude Include="dmath.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
