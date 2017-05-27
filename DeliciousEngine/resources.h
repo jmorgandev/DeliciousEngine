@@ -12,6 +12,7 @@ public:
 	bool init(Engine* engine_in);
 
 	void load_texture(cstring filepath);
+	void load_shader(cstring filepath);
 private:
 	Console* console_ref;
 };
