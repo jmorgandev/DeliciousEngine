@@ -1,30 +1,23 @@
 #include "resources.h"
 
+#include <SDL/SDL.h>
 #include "engine.h"
-#include "std_formats.h"
+#include "console.h"
 #include "dff.h"
 #include "dcf.h"
 
 bool Resources::init(Engine* engine_in) {
+	console_ref = engine_in->get_console();
 	return true;
 }
 
-void Resources::load(cstring filepath) {
+void Resources::load_texture(cstring filepath) {
 
-	cstring extension = dff::path_extension(filepath);
-	resource_type file_type = RESOURCE_UNKNOWN;
-
-	for (const auto& format : standard_formats) {
-		if (dcf::str_cmp_exact(extension, format.extension)) {
-			file_type = format.type;
-		}
+	if (dff::path_extension(filepath) != "png") {
+		//Console error log
+		return;
 	}
 
-	switch (file_type) {
-	case RESOURCE_TEXTURE:
-		break;
-	case RESOURCE_SHADER:
-		break;
-	}
+
 
 }
