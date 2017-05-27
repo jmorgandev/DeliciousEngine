@@ -11,7 +11,19 @@ namespace dcf {
 		while (*str++) len++;
 		return len;
 	}
-
+	cstring str_find(cstring str, char c) {
+		while (*str++ != NULL) {
+			if (*str == c) return str;
+		}
+		return NULL;
+	}
+	cstring str_find_last(cstring str, char c) {
+		cstring sp = NULL;
+		while (*str++ != NULL) {
+			if (*str == c) sp = str;
+		}
+		return sp;
+	}
 	cstring str_prev_glyph(cstring str, cstring min) {
 		while (str-- != min) {
 			if (is_glyph(*str)) return str;

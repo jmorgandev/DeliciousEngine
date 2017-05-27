@@ -1,7 +1,6 @@
 #ifndef DELICIOUS_STD_CVARS_H
 #define DELICIOUS_STD_CVARS_H
 
-#include <vector>
 #include "console_types.h"
 
 console_var standard_cvars[] = {
