@@ -124,11 +124,13 @@
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
     <ClCompile Include="dff.cpp" />
+    <ClCompile Include="dgl.cpp" />
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -136,14 +138,14 @@
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />
     <ClInclude Include="dff.h" />
+    <ClInclude Include="dgl.h" />
     <ClInclude Include="dmath.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="resources.h" />
-    <ClInclude Include="resource_types.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="std_cvars.h" />
-    <ClInclude Include="std_formats.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

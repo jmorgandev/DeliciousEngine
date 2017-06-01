@@ -34,7 +34,7 @@
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\object">
+    <Filter Include="Source Files\objects">
       <UniqueIdentifier>{c50545e6-f495-408c-bc3e-d830158c72f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -58,12 +58,18 @@
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
     <ClCompile Include="texture.cpp">
-      <Filter>Source Files\object</Filter>
+      <Filter>Source Files\objects</Filter>
     </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
     <ClCompile Include="dff.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="dgl.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,13 +104,13 @@
     <ClInclude Include="resources.h">
       <Filter>Header Files\systems</Filter>
     </ClInclude>
-    <ClInclude Include="std_formats.h">
-      <Filter>Header Files\standards</Filter>
-    </ClInclude>
-    <ClInclude Include="resource_types.h">
-      <Filter>Header Files\system_types</Filter>
-    </ClInclude>
     <ClInclude Include="dff.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="dgl.h">
       <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>

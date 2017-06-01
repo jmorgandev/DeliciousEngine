@@ -1,15 +1,19 @@
 #include "dff.h"
 
 #include <fstream>
-#include "dcf.h"
+#include <string>
 
 namespace dff {
 
 	std::string path_extension(std::string filepath) {
 		return filepath.substr(filepath.find_last_of('.'));
 	}
-	cstring path_extension(cstring filepath) {
-		return dcf::str_find_last(filepath, '.');
+
+	std::string path_filename(std::string filepath, bool keep_ext) {
+		int from = filepath.find_last_of('/') + 1;
+		if (keep_ext) return filepath.substr(from);
+		int to = filepath.find_last_of('.');
+		return filepath.substr(from, to - from);
 	}
 
 	std::string file_str(std::string filepath) {

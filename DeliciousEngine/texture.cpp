@@ -6,6 +6,9 @@ Texture::Texture (GLuint object_in, uint16 width_in, uint16 height_in, uint8 bpp
 	height = height_in;
 	bpp = bpp_in;
 }
+Texture::~Texture() {
+	glDeleteTextures(1, &gpu_object);
+}
 
 void Texture::bind() {
 	
