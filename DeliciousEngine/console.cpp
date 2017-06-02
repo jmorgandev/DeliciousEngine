@@ -1,6 +1,8 @@
 #include "console.h"
 
 #include <math.h>
+#include <fstream>
+#include <string>
 #include "dcf.h"
 #include "dmath.h"
 #include "engine.h"
@@ -16,7 +18,34 @@ bool Console::init(Engine* engine_in) {
 	for (const auto& cvar : standard_cvars) {
 		register_variable(cvar);
 	}
+	/*
+	std::fstream config_file("config.cfg", std::fstream::in);
+	if (config_file.is_open()) {
+		std::string line_in;
+		while (std::getline(config_file, line_in)) {
+			write_to_input(line_in.c_str());
+			execute_input(false);
+		}
+		return true;
+	}
+	else {
+		config_file.open("config.cfg", std::fstream::out);
+		if (!config_file.is_open()) return false;
 
+		for (const auto& cvar : variables) {
+			if (cvar.flags & CVAR_WRITE) {
+				config_file << cvar.name << " ";
+				switch (cvar.type) {
+				case VAR_INT: config_file << (int)cvar.data; break;
+				case VAR_BOOL: config_file << (cvar.data < 1.0f) ? false : true; break;
+				case VAR_FLOAT: config_file << cvar.data; break;
+				}
+				config_file << "\n";
+			}
+		}
+		return true;
+	}
+	*/
 	return true;
 }
 
@@ -109,3 +138,18 @@ void Console::write_variable(cstring name, float data) {
 	}
 	//Error: variable does not exist.
 }
+
+//void Console::write_to_input(cstring str) {
+//	cstring sp = str;
+//	while (*sp != NULL && input_index != CON_INPUT_SIZE) {
+//		input_buffer[input_index++] = *sp++;
+//	}
+//}
+//
+//void Console::execute_input(bool user_input) {
+//	if (user_input) {
+//		write_str(input_buffer, dcf::str_len(input_buffer) + 1);
+//		write_char('\n');
+//	}
+//	
+//}

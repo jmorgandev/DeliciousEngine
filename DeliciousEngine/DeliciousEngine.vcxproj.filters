@@ -72,6 +72,9 @@
     <ClCompile Include="dgl.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
+    <ClCompile Include="font.cpp">
+      <Filter>Source Files\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="dgl.h">
       <Filter>Header Files\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

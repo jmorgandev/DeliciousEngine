@@ -17,7 +17,7 @@ namespace dff {
 	}
 
 	std::string file_str(std::string filepath) {
-		file_str(filepath.c_str());
+		return file_str(filepath.c_str());
 	}
 	std::string file_str(cstring filepath) {
 		std::ifstream file_stream(filepath);

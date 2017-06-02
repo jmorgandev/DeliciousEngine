@@ -1,7 +1,8 @@
 #include "resources.h"
 
-#include <SDL/SDL_image.h>
 #include <GL/glew.h>
+
+#include <SDL/SDL_image.h>
 #include "engine.h"
 #include "console.h"
 #include "dff.h"

@@ -5,6 +5,8 @@
 #include "console_types.h"
 
 #define CON_BUFFER_SIZE 64
+#define CON_INPUT_SIZE 128
+#define CON_HISTORY_SIZE 32
 
 class Engine;
 class Console {
@@ -16,9 +18,14 @@ public:
 	void write_variable(cstring name, float data);
 
 private:
-	char text_buffer[CON_BUFFER_SIZE];		//Circular buffer
-	uint16 front_index;
-	uint16 back_index;
+	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
+	uint16	front_index;
+	uint16	back_index;
+
+	char	input_buffer[CON_INPUT_SIZE];
+	uint8	input_index;
+
+	uint16	history_buffer[CON_HISTORY_SIZE];
 
 	uint8 line_size;
 
@@ -30,6 +37,10 @@ private:
 	void buffer_alloc(uint32 size);
 
 	console_var* fetch_var(cstring name);
+
+	void write_to_input(cstring str);
+	void execute_input(bool user_input);
+	void clear_input();
 
 	Engine* engine;
 };
