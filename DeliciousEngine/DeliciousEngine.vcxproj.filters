@@ -37,6 +37,12 @@
     <Filter Include="Source Files\objects">
       <UniqueIdentifier>{c50545e6-f495-408c-bc3e-d830158c72f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\components">
+      <UniqueIdentifier>{32ab64fd-b729-4284-adee-65b0183d1a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\components">
+      <UniqueIdentifier>{684cd585-140c-4a07-a794-07e81ae1fc48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="font.cpp">
       <Filter>Source Files\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="font_renderer.cpp">
+      <Filter>Source Files\components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="font.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="font_renderer.h">
+      <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

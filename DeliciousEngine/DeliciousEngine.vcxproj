@@ -130,6 +130,7 @@
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="font.cpp" />
+    <ClCompile Include="font_renderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="font.h" />
+    <ClInclude Include="font_renderer.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="shader.h" />
