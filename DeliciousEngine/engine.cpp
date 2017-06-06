@@ -9,7 +9,15 @@ bool Engine::init(char** argv, int argc) {
 	if (!screen.init(this)) {
 		return false;
 	}
+	if (!resources.init(this)) {
+		return false;
+	}
 	
+	resources.load_shader("shader/font");
+	resources.load_texture("texture/con_font.png");
+
+	
+
 	return true;
 }
 

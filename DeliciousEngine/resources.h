@@ -1,26 +1,31 @@
 #ifndef DELICIOUS_RESOURCES_H
 #define DELICIOUS_RESOURCES_H
 
-#include "dtypes.h"
-#include <vector>
 #include <string>
+#include <unordered_map>
+#include "dtypes.h"
+#include "shader.h"
+#include "texture.h"
 
 class Engine;
 class Console;
-class Texture;
-class Shader;
 
 class Resources {
 public:
 	bool init(Engine* engine_in);
 
-	void load_texture(std::string filepath);
-	void load_shader(std::string filepath);
+	Texture* load_texture(std::string filepath);
+	Shader* load_shader(std::string filepath);
+
+	
 private:
 	Console* console_ref;
 
-	std::vector<Texture> texture_catalog;
-	std::vector<Shader> shader_catalog;
+	typedef std::unordered_map<std::string, Texture>::value_type texture_keypair;
+	std::unordered_map<std::string, Texture> texture_catalog;
+
+	typedef std::unordered_map<std::string, Shader>::value_type shader_keypair;
+	std::unordered_map<std::string, Shader> shader_catalog;
 };
 
 #endif

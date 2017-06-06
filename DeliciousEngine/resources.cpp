@@ -9,21 +9,20 @@
 #include "dcf.h"
 #include "dgl.h"
 
-#include "texture.h"
-#include "shader.h"
-
 bool Resources::init(Engine* engine_in) {
 	console_ref = engine_in->get_console();
 	return true;
 }
 
-void Resources::load_texture(std::string filepath) {
+Texture* Resources::load_texture(std::string filepath) {
+
+	std::string filename = dff::path_filename(filepath, false);
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
 
 	if (temp_surface == NULL) {
 		//Error, extension not supported by SDL_Image
-		return;
+		return NULL;
 	}
 	//Otherwise we have the surface
 	GLuint new_object;
@@ -44,15 +43,11 @@ void Resources::load_texture(std::string filepath) {
 
 	SDL_FreeSurface(temp_surface);
 
-	texture_catalog.emplace_back(
-		new_object,
-		temp_surface->w,
-		temp_surface->h,
-		32
-	);
+	texture_catalog.insert(texture_keypair(filename, Texture(new_object, temp_surface->w, temp_surface->h, 32)));
+	return &texture_catalog.find(filename)->second;
 }
 
-void Resources::load_shader(std::string filepath) {
+Shader* Resources::load_shader(std::string filepath) {
 	std::string filename = dff::path_filename(filepath, false);
 
 	std::string vert_src = dff::file_str(filename + ".vert");
@@ -60,7 +55,7 @@ void Resources::load_shader(std::string filepath) {
 
 	if (vert_src == "" || frag_src == "") {
 		//ERROR
-		return;
+		return NULL;
 	}
 
 	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -68,21 +63,21 @@ void Resources::load_shader(std::string filepath) {
 
 	if (!vert_shader || !frag_shader) {
 		//ERROR
-		return;
+		return NULL;
 	}
 	if (!dgl::compile(vert_shader, vert_src)) {
 		//ERROR
-		return;
+		return NULL;
 	}
 	if (!dgl::compile(frag_shader, frag_src)) {
 		//ERROR
-		return;
+		return NULL;
 	}
 
 	GLuint new_program = glCreateProgram();
 	if (!new_program) {
 		//ERROR
-		return;
+		return NULL;
 	}
 	glAttachShader(new_program, vert_shader);
 	glAttachShader(new_program, frag_shader);
@@ -91,5 +86,6 @@ void Resources::load_shader(std::string filepath) {
 	glDeleteShader(vert_shader);
 	glDeleteShader(frag_shader);
 
-	shader_catalog.emplace_back(new_program);
+	shader_catalog.insert(shader_keypair(filename, Shader(new_program)));
+	return &shader_catalog.find(filename)->second;
 }

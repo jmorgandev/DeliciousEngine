@@ -13,6 +13,19 @@ bool Screen::init(Engine* engine_in) {
 		return false;
 	}
 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	glEnable(GL_DEPTH_TEST);
+
 	int video_width = static_cast<int>(console_ref->read_variable("vid_width"));
 	int video_height = static_cast<int>(console_ref->read_variable("vid_height"));
 
@@ -21,12 +34,26 @@ bool Screen::init(Engine* engine_in) {
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		video_width, video_height,
-		SDL_WINDOW_SHOWN
+		SDL_WINDOW_OPENGL
 	);
 	if (!window) {
 		std::cout << "SDL window could not be created: " << SDL_GetError() << "\n";
 		return false;
 	}
+
+	gl_context = SDL_GL_CreateContext(window);
+	if (!gl_context) {
+		std::cout << "OpenGL context could not be created: " << SDL_GetError() << "\n";
+		return false;
+	}
+	GLenum status = glewInit();
+	if (status != GLEW_OK) {
+		std::cout << "GLEW failed to initialise: " << glewGetErrorString(status) << "\n";
+		return false;
+	}
+
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
 	return true;
 }
 
