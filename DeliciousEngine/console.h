@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "console_types.h"
+#include "font_renderer.h"
 
 #define CON_BUFFER_SIZE 64
 #define CON_INPUT_SIZE 128
@@ -28,6 +29,7 @@ private:
 	uint16	history_buffer[CON_HISTORY_SIZE];
 
 	uint8 line_size;
+	FontRenderer text_renderer;
 
 	std::vector<console_var> variables;
 

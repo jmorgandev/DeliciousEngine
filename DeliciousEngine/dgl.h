@@ -8,6 +8,8 @@ namespace dgl {
 
 	bool compile(const GLuint& object, const std::string& source);
 
+	GLuint create_vao();
+
 }
 
 #endif

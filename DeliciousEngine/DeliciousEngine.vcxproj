@@ -152,6 +152,7 @@
     <ClInclude Include="screen.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="std_cvars.h" />
+    <ClInclude Include="std_primitives.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

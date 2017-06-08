@@ -6,6 +6,7 @@
 #include "dtypes.h"
 #include "shader.h"
 #include "texture.h"
+#include "font.h"
 
 class Engine;
 class Console;
@@ -17,6 +18,7 @@ public:
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);
 
+	Font* make_font(std::string font_name, Texture* texture_in, Shader* shader_in);
 	
 private:
 	Console* console_ref;
@@ -26,6 +28,9 @@ private:
 
 	typedef std::unordered_map<std::string, Shader>::value_type shader_keypair;
 	std::unordered_map<std::string, Shader> shader_catalog;
+
+	typedef std::unordered_map<std::string, Font>::value_type font_keypair;
+	std::unordered_map<std::string, Font> font_catalog;
 };
 
 #endif

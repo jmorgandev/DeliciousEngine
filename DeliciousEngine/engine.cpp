@@ -13,8 +13,8 @@ bool Engine::init(char** argv, int argc) {
 		return false;
 	}
 	
-	resources.load_shader("shader/font");
-	resources.load_texture("texture/con_font.png");
+	//resources.load_shader("shader/font");
+	//resources.load_texture("texture/con_font.png");
 
 	
 

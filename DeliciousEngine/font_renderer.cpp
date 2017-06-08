@@ -1,9 +1,12 @@
 #include "font_renderer.h"
 
+#include <GL/glew.h>
 #include "font.h"
 
 FontRenderer::FontRenderer(Font* font_in) {
 	font = font_in;
+
+
 }
 
 void FontRenderer::set_font(Font* font_in) {
@@ -14,5 +17,5 @@ Font* FontRenderer::get_font() {
 }
 
 void draw_char(char c, float x, float y) {
-
+	
 }
