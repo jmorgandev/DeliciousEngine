@@ -3,6 +3,7 @@
 
 #include "console.h"
 #include "screen.h"
+#include "resources.h"
 
 class Engine {
 public:
@@ -11,12 +12,14 @@ public:
 	void clean();
 
 	Console* get_console() { return &console; }
+	Resources* get_resources() { return &resources; }
 	Screen* get_screen() { return &screen; }
 
 private:
 	bool running;
 
 	Console	console;
+	Resources resources;
 	Screen	screen;
 
 	void flush_events();

@@ -9,15 +9,15 @@ bool Engine::init(char** argv, int argc) {
 	if (!screen.init(this)) {
 		return false;
 	}
+	if (!resources.init(this)) {
+		return false;
+	}
 	
-<<<<<<< HEAD
 	//resources.load_shader("shader/font");
 	//resources.load_texture("texture/con_font.png");
 
 	
 
-=======
->>>>>>> parent of 668f43b... Use opengl context rather than SDL window
 	return true;
 }
 
