@@ -9,20 +9,21 @@
 #include "dcf.h"
 #include "dgl.h"
 
+#include "texture.h"
+#include "shader.h"
+
 bool Resources::init(Engine* engine_in) {
 	console_ref = engine_in->get_console();
 	return true;
 }
 
-Texture* Resources::load_texture(std::string filepath) {
-
-	std::string filename = dff::path_filename(filepath, false);
+void Resources::load_texture(std::string filepath) {
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
 
 	if (temp_surface == NULL) {
 		//Error, extension not supported by SDL_Image
-		return NULL;
+		return;
 	}
 	//Otherwise we have the surface
 	GLuint new_object;
@@ -43,11 +44,15 @@ Texture* Resources::load_texture(std::string filepath) {
 
 	SDL_FreeSurface(temp_surface);
 
-	texture_catalog.insert(texture_keypair(filename, Texture(new_object, temp_surface->w, temp_surface->h, 32)));
-	return &texture_catalog.find(filename)->second;
+	texture_catalog.emplace_back(
+		new_object,
+		temp_surface->w,
+		temp_surface->h,
+		32
+	);
 }
 
-Shader* Resources::load_shader(std::string filepath) {
+void Resources::load_shader(std::string filepath) {
 	std::string filename = dff::path_filename(filepath, false);
 
 	std::string vert_src = dff::file_str(filename + ".vert");
@@ -55,7 +60,7 @@ Shader* Resources::load_shader(std::string filepath) {
 
 	if (vert_src == "" || frag_src == "") {
 		//ERROR
-		return NULL;
+		return;
 	}
 
 	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -63,21 +68,21 @@ Shader* Resources::load_shader(std::string filepath) {
 
 	if (!vert_shader || !frag_shader) {
 		//ERROR
-		return NULL;
+		return;
 	}
 	if (!dgl::compile(vert_shader, vert_src)) {
 		//ERROR
-		return NULL;
+		return;
 	}
 	if (!dgl::compile(frag_shader, frag_src)) {
 		//ERROR
-		return NULL;
+		return;
 	}
 
 	GLuint new_program = glCreateProgram();
 	if (!new_program) {
 		//ERROR
-		return NULL;
+		return;
 	}
 	glAttachShader(new_program, vert_shader);
 	glAttachShader(new_program, frag_shader);
@@ -86,6 +91,7 @@ Shader* Resources::load_shader(std::string filepath) {
 	glDeleteShader(vert_shader);
 	glDeleteShader(frag_shader);
 
+<<<<<<< HEAD
 	shader_catalog.insert(shader_keypair(filename, Shader(new_program)));
 	return &shader_catalog.find(filename)->second;
 }
@@ -93,4 +99,7 @@ Shader* Resources::load_shader(std::string filepath) {
 Font* Resources::make_font(std::string font_name, Texture* texture_in, Shader* shader_in) {
 	font_catalog.insert(font_keypair(font_name, Font(texture_in, shader_in)));
 	return &font_catalog.find(font_name)->second;
+=======
+	shader_catalog.emplace_back(new_program);
+>>>>>>> parent of 668f43b... Use opengl context rather than SDL window
 }

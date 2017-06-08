@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "dtypes.h"
 
-int main(char** argv, int argc) {	
+int main(char** argv, int argc) {
 	Engine delicious_engine;
 
 	if (delicious_engine.init(argv, argc)) {
