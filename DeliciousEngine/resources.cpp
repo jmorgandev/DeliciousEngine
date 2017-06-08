@@ -90,7 +90,8 @@ Shader* Resources::load_shader(std::string filepath) {
 	return &shader_catalog.find(filename)->second;
 }
 
-Font* Resources::make_font(std::string font_name, Texture* texture_in, Shader* shader_in) {
-	font_catalog.insert(font_keypair(font_name, Font(texture_in, shader_in)));
-	return &font_catalog.find(font_name)->second;
+
+Font* Resources::make_font(std::string name, Texture* texture_in, Shader* shader_in) {
+	font_catalog.insert(font_keypair(name, Font(texture_in, shader_in)));
+	return &font_catalog.find(name)->second;
 }

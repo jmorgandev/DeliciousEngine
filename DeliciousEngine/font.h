@@ -7,10 +7,10 @@ class Shader;
 class Font {
 public:
 	Font(Texture* texture_in, Shader* shader_in);
-	~Font() {}
 
 	Texture* get_texture();
 	Shader* get_shader();
+
 private:
 	Texture* texture;
 	Shader* shader;

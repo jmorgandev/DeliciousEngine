@@ -18,7 +18,8 @@ public:
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);
 
-	Font* make_font(std::string font_name, Texture* texture_in, Shader* shader_in);
+
+	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in);
 	
 private:
 	Console* console_ref;

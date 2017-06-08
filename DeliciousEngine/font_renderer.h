@@ -8,7 +8,7 @@ class Font;
 
 class FontRenderer {
 public:
-	FontRenderer(Font* font_in);
+	FontRenderer();
 
 	void draw_char(char c, float x, float y);
 

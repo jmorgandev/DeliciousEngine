@@ -3,10 +3,8 @@
 #include <GL/glew.h>
 #include "font.h"
 
-FontRenderer::FontRenderer(Font* font_in) {
-	font = font_in;
-
-
+FontRenderer::FontRenderer() {
+	font = NULL;
 }
 
 void FontRenderer::set_font(Font* font_in) {
@@ -16,6 +14,6 @@ Font* FontRenderer::get_font() {
 	return font;
 }
 
-void draw_char(char c, float x, float y) {
-	
+void FontRenderer::draw_char(char c, float x, float y) {
+	if (font == NULL) return;
 }
