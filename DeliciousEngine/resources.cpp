@@ -11,7 +11,12 @@
 
 bool Resources::init(Engine* engine_in) {
 	console_ref = engine_in->get_console();
+	IMG_Init(IMG_INIT_PNG);
 	return true;
+}
+
+void Resources::cleanup() {
+	
 }
 
 Texture* Resources::load_texture(std::string filepath) {
@@ -45,6 +50,15 @@ Texture* Resources::load_texture(std::string filepath) {
 
 	texture_catalog.insert(texture_keypair(filename, Texture(new_object, temp_surface->w, temp_surface->h, 32)));
 	return &texture_catalog.find(filename)->second;
+}
+Texture* Resources::fetch_texture(std::string filename) {
+	auto it = texture_catalog.find(filename);
+	if (it == texture_catalog.end()) {
+		return NULL;
+	}
+	else {
+		return &it->second;
+	}
 }
 
 Shader* Resources::load_shader(std::string filepath) {
@@ -89,7 +103,19 @@ Shader* Resources::load_shader(std::string filepath) {
 	shader_catalog.insert(shader_keypair(filename, Shader(new_program)));
 	return &shader_catalog.find(filename)->second;
 }
+Shader* Resources::fetch_shader(std::string filename) {
+	auto it = shader_catalog.find(filename);
+	if (it == shader_catalog.end()) {
+		return NULL;
+	}
+	else {
+		return &it->second;
+	}
+}
 
+Mesh* Resources::make_mesh(std::string name, MeshData data_in) {
+
+}
 
 Font* Resources::make_font(std::string name, Texture* texture_in, Shader* shader_in) {
 	font_catalog.insert(font_keypair(name, Font(texture_in, shader_in)));

@@ -134,5 +134,8 @@
     <ClInclude Include="std_primitives.h">
       <Filter>Header Files\standards</Filter>
     </ClInclude>
+    <ClInclude Include="mesh.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

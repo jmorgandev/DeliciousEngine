@@ -3,9 +3,13 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "dtypes.h"
+#include "mesh_data.h"
+
 #include "shader.h"
 #include "texture.h"
+#include "mesh.h"
 #include "font.h"
 
 class Engine;
@@ -14,12 +18,19 @@ class Console;
 class Resources {
 public:
 	bool init(Engine* engine_in);
+	void cleanup();
 
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);
 
+	Texture* fetch_texture(std::string filename);
+	Shader* fetch_shader(std::string filename);
+	Mesh* fetch_mesh(std::string filename);
 
 	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in);
+	
+	Mesh* make_mesh(std::string name, MeshData data_in);
+
 	
 private:
 	Console* console_ref;
@@ -32,6 +43,9 @@ private:
 
 	typedef std::unordered_map<std::string, Font>::value_type font_keypair;
 	std::unordered_map<std::string, Font> font_catalog;
+
+	typedef std::unordered_map<std::string, Mesh>::value_type mesh_keypair;
+	std::unordered_map<std::string, Mesh> mesh_catalog;
 };
 
 #endif

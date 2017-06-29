@@ -148,6 +148,7 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="font_renderer.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="shader.h" />
