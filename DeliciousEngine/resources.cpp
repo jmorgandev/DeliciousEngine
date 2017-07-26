@@ -25,9 +25,9 @@ Texture* Resources::load_texture(std::string filepath) {
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
 
-	if (temp_surface == NULL) {
+	if (temp_surface == nullptr) {
 		//Error, extension not supported by SDL_Image
-		return NULL;
+		return nullptr;
 	}
 	//Otherwise we have the surface
 	GLuint new_object;
@@ -54,7 +54,7 @@ Texture* Resources::load_texture(std::string filepath) {
 Texture* Resources::fetch_texture(std::string filename) {
 	auto it = texture_catalog.find(filename);
 	if (it == texture_catalog.end()) {
-		return NULL;
+		return nullptr;
 	}
 	else {
 		return &it->second;
@@ -69,7 +69,7 @@ Shader* Resources::load_shader(std::string filepath) {
 
 	if (vert_src == "" || frag_src == "") {
 		//ERROR
-		return NULL;
+		return nullptr;
 	}
 
 	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -77,21 +77,21 @@ Shader* Resources::load_shader(std::string filepath) {
 
 	if (!vert_shader || !frag_shader) {
 		//ERROR
-		return NULL;
+		return nullptr;
 	}
 	if (!dgl::compile(vert_shader, vert_src)) {
 		//ERROR
-		return NULL;
+		return nullptr;
 	}
 	if (!dgl::compile(frag_shader, frag_src)) {
 		//ERROR
-		return NULL;
+		return nullptr;
 	}
 
 	GLuint new_program = glCreateProgram();
 	if (!new_program) {
 		//ERROR
-		return NULL;
+		return nullptr;
 	}
 	glAttachShader(new_program, vert_shader);
 	glAttachShader(new_program, frag_shader);
@@ -106,7 +106,7 @@ Shader* Resources::load_shader(std::string filepath) {
 Shader* Resources::fetch_shader(std::string filename) {
 	auto it = shader_catalog.find(filename);
 	if (it == shader_catalog.end()) {
-		return NULL;
+		return nullptr;
 	}
 	else {
 		return &it->second;
@@ -114,6 +114,25 @@ Shader* Resources::fetch_shader(std::string filename) {
 }
 
 Mesh* Resources::make_mesh(std::string name, MeshData data_in) {
+	//Check Mesh has amount of vertices divisible by 3
+	if (data_in.vertex_data.empty() || data_in.vertex_data.size() % 3 != 0) {
+		//ERROR
+		return nullptr;
+	}
+	int vertex_count = data_in.vertex_data.size();
+	if (data_in.normal_data.size() != vertex_count) {
+		//ERROR
+		return nullptr;
+	}
+
+	if (!data_in.color_data.empty() && data_in.color_data.size() == vertex_count) {
+
+	}
+
+	if (!data_in.texcoord_data.empty() && data_in.texcoord_data.size() == vertex_count) {
+
+	}
+
 
 }
 
