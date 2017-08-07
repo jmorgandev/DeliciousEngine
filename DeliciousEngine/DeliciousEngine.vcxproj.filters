@@ -46,6 +46,9 @@
     <Filter Include="Header Files\intermediate_types">
       <UniqueIdentifier>{689387bb-077f-4715-96c1-f1e45833eb74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine_info">
+      <UniqueIdentifier>{e578f52d-f572-4173-8949-d88dbe2af03a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,9 +77,6 @@
     </ClCompile>
     <ClCompile Include="dff.cpp">
       <Filter>Source Files\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>Source Files\objects</Filter>
     </ClCompile>
     <ClCompile Include="dgl.cpp">
       <Filter>Source Files\utilities</Filter>
@@ -142,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="mesh_data.h">
       <Filter>Header Files\intermediate_types</Filter>
+    </ClInclude>
+    <ClInclude Include="build_info.h">
+      <Filter>Header Files\engine_info</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

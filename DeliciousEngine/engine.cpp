@@ -17,8 +17,7 @@ bool Engine::init(char** argv, int argc) {
 	//resources.load_shader("shader/font");
 	//resources.load_texture("texture/con_font.png");
 
-	resources.load_shader("res/default");
-
+	resources.load_glsl("res/default.glsl");
 	return true;
 }
 
@@ -26,22 +25,26 @@ void Engine::run() {
 	running = true;
 
 	Mesh* test = resources.fetch_mesh("triangle");
-	Shader* shad = resources.fetch_shader("default");
+	Shader* shad = resources.fetch_shader("res/default.glsl");
+	//Shader* shad = resources.fetch_shader("res/default.glsl");
 	if (shad == nullptr) return;
 	if (test == nullptr) return;
 
-	GLfloat bg_color[] = { 0.0f, 0.5f, 0.5f, 1.0f };
+	GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	while (running) {
 		glClearBufferfv(GL_COLOR, 0, bg_color);
-		flush_events();
 
-		glUseProgram(shad->get_gpu_object());
+		glUseProgram(shad->program);
 		glBindVertexArray(test->vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		flush_events();
 		screen.update();
 	}
+
+	glDeleteVertexArrays(1, &test->vao);
+	glDeleteProgram(shad->program);
 }
 
 void Engine::flush_events() {

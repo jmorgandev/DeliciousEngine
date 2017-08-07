@@ -3,16 +3,8 @@
 
 #include <GL/glew.h>
 
-class Shader {
-public:
-	Shader(GLuint object_in);
-	~Shader();
-
-	void	bind();
-
-	GLuint	get_gpu_object();
-private:
-	GLuint gpu_object;
+struct Shader {
+	GLuint program;
 };
 
 #endif

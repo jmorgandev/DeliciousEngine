@@ -134,10 +134,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
-    <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="build_info.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />

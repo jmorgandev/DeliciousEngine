@@ -22,6 +22,7 @@ public:
 
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);
+	Shader* load_glsl(std::string filepath);
 
 	Texture* fetch_texture(std::string filename);
 	Shader* fetch_shader(std::string filename);
@@ -29,7 +30,7 @@ public:
 	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in);
 	
 	Mesh* fetch_mesh(std::string filename);
-	Mesh* make_mesh(std::string name, float* data);	
+	Mesh* make_mesh(std::string name, MeshData data);	
 private:
 	Console* console_ref;
 
