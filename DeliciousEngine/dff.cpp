@@ -43,11 +43,11 @@ namespace dff {
 		return result;
 	}
 
-	std::string get_gls_region(std::string src, std::string region) {
-		size_t pos = src.find("//:" + region);
+	std::string get_glsl_region(std::string src, std::string key, std::string label) {
+		size_t pos = src.find(key + label);
 		if (pos == std::string::npos) return "";
-		size_t region_start = pos + (region.size() + 3);
-		size_t region_end = src.find("//:", region_start);
+		size_t region_start = pos + (key.size() + label.size());
+		size_t region_end = src.find(key, region_start);
 		return src.substr(region_start, region_end - region_start);
 	}
 }

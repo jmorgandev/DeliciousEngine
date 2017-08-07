@@ -70,83 +70,13 @@ Texture* Resources::fetch_texture(std::string filename) {
 
 Shader* Resources::load_shader(std::string filepath) {
 	Shader new_shader = {};
-	std::string filename = dff::path_filename(filepath, false);
-
-	std::string vert_src = dff::file_str(filepath + ".vert");
-	std::string frag_src = dff::file_str(filepath + ".frag");
-
-	if (vert_src == "" || frag_src == "") {
-		//ERROR
-		return nullptr;
-	}
-
-	GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
-	GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	if (!vert_shader || !frag_shader) {
-		return nullptr;
-	}
-	if (!dgl::compile(vert_shader, vert_src)) {
-		GLchar error[1024];
-		GLint length;
-		glGetShaderiv(vert_shader, GL_INFO_LOG_LENGTH, &length);
-		glGetShaderInfoLog(vert_shader, 1024, &length, error);
-		std::cout << error << std::endl;
-		return nullptr;
-	}
-	if (!dgl::compile(frag_shader, frag_src)) {
-		GLchar error[1024];
-		GLint length;
-		glGetShaderiv(frag_shader, GL_INFO_LOG_LENGTH, &length);
-		glGetShaderInfoLog(frag_shader, 1024, &length, error);
-		std::cout << error << std::endl;
-		return nullptr;
-	}
-
-	GLuint new_program = glCreateProgram();
-	if (!new_program) {
-		//ERROR
-		return nullptr;
-	}
-	glAttachShader(new_program, vert_shader);
-	glAttachShader(new_program, frag_shader);
-	glLinkProgram(new_program);
-
-	glDeleteShader(vert_shader);
-	glDeleteShader(frag_shader);
-
-	/*std::string filename = dff::path_filename(filepath, false);
-
-	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, vertex_shader_source, NULL);
-	glCompileShader(vertex_shader);
-
-	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, fragment_shader_source, NULL);
-	glCompileShader(fragment_shader);
-
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertex_shader);
-	glAttachShader(shaderProgram, fragment_shader);
-	glLinkProgram(shaderProgram);
-
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
-	glUseProgram(shaderProgram);*/
-	new_shader.program = new_program;
-
-	shader_catalog.insert(shader_keypair(filename, new_shader));
-	return &shader_catalog.find(filename)->second;
-}
-Shader* Resources::load_glsl(std::string filepath) {
-	Shader new_shader = {};
 
 	std::string shader_source = dff::file_str(filepath);
 	if (shader_source.empty()) {
 		return nullptr;
 	}
-	std::string vertex_source = dff::get_gls_region(shader_source, "vertex");
-	std::string fragment_source = dff::get_gls_region(shader_source, "fragment");
+	std::string vertex_source = dff::get_glsl_region(shader_source, "#scope ", "vertex");
+	std::string fragment_source = dff::get_glsl_region(shader_source, "#scope ", "fragment");
 	if (vertex_source.empty() || fragment_source.empty()) {
 		return nullptr;
 	}

@@ -17,7 +17,7 @@ bool Engine::init(char** argv, int argc) {
 	//resources.load_shader("shader/font");
 	//resources.load_texture("texture/con_font.png");
 
-	resources.load_glsl("res/default.glsl");
+	resources.load_shader("res/default.glsl");
 	return true;
 }
 
