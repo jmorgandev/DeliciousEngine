@@ -25,13 +25,11 @@ public:
 
 	Texture* fetch_texture(std::string filename);
 	Shader* fetch_shader(std::string filename);
-	Mesh* fetch_mesh(std::string filename);
 
 	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in);
 	
-	Mesh* make_mesh(std::string name, MeshData data_in);
-
-	
+	Mesh* fetch_mesh(std::string filename);
+	Mesh* make_mesh(std::string name, float* data);	
 private:
 	Console* console_ref;
 

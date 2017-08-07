@@ -51,14 +51,18 @@ bool Screen::init(Engine* engine_in) {
 		std::cout << "GLEW failed to initialise: " << glewGetErrorString(status) << "\n";
 		return false;
 	}
+	glewExperimental = true;
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	return true;
 }
 
+const GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 void Screen::update() {
-	//
-	// @Todo OpenGL rendering stuff here
-	//
+
+	
+
+	SDL_GL_SwapWindow(window);
 }

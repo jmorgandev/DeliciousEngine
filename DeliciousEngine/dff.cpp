@@ -26,7 +26,7 @@ namespace dff {
 		std::string result;
 		std::string line;
 		while (std::getline(file_stream, line)) {
-			result += line;
+			result += line + "\n";
 		}
 		return result;
 	}

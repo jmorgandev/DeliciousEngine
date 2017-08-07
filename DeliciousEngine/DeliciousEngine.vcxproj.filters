@@ -43,6 +43,9 @@
     <Filter Include="Source Files\components">
       <UniqueIdentifier>{684cd585-140c-4a07-a794-07e81ae1fc48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\intermediate_types">
+      <UniqueIdentifier>{689387bb-077f-4715-96c1-f1e45833eb74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_data.h">
+      <Filter>Header Files\intermediate_types</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

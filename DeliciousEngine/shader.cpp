@@ -8,7 +8,7 @@ Shader::~Shader() {
 }
 
 void Shader::bind() {
-	
+	glUseProgram(gpu_object);
 }
 
 GLuint Shader::get_gpu_object() {
