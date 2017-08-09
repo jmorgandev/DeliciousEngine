@@ -4,6 +4,13 @@
 #include "mesh_data.h"
 #include <string>
 
+float gui_vertices[] = {
+	1.0f, -1.0f,
+	1.0f, -1.0f,
+	1.0f,  1.0f,
+	-1.0f,  1.0f
+};
+
 MeshData std_triangle
 {
 	{

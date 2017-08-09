@@ -31,8 +31,6 @@ void Resources::cleanup() {
 Texture* Resources::load_texture(std::string filepath) {
 	Texture new_texture = {};
 
-	std::string filename = dff::path_filename(filepath, false);
-
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
 
 	if (temp_surface == nullptr) {
@@ -43,28 +41,21 @@ Texture* Resources::load_texture(std::string filepath) {
 	GLuint texture_object;
 	glCreateTextures(GL_TEXTURE_2D, 1, &texture_object);
 
-	glTextureStorage2D(texture_object, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
-
-	glTextureSubImage2D(
-		texture_object,
-		0,
-		0, 0,
-		temp_surface->w,
-		temp_surface->h,
-		GL_RGBA,
-		GL_FLOAT,
-		(byte*)temp_surface->pixels
-	);
+	//glBindTexture(GL_TEXTURE_2D, texture_object);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_surface->w, temp_surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
+	//glGenerateMipmap(GL_TEXTURE_2D);
+	glTextureStorage2D(texture_object, 1, GL_RGB8, temp_surface->w, temp_surface->h);
+	glTextureSubImage2D(texture_object, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGB, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
 
 	new_texture.gpu_id = texture_object;
 	new_texture.width = temp_surface->w;
 	new_texture.height = temp_surface->h;
-	new_texture.bytes_per_pixel = 4;
+	new_texture.bytes_per_pixel = temp_surface->format->BytesPerPixel;
 
 	SDL_FreeSurface(temp_surface);
 
 	texture_catalog[filepath] = new_texture;
-	return &texture_catalog.find(filename)->second;
+	return &texture_catalog[filepath];
 }
 Texture* Resources::fetch_texture(std::string filename) {
 	auto it = texture_catalog.find(filename);
@@ -175,4 +166,18 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 Font* Resources::make_font(std::string name, Texture* texture, Shader* shader) {
 	font_catalog[name] = { texture, shader };
 	return &font_catalog[name];
+}
+
+void Resources::load_gui_resources() {
+	glCreateVertexArrays(1, &gui_vertex_array);
+	glCreateBuffers(1, &gui_vertex_buffer);
+
+	glNamedBufferStorage(gui_vertex_buffer, sizeof(gui_vertices), gui_vertices, NULL);
+	glVertexArrayVertexBuffer(gui_vertex_array, 0, gui_vertex_buffer, 0, sizeof(float));
+	glVertexArrayAttribFormat(gui_vertex_array, 0, 2, GL_FLOAT, GL_FALSE, 0);
+	glEnableVertexArrayAttrib(gui_vertex_array, 0);
+}
+
+void Resources::unload_gui_resources() {
+
 }
