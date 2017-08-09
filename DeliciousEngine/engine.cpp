@@ -24,7 +24,7 @@ bool Engine::init(char** argv, int argc) {
 void Engine::run() {
 	running = true;
 
-	Mesh* test = resources.fetch_mesh("triangle");
+	Mesh* test = resources.fetch_mesh("quad");
 	Shader* shad = resources.fetch_shader("res/default.glsl");
 	//Shader* shad = resources.fetch_shader("res/default.glsl");
 	if (shad == nullptr) return;
@@ -35,16 +35,16 @@ void Engine::run() {
 	while (running) {
 		glClearBufferfv(GL_COLOR, 0, bg_color);
 
-		glUseProgram(shad->program);
+		glUseProgram(shad->gpu_id);
 		glBindVertexArray(test->vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, test->vertex_count);
 
 		flush_events();
 		screen.update();
 	}
 
 	glDeleteVertexArrays(1, &test->vao);
-	glDeleteProgram(shad->program);
+	glDeleteProgram(shad->gpu_id);
 }
 
 void Engine::flush_events() {

@@ -4,21 +4,9 @@
 #include <GL/glew.h>
 #include "dtypes.h"
 
-class Texture {
-public:
-	Texture(GLuint object_in, uint16 width_in, uint16 height_in, uint8 bpp_in);
-	~Texture();
-
-	void	bind();
-
-	GLuint	get_gpu_object();
-	uint16	get_width();
-	uint16	get_height();
-	uint8	get_bpp();
-private:
-	GLuint	gpu_object;
-	uint16	width, height;
-	uint8	bpp;
+struct Texture {
+	GLuint gpu_id;
+	uint16 width, height;
+	uint8 bytes_per_pixel;
 };
-
 #endif

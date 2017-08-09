@@ -22,7 +22,6 @@ public:
 
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);
-	Shader* load_glsl(std::string filepath);
 
 	Texture* fetch_texture(std::string filename);
 	Shader* fetch_shader(std::string filename);
@@ -34,16 +33,9 @@ public:
 private:
 	Console* console_ref;
 
-	typedef std::unordered_map<std::string, Texture>::value_type texture_keypair;
 	std::unordered_map<std::string, Texture> texture_catalog;
-
-	typedef std::unordered_map<std::string, Shader>::value_type shader_keypair;
 	std::unordered_map<std::string, Shader> shader_catalog;
-
-	typedef std::unordered_map<std::string, Font>::value_type font_keypair;
 	std::unordered_map<std::string, Font> font_catalog;
-
-	typedef std::unordered_map<std::string, Mesh>::value_type mesh_keypair;
 	std::unordered_map<std::string, Mesh> mesh_catalog;
 };
 

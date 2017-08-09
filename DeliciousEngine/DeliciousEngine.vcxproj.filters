@@ -34,9 +34,6 @@
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\objects">
-      <UniqueIdentifier>{c50545e6-f495-408c-bc3e-d830158c72f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\components">
       <UniqueIdentifier>{32ab64fd-b729-4284-adee-65b0183d1a65}</UniqueIdentifier>
     </Filter>
@@ -69,9 +66,6 @@
     <ClCompile Include="dmath.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
     <ClCompile Include="resources.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>
@@ -80,9 +74,6 @@
     </ClCompile>
     <ClCompile Include="dgl.cpp">
       <Filter>Source Files\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="font.cpp">
-      <Filter>Source Files\objects</Filter>
     </ClCompile>
     <ClCompile Include="font_renderer.cpp">
       <Filter>Source Files\components</Filter>

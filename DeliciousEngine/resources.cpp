@@ -18,6 +18,7 @@ bool Resources::init(Engine* engine_in) {
 	IMG_Init(IMG_INIT_PNG);
 
 	make_mesh("triangle", std_triangle);
+	make_mesh("quad", std_quad);
 	//make_mesh("quad", primitive_quad);
 
 	return true;
@@ -28,6 +29,7 @@ void Resources::cleanup() {
 }
 
 Texture* Resources::load_texture(std::string filepath) {
+	Texture new_texture = {};
 
 	std::string filename = dff::path_filename(filepath, false);
 
@@ -38,13 +40,13 @@ Texture* Resources::load_texture(std::string filepath) {
 		return nullptr;
 	}
 	//Otherwise we have the surface
-	GLuint new_object;
-	glCreateTextures(GL_TEXTURE_2D, 1, &new_object);
+	GLuint texture_object;
+	glCreateTextures(GL_TEXTURE_2D, 1, &texture_object);
 
-	glTextureStorage2D(new_object, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
+	glTextureStorage2D(texture_object, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
 
 	glTextureSubImage2D(
-		new_object,
+		texture_object,
 		0,
 		0, 0,
 		temp_surface->w,
@@ -53,9 +55,15 @@ Texture* Resources::load_texture(std::string filepath) {
 		GL_FLOAT,
 		(byte*)temp_surface->pixels
 	);
+
+	new_texture.gpu_id = texture_object;
+	new_texture.width = temp_surface->w;
+	new_texture.height = temp_surface->h;
+	new_texture.bytes_per_pixel = 4;
+
 	SDL_FreeSurface(temp_surface);
 
-	texture_catalog.insert(texture_keypair(filename, Texture(new_object, temp_surface->w, temp_surface->h, 32)));
+	texture_catalog[filepath] = new_texture;
 	return &texture_catalog.find(filename)->second;
 }
 Texture* Resources::fetch_texture(std::string filename) {
@@ -108,7 +116,7 @@ Shader* Resources::load_shader(std::string filepath) {
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-	new_shader.program = shader_program;
+	new_shader.gpu_id = shader_program;
 	shader_catalog[filepath] = new_shader;
 	return &shader_catalog[filepath];
 }
@@ -137,33 +145,34 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	Mesh new_mesh = {};
 
 	glCreateVertexArrays(1, &new_mesh.vao);
-	glCreateBuffers(1, new_mesh.vbo);
+	glCreateBuffers(NUM_BUFFERS, new_mesh.vbo);
 
 	// VERTICES
-	glNamedBufferData(new_mesh.vbo[VERTICES], data.vertices.size() * sizeof(glm::vec3), &data.vertices[0], GL_STATIC_DRAW);
+	glNamedBufferStorage(new_mesh.vbo[VERTICES], data.vertices.size() * sizeof(glm::vec3), &data.vertices[0], NULL);
 	glVertexArrayVertexBuffer(new_mesh.vao, 0, new_mesh.vbo[VERTICES], 0, sizeof(glm::vec3));
 	glVertexArrayAttribFormat(new_mesh.vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
 	glEnableVertexArrayAttrib(new_mesh.vao, 0);
 
-	//// NORMALS
-	//glNamedBufferData(new_mesh.vbo[NORMALS], data.normals.size() * sizeof(glm::vec3), &data.normals[0], GL_STATIC_DRAW);
-	//glVertexArrayVertexBuffer(new_mesh.vao, 1, new_mesh.vbo[NORMALS], 0, sizeof(glm::vec3));
-	//glVertexArrayAttribFormat(new_mesh.vao, 1, 3, GL_FLOAT, GL_FALSE, 0);
-	//glEnableVertexArrayAttrib(new_mesh.vao, 1);
-	//
-	//// TEXCOORDS
-	//glNamedBufferData(new_mesh.vbo[TEXCOORDS], data.texcoords.size() * sizeof(glm::vec2), &data.texcoords[0], GL_STATIC_DRAW);
-	//glVertexArrayVertexBuffer(new_mesh.vao, 2, new_mesh.vbo[TEXCOORDS], 0, sizeof(glm::vec2));
-	//glVertexArrayAttribFormat(new_mesh.vao, 2, 2, GL_FLOAT, GL_FALSE, 0);
-	//glEnableVertexArrayAttrib(new_mesh.vao, 2);
+	// NORMALS
+	glNamedBufferStorage(new_mesh.vbo[NORMALS], data.normals.size() * sizeof(glm::vec3), &data.normals[0], NULL);
+	glVertexArrayVertexBuffer(new_mesh.vao, 1, new_mesh.vbo[NORMALS], 0, sizeof(glm::vec3));
+	glVertexArrayAttribFormat(new_mesh.vao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+	glEnableVertexArrayAttrib(new_mesh.vao, 1);
 	
-	
+	// TEXCOORDS
+	glNamedBufferStorage(new_mesh.vbo[TEXCOORDS], data.texcoords.size() * sizeof(glm::vec2), &data.texcoords[0], NULL);
+	glVertexArrayVertexBuffer(new_mesh.vao, 2, new_mesh.vbo[TEXCOORDS], 0, sizeof(glm::vec2));
+	glVertexArrayAttribFormat(new_mesh.vao, 2, 2, GL_FLOAT, GL_FALSE, 0);
+	glEnableVertexArrayAttrib(new_mesh.vao, 2);
 
+	new_mesh.vertex_count = data.vertices.size();
+	new_mesh.triangle_count = new_mesh.vertex_count / 3;
+	
 	mesh_catalog[name] = new_mesh;
 	return &mesh_catalog[name];
 }
 
-Font* Resources::make_font(std::string name, Texture* texture_in, Shader* shader_in) {
-	font_catalog.insert(font_keypair(name, Font(texture_in, shader_in)));
-	return &font_catalog.find(name)->second;
+Font* Resources::make_font(std::string name, Texture* texture, Shader* shader) {
+	font_catalog[name] = { texture, shader };
+	return &font_catalog[name];
 }

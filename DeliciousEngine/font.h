@@ -4,14 +4,7 @@
 class Texture;
 class Shader;
 
-class Font {
-public:
-	Font(Texture* texture_in, Shader* shader_in);
-
-	Texture* get_texture();
-	Shader* get_shader();
-
-private:
+struct Font {
 	Texture* texture;
 	Shader* shader;
 };

@@ -129,12 +129,10 @@
     <ClCompile Include="dgl.cpp" />
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
-    <ClCompile Include="font.cpp" />
     <ClCompile Include="font_renderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
-    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="build_info.h" />
