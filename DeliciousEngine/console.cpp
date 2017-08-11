@@ -78,12 +78,13 @@ void Console::write_str(cstring str, uint32 size) {
 			}
 		}
 		else {	//If no wrapping needs to occur, print string as normal.
-			for (; str != NULL; str++) write_char(*str);
+			for (; *str != NULL; str++) write_char(*str);
 		}
 	}
 }
 void Console::write_char(uchar c) {
-
+	text_buffer[front_index] = c;
+	front_index = front_index++ % CON_BUFFER_SIZE;
 }
 
 void Console::buffer_alloc(uint32 size) {
@@ -153,3 +154,37 @@ void Console::write_variable(cstring name, float data) {
 //	}
 //	
 //}
+
+void Console::set_font(Font* fnt) {
+	text_renderer.set_font(fnt);
+
+	int screen_w = engine->get_screen()->get_width();
+
+	//line_size = fnt->cell_width / engine->get_screen()->get_width(); --TODO LEARN HOW TO MATH
+	line_size = engine->get_screen()->get_width() / fnt->cell_width;
+	//visible_lines = fnt->cell_height / engine->get_screen()->get_height();
+	visible_lines = engine->get_screen()->get_height() / fnt->cell_height;
+}
+
+void Console::render() {
+	text_renderer.begin();
+	for (int render_index = (back_index % CON_BUFFER_SIZE); render_index != front_index; render_index = (++render_index % CON_BUFFER_SIZE)) {
+		if (text_buffer[render_index] == '\0') {
+			break;
+		}
+		if (text_buffer[render_index] == '\n') {
+			continue;
+		}
+		int x_pos = render_index % line_size;
+		int y_pos = render_index / line_size;
+
+		float clip_w = (float)text_renderer.get_font()->cell_width / engine->get_screen()->get_width();
+		float clip_h = (float)text_renderer.get_font()->cell_height / engine->get_screen()->get_height();
+
+		float clip_x = (((float)x_pos * clip_w) * 2.0f) - 1.0f + (clip_w * 2.0f);
+		float clip_y = (((float)y_pos * clip_h) * 2.0f) + 1.0f - clip_h;
+
+		text_renderer.draw_char(text_buffer[render_index], clip_x, clip_y, clip_w, clip_h);
+	}
+	text_renderer.end();
+}

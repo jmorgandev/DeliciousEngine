@@ -30,7 +30,7 @@ void FontRenderer::end() {
 	glDisable(GL_BLEND);
 }
 
-void FontRenderer::draw_char(char c, float x, float y) {
+void FontRenderer::draw_char(char c, float x, float y, float w, float h) {
 	int off = (c - font->char_offset);
 	float xo = (off % font->cell_columns);
 	float yo = (off / font->cell_columns);
@@ -45,13 +45,14 @@ void FontRenderer::draw_char(char c, float x, float y) {
 	glUniform2f(2, x, y);
 	glUniform2f(3, cell_x, cell_y);
 	glUniform2f(4, cell_w, cell_h);
+	glUniform2f(5, w, h);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void FontRenderer::draw_string(const char* str, float x, float y) {
-	float adv_x = ((float)font->cell_width / 1280);
-	for (int i = 0; *str; i++) {
-		float pos = x + ((float)i * 1.0f);
-		draw_char(*str++, pos, y);
-	}
+	//float adv_x = ((float)font->cell_width / 1280);
+	//for (int i = 0; *str; i++) {
+	//	float pos = x + ((float)i * 1.0f);
+	//	draw_char(*str++, pos, y);
+	//}
 }

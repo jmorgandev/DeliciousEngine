@@ -36,6 +36,8 @@ bool Screen::init(Engine* engine_in) {
 		video_width, video_height,
 		SDL_WINDOW_OPENGL
 	);
+	screen_width = video_width;
+	screen_height = video_height;
 	if (!window) {
 		std::cout << "SDL window could not be created: " << SDL_GetError() << "\n";
 		return false;
@@ -65,4 +67,11 @@ void Screen::update() {
 	
 
 	SDL_GL_SwapWindow(window);
+}
+
+int Screen::get_width() {
+	return screen_width;
+}
+int Screen::get_height() {
+	return screen_height;
 }

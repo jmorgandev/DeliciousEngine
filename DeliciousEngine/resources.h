@@ -33,6 +33,7 @@ public:
 	Mesh* make_mesh(std::string name, MeshData data);	
 private:
 	Console* console_ref;
+	Engine* engine_ref;
 
 	std::unordered_map<std::string, Texture> texture_catalog;
 	std::unordered_map<std::string, Shader> shader_catalog;

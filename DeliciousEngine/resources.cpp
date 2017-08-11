@@ -24,6 +24,22 @@ bool Resources::init(Engine* engine_in) {
 
 	load_gui_resources();
 
+	Shader* font_shader = load_shader("res/bmp_font.glsl");
+	if (font_shader == nullptr) {
+		//ERROR
+		return false;
+	}
+	Texture* font_texture = load_texture("res/consolas_32.tga");
+	if (font_texture == nullptr) {
+		//ERROR
+		return false;
+	}
+	Font* con_font = make_font("consolas_32", font_texture, font_shader, 32);
+	if (con_font == nullptr) {
+		//ERROR
+		return false;
+	}
+	console_ref->set_font(con_font);
 	return true;
 }
 

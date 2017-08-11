@@ -18,6 +18,10 @@ public:
 	float read_variable(cstring name);
 	void write_variable(cstring name, float data);
 
+	void set_font(Font* fnt);
+
+	void render();
+	void write_str(cstring str);
 private:
 	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
 	uint16	front_index;
@@ -29,11 +33,12 @@ private:
 	uint16	history_buffer[CON_HISTORY_SIZE];
 
 	uint8 line_size;
+	uint8 visible_lines;
 	FontRenderer text_renderer;
 
 	std::vector<console_var> variables;
 
-	void write_str(cstring str);
+	//void write_str(cstring str);
 	void write_str(cstring str, uint32 size);
 	void write_char(uchar c);
 	void buffer_alloc(uint32 size);

@@ -12,7 +12,7 @@ public:
 
 	void begin();
 	void draw_string(const char* str, float x, float y);
-	void draw_char(char c, float x, float y);
+	void draw_char(char c, float x, float y, float w, float h);
 	void end();
 
 	void set_font(Font* font_in);

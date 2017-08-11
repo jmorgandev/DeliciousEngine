@@ -10,9 +10,13 @@ public:
 
 	void update();
 
+	int get_width();
+	int get_height();
 private:
 	SDL_Window* window;
 	SDL_GLContext gl_context;
+	int screen_width;
+	int screen_height;
 };
 
 #endif
