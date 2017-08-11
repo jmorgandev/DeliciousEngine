@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 
 struct Shader {
-	GLuint gpu_id;
+	GLuint id;
 };
 
 #endif

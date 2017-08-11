@@ -26,7 +26,8 @@ public:
 	Texture* fetch_texture(std::string filename);
 	Shader* fetch_shader(std::string filename);
 
-	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in);
+	Font* fetch_font(std::string name);
+	Font* make_font(std::string name, Texture* texture_in, Shader* shader_in, int font_px);
 	
 	Mesh* fetch_mesh(std::string filename);
 	Mesh* make_mesh(std::string name, MeshData data);	
@@ -41,7 +42,7 @@ private:
 	void load_gui_resources();
 	void unload_gui_resources();
 	GLuint gui_vertex_array;
-	GLuint gui_vertex_buffer;
+	GLuint gui_vertex_buffers[2];
 };
 
 #endif

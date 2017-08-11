@@ -9,6 +9,8 @@ namespace math {
 
 	uint8 abs(int8 value);
 	uint16 abs(int16 value);
+
+	float wrapf(float v, float min, float max);
 }
 
 #endif

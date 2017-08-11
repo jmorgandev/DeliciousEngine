@@ -15,23 +15,28 @@
 
 bool Resources::init(Engine* engine_in) {
 	console_ref = engine_in->get_console();
-	IMG_Init(IMG_INIT_PNG);
+	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
+	
 
 	make_mesh("triangle", std_triangle);
 	make_mesh("quad", std_quad);
 	//make_mesh("quad", primitive_quad);
 
+	load_gui_resources();
+
 	return true;
 }
 
 void Resources::cleanup() {
-	
+	unload_gui_resources();
 }
 
 Texture* Resources::load_texture(std::string filepath) {
 	Texture new_texture = {};
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
+
+	int bpp = temp_surface->format->BytesPerPixel;
 
 	if (temp_surface == nullptr) {
 		//Error, extension not supported by SDL_Image
@@ -44,10 +49,11 @@ Texture* Resources::load_texture(std::string filepath) {
 	//glBindTexture(GL_TEXTURE_2D, texture_object);
 	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_surface->w, temp_surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
 	//glGenerateMipmap(GL_TEXTURE_2D);
-	glTextureStorage2D(texture_object, 1, GL_RGB8, temp_surface->w, temp_surface->h);
-	glTextureSubImage2D(texture_object, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGB, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
+	glTextureStorage2D(texture_object, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
+	glTextureSubImage2D(texture_object, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
+	glTextureParameteri(texture_object, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	new_texture.gpu_id = texture_object;
+	new_texture.id = texture_object;
 	new_texture.width = temp_surface->w;
 	new_texture.height = temp_surface->h;
 	new_texture.bytes_per_pixel = temp_surface->format->BytesPerPixel;
@@ -91,9 +97,15 @@ Shader* Resources::load_shader(std::string filepath) {
 		return nullptr;
 	}
 	if (!dgl::compile(vertex_shader, version_string + vertex_source)) {
+		GLchar buffer[1024];
+		glGetShaderInfoLog(vertex_shader, 1024, NULL, buffer);
+		std::cout << buffer << "\n";
 		return nullptr;
 	}
 	if (!dgl::compile(fragment_shader, version_string + fragment_source)) {
+		GLchar buffer[1024];
+		glGetShaderInfoLog(fragment_shader, 1024, NULL, buffer);
+		std::cout << buffer << "\n";
 		return nullptr;
 	}
 	GLuint shader_program = glCreateProgram();
@@ -107,7 +119,7 @@ Shader* Resources::load_shader(std::string filepath) {
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-	new_shader.gpu_id = shader_program;
+	new_shader.id = shader_program;
 	shader_catalog[filepath] = new_shader;
 	return &shader_catalog[filepath];
 }
@@ -163,21 +175,50 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	return &mesh_catalog[name];
 }
 
-Font* Resources::make_font(std::string name, Texture* texture, Shader* shader) {
-	font_catalog[name] = { texture, shader };
+Font* Resources::make_font(std::string name, Texture* texture, Shader* shader, int font_px) {
+	Font new_font = {};
+
+	new_font.char_offset = ' ';
+	new_font.total_cells = ('~' - ' ') + 1;
+	new_font.cell_height = font_px;
+	new_font.cell_width = (font_px / 2);
+	new_font.cell_rows = texture->height / new_font.cell_height;
+	new_font.cell_columns = texture->width / new_font.cell_width;
+
+	new_font.gui_vao = gui_vertex_array;
+	new_font.shader = shader;
+	new_font.texture = texture;
+
+	font_catalog[name] = new_font;
 	return &font_catalog[name];
+}
+
+Font* Resources::fetch_font(std::string name) {
+	auto it = font_catalog.find(name);
+	if (it == font_catalog.end()) {
+		return nullptr;
+	}
+	else {
+		return &it->second;
+	}
 }
 
 void Resources::load_gui_resources() {
 	glCreateVertexArrays(1, &gui_vertex_array);
-	glCreateBuffers(1, &gui_vertex_buffer);
+	glCreateBuffers(2, gui_vertex_buffers);
 
-	glNamedBufferStorage(gui_vertex_buffer, sizeof(gui_vertices), gui_vertices, NULL);
-	glVertexArrayVertexBuffer(gui_vertex_array, 0, gui_vertex_buffer, 0, sizeof(float));
+	glNamedBufferStorage(gui_vertex_buffers[0], sizeof(gui_vertices), gui_vertices, NULL);
+	glVertexArrayVertexBuffer(gui_vertex_array, 0, gui_vertex_buffers[0], 0, sizeof(float) * 2);
 	glVertexArrayAttribFormat(gui_vertex_array, 0, 2, GL_FLOAT, GL_FALSE, 0);
 	glEnableVertexArrayAttrib(gui_vertex_array, 0);
+
+	glNamedBufferStorage(gui_vertex_buffers[1], sizeof(gui_texcoords), gui_texcoords, NULL);
+	glVertexArrayVertexBuffer(gui_vertex_array, 1, gui_vertex_buffers[1], 0, sizeof(float) * 2);
+	glVertexArrayAttribFormat(gui_vertex_array, 1, 2, GL_FLOAT, GL_FALSE, 0);
+	glEnableVertexArrayAttrib(gui_vertex_array, 1);
 }
 
 void Resources::unload_gui_resources() {
-
+	glDeleteBuffers(2, gui_vertex_buffers);
+	glDeleteVertexArrays(1, &gui_vertex_array);
 }

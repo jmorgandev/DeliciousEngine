@@ -5,7 +5,7 @@
 #include "dtypes.h"
 
 struct Texture {
-	GLuint gpu_id;
+	GLuint id;
 	uint16 width, height;
 	uint8 bytes_per_pixel;
 };
