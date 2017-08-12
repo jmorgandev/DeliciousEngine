@@ -22,7 +22,7 @@ void Engine::run() {
 	running = true;
 
 	GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	console.write_str("Happy monkey chicken\n");
+	console.write_str("Happy monkey chicken\nAnd other hilarious things.");
 	while (running) {
 		glClearBufferfv(GL_COLOR, 0, bg_color);
 

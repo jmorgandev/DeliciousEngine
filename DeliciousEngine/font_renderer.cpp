@@ -11,12 +11,17 @@ FontRenderer::FontRenderer() {
 
 void FontRenderer::set_font(Font* font_in) {
 	font = font_in;
+	texcell_width = (float)font->cell_width / font->texture->width;
+	texcell_height = (float)font->cell_height / font->texture->height;
 }
 Font* FontRenderer::get_font() {
 	return font;
 }
 
-void FontRenderer::begin() {
+void FontRenderer::begin(int screen_w, int screen_h) {
+	render_width = (float)font->cell_width / screen_w;
+	render_height = (float)font->cell_height / screen_h;
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glDisable(GL_DEPTH_TEST);
@@ -30,22 +35,18 @@ void FontRenderer::end() {
 	glDisable(GL_BLEND);
 }
 
-void FontRenderer::draw_char(char c, float x, float y, float w, float h) {
+void FontRenderer::draw_char(char c, float x, float y) {
 	int off = (c - font->char_offset);
-	float xo = (off % font->cell_columns);
-	float yo = (off / font->cell_columns);
-	int yo2 = (yo / font->cell_rows);
+	int column = off % font->cell_columns;
+	int row = off / font->cell_columns;
 
-	float cell_w = (float)font->cell_width / (font->texture->width); //- (1/font->texture->width);
-	float cell_h = (float)font->cell_height / (font->texture->height);
-
-	float cell_x = ((float)xo * cell_w);
-	float cell_y = ((float)yo * cell_h);
+	float texcell_x = (float)column * texcell_width;
+	float texcell_y = (float)row * texcell_height;
 
 	glUniform2f(2, x, y);
-	glUniform2f(3, cell_x, cell_y);
-	glUniform2f(4, cell_w, cell_h);
-	glUniform2f(5, w, h);
+	glUniform2f(3, texcell_x, texcell_y);
+	glUniform2f(4, texcell_width, texcell_height);
+	glUniform2f(5, render_width, render_height);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
