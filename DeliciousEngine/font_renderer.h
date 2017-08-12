@@ -11,7 +11,7 @@ public:
 
 	void begin(int screen_w, int screen_h);
 	void draw_string(const char* str, float x, float y);
-	void draw_char(char c, float x, float y);
+	void draw_char(char c, int pixel_x, int pixel_y);
 	void end();
 
 	void set_font(Font* font_in);
@@ -22,6 +22,8 @@ private:
 	float render_height;
 	float texcell_width;
 	float texcell_height;
+	int last_screen_width;
+	int last_screen_height;
 };
 
 #endif

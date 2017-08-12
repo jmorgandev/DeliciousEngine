@@ -34,6 +34,8 @@ private:
 
 	uint8 line_size;
 	uint8 visible_lines;
+	uint8 border_x;
+	uint8 border_y;
 	FontRenderer text_renderer;
 
 	std::vector<console_var> variables;

@@ -13,6 +13,8 @@ bool Console::init(Engine* engine_in) {
 
 	front_index = 0;
 	line_size = 0;
+	border_x = 1;
+	border_y = 0;
 	back_index = CON_BUFFER_SIZE;
 
 	for (const auto& cvar : standard_cvars) {
@@ -158,12 +160,13 @@ void Console::write_variable(cstring name, float data) {
 void Console::set_font(Font* fnt) {
 	text_renderer.set_font(fnt);
 
-	line_size = engine->get_screen()->get_width() / fnt->cell_width;
-	visible_lines = engine->get_screen()->get_height() / fnt->cell_height;
+	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
+	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2);
 }
 
 void Console::render() {
 	Screen* scr = engine->get_screen();
+	Font* fnt = text_renderer.get_font();
 	text_renderer.begin(scr->get_width(), scr->get_height());
 	int render_index = (back_index % CON_BUFFER_SIZE);
 	for (int y = 0; y < visible_lines; y++) {
@@ -176,9 +179,8 @@ void Console::render() {
 			if (text_buffer[render_index] == '\0') {
 				return;
 			}
-			float clip_x = x * 0.025f;
-			float clip_y = y * 0.025f;
-			text_renderer.draw_char(text_buffer[render_index], clip_x, -clip_y);
+			//@TODO - Rendering is two times smaller, why is that? Do some math or something.
+			text_renderer.draw_char(text_buffer[render_index], (x + border_x) * fnt->cell_width, (y + border_y) * fnt->cell_height);
 			render_index++;
 		}
 	}
