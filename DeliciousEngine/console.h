@@ -2,7 +2,7 @@
 #define DELICIOUS_CONSOLE_H
 
 #include <vector>
-#include <SDL/SDL_keyboard.h>
+#include <SDL/SDL_Events.h>
 #include "console_types.h"
 #include "font_renderer.h"
 #include "box_renderer.h"
@@ -20,7 +20,8 @@ public:
 	float read_variable(cstring name);
 	void write_variable(cstring name, float data);
 
-	void key_input(SDL_Keysym key);
+	void key_event(SDL_KeyboardEvent ev);
+	void text_event(SDL_TextInputEvent ev);
 
 	void set_font(Font* fnt);
 	

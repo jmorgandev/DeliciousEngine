@@ -22,6 +22,8 @@ void Engine::run() {
 	running = true;
 
 	GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	SDL_StartTextInput();
 	while (running) {
 		glClearBufferfv(GL_COLOR, 0, bg_color);
 
@@ -43,7 +45,8 @@ void Engine::flush_events() {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) running = false;
-		if (e.type == SDL_KEYDOWN) console.key_input(e.key.keysym);
+		if (e.type == SDL_KEYDOWN) console.key_event(e.key);
+		if (e.type == SDL_TEXTINPUT) console.text_event(e.text);
 	}
 }
 

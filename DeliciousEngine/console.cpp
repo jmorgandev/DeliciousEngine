@@ -219,8 +219,8 @@ BoxRenderer* Console::get_box_renderer() {
 	return &box_renderer;
 }
 
-void Console::key_input(SDL_Keysym key) {
-	switch (key.sym) {
+void Console::key_event(SDL_KeyboardEvent ev) {
+	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
 		if (input_index == 0) {
 			break;
@@ -235,6 +235,7 @@ void Console::key_input(SDL_Keysym key) {
 		break;
 	case SDLK_RETURN:
 		//Execute the input found in the input buffer
+		clear_input();
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
@@ -243,10 +244,25 @@ void Console::key_input(SDL_Keysym key) {
 		//Cycle forward through previously entered commands
 		break;
 	default:
-		if (dcf::printable(key.sym) == false || input_index == CON_INPUT_SIZE) {
-			break;
-		}
-		input_buffer[input_index++] = key.sym;
 		break;
+		//if (dcf::printable(input.sym) == false || input_index == CON_INPUT_SIZE) {
+		//	break;
+		//}
+		//input_buffer[input_index++] = 
+		//break;
 	}
+}
+
+void Console::text_event(SDL_TextInputEvent ev) {
+	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_SIZE) {
+		return;
+	}
+	input_buffer[input_index++] = *ev.text;
+}
+
+void Console::clear_input() {
+	for (int i = 0; i < input_index; i++) {
+		input_buffer[i] = NULL;
+	}
+	input_index = 0;
 }
