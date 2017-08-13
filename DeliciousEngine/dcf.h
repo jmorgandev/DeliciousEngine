@@ -16,6 +16,8 @@ namespace dcf {
 	bool is_glyph(const char c);
 	bool str_cmp(cstring lhs, cstring rhs);
 	bool str_cmp_exact(cstring lhs, cstring rhs);
+
+	bool printable(const char c);
 }
 
 #endif

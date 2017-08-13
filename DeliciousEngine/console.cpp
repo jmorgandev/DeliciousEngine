@@ -142,26 +142,26 @@ void Console::write_variable(cstring name, float data) {
 	//Error: variable does not exist.
 }
 
-//void Console::write_to_input(cstring str) {
-//	cstring sp = str;
-//	while (*sp != NULL && input_index != CON_INPUT_SIZE) {
-//		input_buffer[input_index++] = *sp++;
-//	}
-//}
-//
-//void Console::execute_input(bool user_input) {
-//	if (user_input) {
-//		write_str(input_buffer, dcf::str_len(input_buffer) + 1);
-//		write_char('\n');
-//	}
-//	
-//}
+void Console::write_to_input(cstring str) {
+	cstring sp = str;
+	while (*sp != NULL && input_index != CON_INPUT_SIZE) {
+		input_buffer[input_index++] = *sp++;
+	}
+}
+
+void Console::execute_input(bool user_input) {
+	if (user_input) {
+		write_str(input_buffer, dcf::str_len(input_buffer) + 1);
+		write_char('\n');
+	}
+	
+}
 
 void Console::set_font(Font* fnt) {
 	text_renderer.set_font(fnt);
 
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
-	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2);
+	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 
 	write_str("Hello Bapzooples!\nHello my friends!");
 }
@@ -171,10 +171,22 @@ void Console::render() {
 	Font* fnt = text_renderer.get_font();
 
 	box_renderer.begin(scr->get_width(), scr->get_height());
-	box_renderer.draw(0, 0, scr->get_width(), scr->get_height(), glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
+	box_renderer.draw(0, 0, scr->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
+	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
+	
+	box_renderer.draw(
+		(input_index * fnt->cell_width) + fnt->cell_width,
+		(fnt->cell_height * visible_lines) + 2,
+		((input_index * fnt->cell_width) + fnt->cell_width) + 3,
+		((fnt->cell_height * visible_lines) + fnt->cell_height) - 2,
+		glm::vec4(1.0f, 1.0f, 1.0f, 0.8f)
+	);
+
 	box_renderer.end();
 
 	text_renderer.begin(scr->get_width(), scr->get_height());
+
+	//Draw Message Box
 	int render_index = (back_index % CON_BUFFER_SIZE);
 	for (int y = 0; y < visible_lines; y++) {
 		for (int x = 0; x < line_size; x++) {
@@ -184,16 +196,57 @@ void Console::render() {
 				break;
 			}
 			if (text_buffer[render_index] == '\0') {
-				return;
+				y = visible_lines;
+				break;
 			}
-			//@TODO - Rendering is two times smaller, why is that? Do some math or something.
 			text_renderer.draw_char(text_buffer[render_index], (x + border_x) * fnt->cell_width, (y + border_y) * fnt->cell_height);
 			render_index++;
 		}
 	}
+
+	//Draw Input Box
+	for (int i = 0; i < CON_INPUT_SIZE; i++) {
+		if (input_buffer[i] == '\0') {
+			break;
+		}
+		text_renderer.draw_char(input_buffer[i], (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
+	}
+
 	text_renderer.end();
 }
 
 BoxRenderer* Console::get_box_renderer() {
 	return &box_renderer;
+}
+
+void Console::key_input(SDL_Keysym key) {
+	switch (key.sym) {
+	case SDLK_BACKSPACE:
+		if (input_index == 0) {
+			break;
+		}
+		input_buffer[--input_index] = NULL;
+		break;
+	case SDLK_TAB:
+		//Partial command or variable completion
+		break;
+	case SDLK_BACKQUOTE:
+		//Toggle the console
+		break;
+	case SDLK_RETURN:
+		//Execute the input found in the input buffer
+		break;
+	case SDLK_UP:
+		//Cycle back through previously entered commands
+		break;
+	case SDLK_DOWN:
+		//Cycle forward through previously entered commands
+		break;
+	default:
+		if (dcf::printable(key.sym) == false || input_index == CON_INPUT_SIZE) {
+			break;
+		}
+		input_buffer[input_index++] = key.sym;
+		break;
+	}
 }

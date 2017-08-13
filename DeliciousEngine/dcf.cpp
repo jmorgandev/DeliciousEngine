@@ -58,4 +58,12 @@ namespace dcf {
 		}
 		return (*lhs == *rhs);
 	}
+	bool printable(const char c) {
+		if (c >= ' ' && c <= '~') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

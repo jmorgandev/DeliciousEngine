@@ -28,12 +28,11 @@ void Engine::run() {
 		//glUseProgram(font->shader->id);
 		//glBindTexture(GL_TEXTURE_2D, font->texture->id);
 		//glBindVertexArray(font->gui_vao);
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		console.render();
-		
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);		
 
 		flush_events();
+		console.render();
+
 		screen.update();
 	}
 
@@ -44,6 +43,7 @@ void Engine::flush_events() {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) running = false;
+		if (e.type == SDL_KEYDOWN) console.key_input(e.key.keysym);
 	}
 }
 
