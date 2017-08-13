@@ -4,6 +4,7 @@
 #include <vector>
 #include "console_types.h"
 #include "font_renderer.h"
+#include "box_renderer.h"
 
 #define CON_BUFFER_SIZE 64
 #define CON_INPUT_SIZE 128
@@ -19,6 +20,8 @@ public:
 	void write_variable(cstring name, float data);
 
 	void set_font(Font* fnt);
+	
+	BoxRenderer* get_box_renderer();
 
 	void render();
 private:
@@ -35,6 +38,8 @@ private:
 	uint8 visible_lines;
 	uint8 border_x;
 	uint8 border_y;
+
+	BoxRenderer box_renderer;
 	FontRenderer text_renderer;
 
 	std::vector<console_var> variables;

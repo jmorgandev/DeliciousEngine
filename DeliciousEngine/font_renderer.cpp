@@ -43,14 +43,14 @@ void FontRenderer::draw_char(char c, int pixel_x, int pixel_y) {
 	int column = off % font->cell_columns;
 	int row = off / font->cell_columns;
 
-	float texcell_x = (float)column * texcell_width;
-	float texcell_y = (float)row * texcell_height;
+	float texcell_x = column * texcell_width;
+	float texcell_y = row * texcell_height;
 
 	//float render_x = ((float)pixel_x / last_screen_width) * 2.0f - 1.0f;
 	//float render_y = -(((float)pixel_y / last_screen_height) * 2.0f - 1.0f);
 
-	float render_x = ((float)pixel_x * pixel_width) * 2.0f - 1.0f;
-	float render_y = ((float)pixel_y * pixel_height) * 2.0f - 1.0f;
+	float render_x = (pixel_x * pixel_width) * 2.0f - 1.0f;
+	float render_y = (pixel_y * pixel_height) * 2.0f - 1.0f;
 
 	glUniform2f(2, render_x, -render_y);
 	glUniform2f(3, texcell_x, texcell_y);

@@ -169,6 +169,11 @@ void Console::set_font(Font* fnt) {
 void Console::render() {
 	Screen* scr = engine->get_screen();
 	Font* fnt = text_renderer.get_font();
+
+	box_renderer.begin(scr->get_width(), scr->get_height());
+	box_renderer.draw(0, 0, scr->get_width(), scr->get_height(), glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
+	box_renderer.end();
+
 	text_renderer.begin(scr->get_width(), scr->get_height());
 	int render_index = (back_index % CON_BUFFER_SIZE);
 	for (int y = 0; y < visible_lines; y++) {
@@ -187,4 +192,8 @@ void Console::render() {
 		}
 	}
 	text_renderer.end();
+}
+
+BoxRenderer* Console::get_box_renderer() {
+	return &box_renderer;
 }

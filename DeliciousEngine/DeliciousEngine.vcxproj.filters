@@ -78,6 +78,9 @@
     <ClCompile Include="font_renderer.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="box_renderer.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">

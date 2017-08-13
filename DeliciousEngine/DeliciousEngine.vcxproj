@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="box_renderer.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
     <ClCompile Include="dff.cpp" />

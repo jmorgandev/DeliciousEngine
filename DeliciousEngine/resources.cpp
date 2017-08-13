@@ -6,6 +6,7 @@
 #include <glm/geometric.hpp>
 #include "engine.h"
 #include "console.h"
+#include "screen.h"
 #include "dff.h"
 #include "dcf.h"
 #include "dgl.h"
@@ -40,6 +41,16 @@ bool Resources::init(Engine* engine_in) {
 		return false;
 	}
 	console_ref->set_font(con_font);
+
+	Shader* box_shader = load_shader("res/shape.glsl");
+	if (box_shader == nullptr) {
+		//ERROR
+		return false;
+	}
+	BoxRenderer* con_box_renderer = console_ref->get_box_renderer();
+	con_box_renderer->set_shader(box_shader);
+	con_box_renderer->set_vao(gui_vertex_array);
+
 	return true;
 }
 

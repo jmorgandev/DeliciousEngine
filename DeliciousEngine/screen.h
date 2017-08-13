@@ -12,6 +12,7 @@ public:
 
 	int get_width();
 	int get_height();
+
 private:
 	SDL_Window* window;
 	SDL_GLContext gl_context;
