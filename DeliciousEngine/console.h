@@ -21,7 +21,6 @@ public:
 	void set_font(Font* fnt);
 
 	void render();
-	void write_str(cstring str);
 private:
 	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
 	uint16	front_index;
@@ -40,7 +39,7 @@ private:
 
 	std::vector<console_var> variables;
 
-	//void write_str(cstring str);
+	void write_str(cstring str);
 	void write_str(cstring str, uint32 size);
 	void write_char(uchar c);
 	void buffer_alloc(uint32 size);

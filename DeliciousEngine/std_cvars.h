@@ -10,7 +10,9 @@ console_var standard_cvars[] = {
 	{ "vid_width", 1280, VAR_INT, CVAR_USER},
 	{ "vid_height", 720, VAR_INT, CVAR_USER},
 	{ "vid_fullscreen", 0, VAR_BOOL, CVAR_USER},
-	{ "vid_borderless", 0, VAR_BOOL, CVAR_USER}
+	{ "vid_borderless", 0, VAR_BOOL, CVAR_USER},
+
+	{ "res_log", 0, VAR_BOOL, CVAR_USER}
 };
 
 #endif

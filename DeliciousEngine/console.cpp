@@ -162,6 +162,8 @@ void Console::set_font(Font* fnt) {
 
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2);
+
+	write_str("Hello Bapzooples!\nHello my friends!");
 }
 
 void Console::render() {

@@ -22,8 +22,8 @@ private:
 	float render_height;
 	float texcell_width;
 	float texcell_height;
-	int last_screen_width;
-	int last_screen_height;
+	float pixel_width;
+	float pixel_height;
 };
 
 #endif

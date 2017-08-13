@@ -135,6 +135,7 @@
     <ClCompile Include="screen.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="box_renderer.h" />
     <ClInclude Include="build_info.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />

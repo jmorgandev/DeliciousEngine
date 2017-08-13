@@ -19,10 +19,11 @@ Font* FontRenderer::get_font() {
 }
 
 void FontRenderer::begin(int screen_w, int screen_h) {
-	render_width = ((float)font->cell_width / screen_w) * 2.0f;
-	render_height = ((float)font->cell_height / screen_h) * 2.0f;
-	last_screen_width = screen_w;
-	last_screen_height = screen_h;
+	pixel_width = 1.0f / screen_w;
+	pixel_height = 1.0f / screen_h;
+
+	render_width = (font->cell_width * pixel_width) * 2.0f;
+	render_height = (font->cell_height * pixel_height) * 2.0f;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -45,10 +46,13 @@ void FontRenderer::draw_char(char c, int pixel_x, int pixel_y) {
 	float texcell_x = (float)column * texcell_width;
 	float texcell_y = (float)row * texcell_height;
 
-	float render_x = ((float)pixel_x / last_screen_width) * 2.0f - 1.0f;
-	float render_y = -(((float)pixel_y / last_screen_height) * 2.0f - 1.0f);
+	//float render_x = ((float)pixel_x / last_screen_width) * 2.0f - 1.0f;
+	//float render_y = -(((float)pixel_y / last_screen_height) * 2.0f - 1.0f);
 
-	glUniform2f(2, render_x, render_y);
+	float render_x = ((float)pixel_x * pixel_width) * 2.0f - 1.0f;
+	float render_y = ((float)pixel_y * pixel_height) * 2.0f - 1.0f;
+
+	glUniform2f(2, render_x, -render_y);
 	glUniform2f(3, texcell_x, texcell_y);
 	glUniform2f(4, texcell_width, texcell_height);
 	glUniform2f(5, render_width, render_height);

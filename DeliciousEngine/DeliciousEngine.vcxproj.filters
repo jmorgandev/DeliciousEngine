@@ -137,5 +137,8 @@
     <ClInclude Include="build_info.h">
       <Filter>Header Files\engine_info</Filter>
     </ClInclude>
+    <ClInclude Include="box_renderer.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
