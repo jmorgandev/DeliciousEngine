@@ -36,6 +36,12 @@ namespace dcf {
 		}
 		return NULL;
 	}
+	cstring str_prev_instance(cstring str, cstring min, char c) {
+		while (str-- != min) {
+			if (*str == c) return str;
+		}
+		return NULL;
+	}
 	cstring str_next_word(cstring str) {
 		while (*str++ != NULL) {
 			if (*str == ' ' && is_glyph(*str + 1)) return str + 1;

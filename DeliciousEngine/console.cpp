@@ -51,7 +51,9 @@ bool Console::init(Engine* engine_in) {
 	return true;
 }
 
-void Console::write_str(cstring str) { write_str(str, dcf::str_len(str)); }
+void Console::write_str(cstring str) { 
+	write_str(str, dcf::str_len(str));
+}
 //
 // Main writing function, handles the buffer and any line deletion / wrapping / overflows
 //
@@ -59,23 +61,31 @@ void Console::write_str(cstring str, uint32 size) {
 	buffer_alloc(size);		//Make sure there is enough space for the string to overwrite the buffer contents
 	while (*str != NULL) {	//Keep looping until no more words left in string
 
-		int line_remaining = line_size - (front_index % line_size);
+		int line_remaining = line_size;//line_size - (front_index % line_size);
 		int str_remaining = dcf::str_len(str);
 
 		if (str_remaining > line_remaining) {		//Check if wrapping needs to occur
-			if (str[line_remaining - 1] == ' ') {	//Handle overflow caused by a space
-				for (; line_remaining > 0; line_remaining--) write_char(*str++);
-				str = dcf::str_next_word(str);
-			}
-			else {				//Handle overflow caused by glyph
-				cstring wrap_point = dcf::str_prev_glyph(str + (line_remaining - 1), str) + 1;
-				if(wrap_point == NULL) {	//Handle a string without spaces by printing without wrapping
-					for (; line_remaining > 0; line_remaining--) write_char(*str++);
+			cstring wrap_point = str + line_remaining;
+			if (str[line_remaining] == ' ') {
+				while (str != wrap_point) {
+					write_char(*str++);
 				}
-				else {			//Handle wrapping by splitting string at earliest possible space		
-					while (str++ != wrap_point) write_char(*str);
-					write_char('\n'); str = dcf::str_next_word(str); //Instead of the space, put a new line.
-																	 //Then advance to next word in string.
+				str++;
+			}
+			else {
+				wrap_point = dcf::str_prev_instance(wrap_point, str, ' ');
+				if (wrap_point == NULL) {
+					//No space was found, don't bother wrapping.
+					while (str != wrap_point) {
+						write_char(*str++);
+					}
+				}
+				else {
+					while (str != wrap_point) {
+						write_char(*str++);
+					}
+					write_char('\n');
+					*str++;
 				}
 			}
 		}
@@ -163,7 +173,16 @@ void Console::set_font(Font* fnt) {
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 
-	write_str("Hello Bapzooples!\nHello my friends!");
+	write_str("Lorem ipsum dolor sit amet," 
+		"consectetur adipiscing elit. Phasellus vitae tristique massa."
+		"Quisque vitae leo ante. Nunc aliquet odio et tortor fermentum,"
+		"eu posuere tortor commodo. Pellentesque gravida nibh eu leo fringilla"
+		"scelerisque. Mauris interdum eleifend consectetur. Nulla finibus placerat"
+		"posuere. Proin at justo leo. Etiam ullamcorper sem nisl, id sagittis justo euismod non."
+		"Nulla malesuada ex eget eros auctor scelerisque. Proin quis nisl at dolor pulvinar tincidunt."
+		"Nam suscipit ex eget lectus dictum consequat. Nulla faucibus, justo quis auctor hendrerit,"
+		"urna justo tempus velit, ut scelerisque ante odio vitae ante. Etiam volutpat arcu mattis, tempor arcu quis,"
+		"porttitor tortor. Nunc auctor condimentum enim pretium lobortis.");
 }
 
 void Console::render() {
@@ -225,7 +244,8 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		if (input_index == 0) {
 			break;
 		}
-		input_buffer[--input_index] = NULL;
+		input_index--;
+		input_buffer[input_index] = NULL;
 		break;
 	case SDLK_TAB:
 		//Partial command or variable completion
@@ -234,7 +254,12 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Toggle the console
 		break;
 	case SDLK_RETURN:
+		if (input_buffer[0] == NULL) {
+			break;
+		}
 		//Execute the input found in the input buffer
+		input_buffer[input_index] = '\n';
+		write_str(input_buffer);
 		clear_input();
 		break;
 	case SDLK_UP:
@@ -257,11 +282,12 @@ void Console::text_event(SDL_TextInputEvent ev) {
 	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_SIZE) {
 		return;
 	}
-	input_buffer[input_index++] = *ev.text;
+	input_buffer[input_index] = *ev.text;
+	input_index++;
 }
 
 void Console::clear_input() {
-	for (int i = 0; i < input_index; i++) {
+	for (int i = 0; i < CON_INPUT_SIZE; i++) {
 		input_buffer[i] = NULL;
 	}
 	input_index = 0;

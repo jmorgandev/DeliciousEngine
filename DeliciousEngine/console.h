@@ -7,7 +7,7 @@
 #include "font_renderer.h"
 #include "box_renderer.h"
 
-#define CON_BUFFER_SIZE 64
+#define CON_BUFFER_SIZE 1024
 #define CON_INPUT_SIZE 128
 #define CON_HISTORY_SIZE 32
 
