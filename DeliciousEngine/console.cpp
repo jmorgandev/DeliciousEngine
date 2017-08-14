@@ -15,6 +15,7 @@ bool Console::init(Engine* engine_in) {
 	line_size = 0;
 	border_x = 1;
 	border_y = 0;
+	scroll_offset = 0;
 	back_index = CON_BUFFER_SIZE;
 
 	for (const auto& cvar : standard_cvars) {
@@ -56,17 +57,17 @@ void Console::write_str(cstring str) {
 }
 //
 // Main writing function, handles the buffer and any line deletion / wrapping / overflows
+// @TODO - Tidy this function up
 //
 void Console::write_str(cstring str, uint32 size) {
 	buffer_alloc(size);		//Make sure there is enough space for the string to overwrite the buffer contents
 	while (*str != NULL) {	//Keep looping until no more words left in string
 
-		int line_remaining = line_size;//line_size - (front_index % line_size);
 		int str_remaining = dcf::str_len(str);
 
-		if (str_remaining > line_remaining) {		//Check if wrapping needs to occur
-			cstring wrap_point = str + line_remaining;
-			if (str[line_remaining] == ' ') {
+		if (str_remaining > line_size) {		//Check if wrapping needs to occur
+			cstring wrap_point = str + line_size;
+			if (str[line_size] == ' ') {
 				while (str != wrap_point) {
 					write_char(*str++);
 				}
@@ -75,16 +76,15 @@ void Console::write_str(cstring str, uint32 size) {
 			else {
 				wrap_point = dcf::str_prev_instance(wrap_point, str, ' ');
 				if (wrap_point == NULL) {
-					//No space was found, don't bother wrapping.
-					while (str != wrap_point) {
-						write_char(*str++);
-					}
+					//No space was found, just let the text wrap itself.
+					for (int i = 0; i < line_size; i++) write_char(*str++);
 				}
 				else {
 					while (str != wrap_point) {
 						write_char(*str++);
 					}
-					write_char('\n');
+					//Fill rest of line with null characters
+					for (int i = 0; i < str_remaining - line_size; i++) write_char('\0');
 					*str++;
 				}
 			}
@@ -96,16 +96,17 @@ void Console::write_str(cstring str, uint32 size) {
 }
 void Console::write_char(uchar c) {
 	text_buffer[front_index] = c;
-	front_index = front_index++ % CON_BUFFER_SIZE;
+	front_index = ++front_index % CON_BUFFER_SIZE;
 }
 
 void Console::buffer_alloc(uint32 size) {
 	uint16 space = math::delta(back_index, front_index);
 	if (size >= space) {
 		back_index = (back_index + (size - space)) % CON_BUFFER_SIZE;
-		while (text_buffer[back_index] != '\n') {
-			back_index = back_index + 1 % CON_BUFFER_SIZE;
+		while (text_buffer[back_index] != '\0') {
+			back_index = (back_index + 1) % CON_BUFFER_SIZE;
 		}
+		back_index++;
 	}
 }
 
@@ -173,16 +174,15 @@ void Console::set_font(Font* fnt) {
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 
-	write_str("Lorem ipsum dolor sit amet," 
-		"consectetur adipiscing elit. Phasellus vitae tristique massa."
-		"Quisque vitae leo ante. Nunc aliquet odio et tortor fermentum,"
-		"eu posuere tortor commodo. Pellentesque gravida nibh eu leo fringilla"
-		"scelerisque. Mauris interdum eleifend consectetur. Nulla finibus placerat"
-		"posuere. Proin at justo leo. Etiam ullamcorper sem nisl, id sagittis justo euismod non."
-		"Nulla malesuada ex eget eros auctor scelerisque. Proin quis nisl at dolor pulvinar tincidunt."
-		"Nam suscipit ex eget lectus dictum consequat. Nulla faucibus, justo quis auctor hendrerit,"
-		"urna justo tempus velit, ut scelerisque ante odio vitae ante. Etiam volutpat arcu mattis, tempor arcu quis,"
-		"porttitor tortor. Nunc auctor condimentum enim pretium lobortis.");
+	cstring txts[] = {
+		"Jamie Morgan\n",
+		"Hello World!\n",
+		"Is anyone out there?\n",
+		"Seriously say something\n"
+	};
+	for (int i = 0; i < visible_lines - 3; i++) {
+		write_str(txts[i % 4]);
+	}
 }
 
 void Console::render() {
@@ -206,20 +206,23 @@ void Console::render() {
 	text_renderer.begin(scr->get_width(), scr->get_height());
 
 	//Draw Message Box
-	int render_index = (back_index % CON_BUFFER_SIZE);
-	for (int y = 0; y < visible_lines; y++) {
-		for (int x = 0; x < line_size; x++) {
-			char current = text_buffer[render_index];
-			if (text_buffer[render_index] == '\n') {
-				render_index++;
-				break;
-			}
-			if (text_buffer[render_index] == '\0') {
-				y = visible_lines;
-				break;
-			}
-			text_renderer.draw_char(text_buffer[render_index], (x + border_x) * fnt->cell_width, (y + border_y) * fnt->cell_height);
-			render_index++;
+	//@TODO - Make a robust rendering function
+	int x_cursor = 0, y_cursor = 0;
+	for (int i = (back_index % CON_BUFFER_SIZE) + scroll_offset; i != front_index; i = (i + 1) % CON_BUFFER_SIZE) {
+		if (y_cursor == visible_lines) break;
+		if (text_buffer[i] == '\n') {
+			x_cursor = 0;
+			y_cursor++;
+			continue;
+		}
+		if (text_buffer[i] == '\0') {
+			break;
+		}
+		text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+		x_cursor++;
+		if (x_cursor == line_size) {
+			x_cursor = 0;
+			y_cursor++;
 		}
 	}
 
@@ -268,6 +271,16 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 	case SDLK_DOWN:
 		//Cycle forward through previously entered commands
 		break;
+	case SDLK_PAGEUP:
+		//line_scroll++;
+		//if (line_scroll > (CON_BUFFER_SIZE / 2)) line_scroll = CON_BUFFER_SIZE / 2;
+		scroll_up();
+		break;
+	case SDLK_PAGEDOWN:
+		//line_scroll--;
+		//if (line_scroll < 0) line_scroll = 0;
+		scroll_down();
+		break;
 	default:
 		break;
 		//if (dcf::printable(input.sym) == false || input_index == CON_INPUT_SIZE) {
@@ -291,4 +304,35 @@ void Console::clear_input() {
 		input_buffer[i] = NULL;
 	}
 	input_index = 0;
+}
+
+void Console::scroll_up() {
+	if (scroll_offset == 0) return;
+	int new_offset = 0;
+	int count = 0;
+	for (int i = 1; i < line_size; i++) {
+		new_offset = scroll_offset - i;
+		if (text_buffer[new_offset] == '\n') {
+			count++;
+			if (count == 2) {
+				new_offset++;
+				break;
+			}
+		}
+	}
+	scroll_offset = new_offset;
+	if (scroll_offset < 0) scroll_offset = 0;
+}
+
+void Console::scroll_down() {
+	int new_offset = 0;
+	for (int i = 0; i < line_size; i++) {
+		new_offset = scroll_offset + i;
+		if (text_buffer[new_offset] == '\n') {
+			new_offset++;
+			break;
+		}
+	}
+	if (new_offset > CON_BUFFER_SIZE) return;
+	scroll_offset = new_offset;
 }

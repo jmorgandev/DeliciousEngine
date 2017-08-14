@@ -7,7 +7,8 @@
 #include "font_renderer.h"
 #include "box_renderer.h"
 
-#define CON_BUFFER_SIZE 1024
+#define CON_BUFFER_SIZE 2048
+//#define CON_BUFFER_SIZE 65535
 #define CON_INPUT_SIZE 128
 #define CON_HISTORY_SIZE 32
 
@@ -38,6 +39,8 @@ private:
 
 	uint16	history_buffer[CON_HISTORY_SIZE];
 
+	int scroll_offset;
+
 	uint8 line_size;
 	uint8 visible_lines;
 	uint8 border_x;
@@ -60,6 +63,9 @@ private:
 	void clear_input();
 
 	Engine* engine;
+
+	void scroll_up();
+	void scroll_down();
 };
 
 #endif
