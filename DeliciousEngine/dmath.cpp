@@ -27,6 +27,10 @@ namespace math {
 		return (value < 0) ? 0 - uint16(value) : uint16(value);
 	}
 
+	uint32 abs(int32 value)	{
+		return (value < 0) ? 0 - uint32(value) : uint32(value);
+	}
+
 	float wrapf(float v, float min, float max) {
 		if (v < min) return max;
 		if (v > max) return min;

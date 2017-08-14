@@ -17,6 +17,7 @@ bool Console::init(Engine* engine_in) {
 	border_y = 0;
 	scroll_offset = 0;
 	back_index = 0;
+	buffer_loop = false;
 
 	for (const auto& cvar : standard_cvars) {
 		register_variable(cvar);
@@ -60,7 +61,9 @@ void Console::write_str(cstring str) {
 // @TODO - Tidy this function up
 //
 void Console::write_str(cstring str, uint32 size) {
-	buffer_alloc(size);		//Make sure there is enough space for the string to overwrite the buffer contents
+	uint16 lines_required = 2 + (size / line_size);	//Always allocate at least 1 line.
+
+	buffer_alloc(lines_required);	//Make sure there is enough space for the string to overwrite the buffer contents
 	while (*str != NULL) {	//Keep looping until no more words left in string
 
 		if (size > line_size) {
@@ -79,7 +82,6 @@ void Console::write_str(cstring str, uint32 size) {
 				write_char('\0');
 			}
 		}
-		
 	}
 }
 void Console::write_char(uchar c) {
@@ -87,7 +89,8 @@ void Console::write_char(uchar c) {
 	write_index = ++write_index % buffer_extent;
 }
 
-void Console::buffer_alloc(uint32 size) {
+void Console::buffer_alloc(uint32 lines) {
+	uint32 required_size = lines * line_size;
 	//uint16 space = math::delta(back_index, front_index);
 	//if (size >= space) {
 	//	back_index = (back_index + (size - space)) % CON_BUFFER_SIZE;
@@ -96,10 +99,21 @@ void Console::buffer_alloc(uint32 size) {
 	//	}
 	//	back_index++;
 	//}
-	uint16 space = math::delta(back_index, write_index);
-	while (size > space) {
-		back_index = (back_index + line_size) % buffer_extent;
-		space = math::delta(back_index, write_index);
+	uint16 available_space = 0;
+	if (buffer_loop == false) {
+		available_space = buffer_extent - write_index;
+		if (required_size > available_space) {
+			buffer_loop = true;
+			back_index += required_size - available_space;
+		}
+	}
+	else {
+		for (int i = write_index; i != back_index; i = (i + line_size) % buffer_extent) {
+			available_space += line_size;
+		}
+		if (required_size > available_space) {
+			back_index = (back_index + (required_size - available_space)) % buffer_extent;
+		}
 	}
 }
 
@@ -167,17 +181,17 @@ void Console::set_font(Font* fnt) {
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
-	back_index = buffer_extent;
+	back_index = 0;
 
-	cstring txts[] = {
-		"Jamie Morgan\n",
-		"Hello World!\n",
-		"Is anyone out there?\n",
-		"Seriously say something\n"
-	};
-	for (int i = 0; i < visible_lines - 3; i++) {
-		write_str(txts[i % 4]);
-	}
+	//cstring txts[] = {
+	//	"Jamie Morgan\n",
+	//	"Hello World!\n",
+	//	"Is anyone out there?\n",
+	//	"Seriously say something\n"
+	//};
+	//for (int i = 0; i < visible_lines - 3; i++) {
+	//	write_str(txts[i % 4]);
+	//}
 }
 
 void Console::render() {
@@ -202,8 +216,8 @@ void Console::render() {
 
 	//Draw message box
 	int x_cursor = 0, y_cursor = 0;
-	int render_start = (back_index % buffer_extent) + scroll_offset;
-	for (int i = render_start; i < write_index; i++) {
+	int render_start = (back_index) % buffer_extent;
+	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
 		if (y_cursor == visible_lines) break;
 		if (text_buffer[i] == '\0') {
 			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
@@ -254,12 +268,15 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 			break;
 		}
 		//Execute the input found in the input buffer
-		input_buffer[input_index] = '\n';
 		write_str(input_buffer);
 		clear_input();
+		//scroll_bottom();
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
+		for (int i = 0; i < CON_INPUT_SIZE - 60; i++) {
+			input_buffer[i] = ((i + write_index) % 94) + '!';
+		}
 		break;
 	case SDLK_DOWN:
 		//Cycle forward through previously entered commands
@@ -300,16 +317,35 @@ void Console::clear_input() {
 }
 
 void Console::scroll_up() {
-	if (scroll_offset == 0) {
+	if (scroll_offset == (back_index % buffer_extent)) {
 		return;
 	}
 	scroll_offset -= line_size;
 }
 
 void Console::scroll_down() {
-	int limit = write_index - (line_size * visible_lines);
-	if (scroll_offset >= write_index) {
+	int limit = (write_index - (line_size * visible_lines)) % buffer_extent;
+	if (limit % line_size) {
+		int a = limit % line_size;
+		int b = 0;
+	}
+	if (limit < 0) limit = 0;
+	if (scroll_offset >= limit) {
 		return;
 	}
 	scroll_offset += line_size;
+}
+
+void Console::scroll_top() {
+	while (scroll_offset != 0) {
+		scroll_up();
+	}
+}
+
+void Console::scroll_bottom() {
+	int limit = write_index - (line_size * visible_lines);
+	if (limit < 0) limit = 0;
+	while (scroll_offset != limit) {
+		scroll_down();
+	}
 }

@@ -7,7 +7,7 @@
 #include "font_renderer.h"
 #include "box_renderer.h"
 
-#define CON_BUFFER_SIZE 2048
+#define CON_BUFFER_SIZE 1024
 //#define CON_BUFFER_SIZE 65535
 #define CON_INPUT_SIZE 128
 #define CON_HISTORY_SIZE 32
@@ -31,8 +31,9 @@ public:
 	void render();
 private:
 	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
-	uint32	write_index;
-	uint32	back_index;
+	uint16	write_index;
+	uint16	back_index;
+	bool    buffer_loop;
 
 	char	input_buffer[CON_INPUT_SIZE];
 	uint8	input_index;
@@ -57,7 +58,7 @@ private:
 	void write_str(cstring str);
 	void write_str(cstring str, uint32 size);
 	void write_char(uchar c);
-	void buffer_alloc(uint32 size);
+	void buffer_alloc(uint32 lines);
 
 	console_var* fetch_var(cstring name);
 
@@ -69,6 +70,9 @@ private:
 
 	void scroll_up();
 	void scroll_down();
+
+	void scroll_top();
+	void scroll_bottom();
 };
 
 #endif
