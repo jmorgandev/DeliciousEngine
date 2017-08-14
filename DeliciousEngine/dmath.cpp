@@ -14,6 +14,11 @@ namespace math {
 		else return b - a;
 	}
 
+	uint32 delta(uint32 a, uint32 b) {
+		if (a > b) return a - b;
+		else return b - a;
+	}
+
 	uint8 abs(int8 value) {
 		return (value < 0) ? 0 - uint8(value) : uint8(value);
 	}
@@ -26,5 +31,9 @@ namespace math {
 		if (v < min) return max;
 		if (v > max) return min;
 		return v;
+	}
+	int mem_diff(cstring first, cstring second)	{
+		if (first > second) return first - second;
+		else return second - first;
 	}
 }

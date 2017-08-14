@@ -31,18 +31,21 @@ public:
 	void render();
 private:
 	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
-	uint16	front_index;
-	uint16	back_index;
+	uint32	write_index;
+	uint32	back_index;
 
 	char	input_buffer[CON_INPUT_SIZE];
 	uint8	input_index;
 
 	uint16	history_buffer[CON_HISTORY_SIZE];
 
-	int scroll_offset;
+	uint16 scroll_offset;
 
-	uint8 line_size;
-	uint8 visible_lines;
+	int line_size;
+	int visible_lines;
+	int total_lines;
+	int buffer_extent;
+
 	uint8 border_x;
 	uint8 border_y;
 
