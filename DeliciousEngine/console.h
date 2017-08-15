@@ -29,6 +29,14 @@ public:
 	BoxRenderer* get_box_renderer();
 
 	void render();
+
+	Console& operator<<(const bool& rhs);
+	Console& operator<<(const char& rhs);
+	Console& operator<<(const int& rhs);
+	Console& operator<<(const float& rhs);
+	Console& operator<<(const double& rhs);
+	Console& operator<<(cstring rhs);
+	Console& operator<<(const std::string& rhs);
 private:
 	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
 	uint16	write_index;
@@ -68,8 +76,8 @@ private:
 
 	Engine* engine;
 
-	void scroll_up();
-	void scroll_down();
+	bool scroll_up();
+	bool scroll_down();
 
 	void scroll_top();
 	void scroll_bottom();

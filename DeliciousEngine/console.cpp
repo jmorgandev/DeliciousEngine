@@ -61,13 +61,13 @@ void Console::write_str(cstring str) {
 // @TODO - Tidy this function up
 //
 void Console::write_str(cstring str, uint32 size) {
-	uint16 lines_required = 2 + (size / line_size);	//Always allocate at least 1 line.
+	uint16 lines_required = 2 + (size / line_size);	//Always allocate at least 2 lines.
 
 	buffer_alloc(lines_required);	//Make sure there is enough space for the string to overwrite the buffer contents
 	while (*str != NULL) {	//Keep looping until no more words left in string
 
 		if (size > line_size) {
-
+			// @TODO - Properly use line wrapping for when the string is larger than the line_size
 		}
 		else {
 			//Write the string, and then fill the rest of the line space with null characters
@@ -78,6 +78,7 @@ void Console::write_str(cstring str, uint32 size) {
 				}
 				else write_char(*str++);
 			}
+			// @TODO - Only fill rest of line with null characters if you encounter a \n character
 			while (write_index % line_size) {
 				write_char('\0');
 			}
@@ -222,7 +223,6 @@ void Console::render() {
 			break;
 		}
 		if (text_buffer[i] == '\0') {
-			//text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
 			x_cursor++;
 			if (x_cursor == line_size) {
 				x_cursor = 0;
@@ -240,8 +240,9 @@ void Console::render() {
 		}
 	}
 	
-
 	//Draw Input Box
+
+	// @TODO - Scroll the input box horizontally when the user input exceeds the line_size
 	for (int i = 0; i < CON_INPUT_SIZE; i++) {
 		if (input_buffer[i] == '\0') {
 			break;
@@ -250,6 +251,20 @@ void Console::render() {
 	}
 
 	text_renderer.end();
+}
+
+Console& Console::operator<<(const bool& rhs) {
+	if (rhs == true) {
+		write_str("true");
+	}
+	else {
+		write_str("false");
+	}
+	return *this;
+}
+
+Console& Console::operator<<(const char& rhs) {
+	
 }
 
 BoxRenderer* Console::get_box_renderer() {
@@ -290,13 +305,9 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Cycle forward through previously entered commands
 		break;
 	case SDLK_PAGEUP:
-		//line_scroll++;
-		//if (line_scroll > (CON_BUFFER_SIZE / 2)) line_scroll = CON_BUFFER_SIZE / 2;
 		scroll_up();
 		break;
 	case SDLK_PAGEDOWN:
-		//line_scroll--;
-		//if (line_scroll < 0) line_scroll = 0;
 		scroll_down();
 		break;
 	default:
@@ -324,36 +335,33 @@ void Console::clear_input() {
 	input_index = 0;
 }
 
-void Console::scroll_up() {
+bool Console::scroll_up() {
 	if (scroll_offset == 0) {
-		return;
+		return false;
 	}
 	scroll_offset -= line_size;
+	return true;
 }
 
-void Console::scroll_down() {
+bool Console::scroll_down() {
 	if (buffer_loop == false) {
 		if (scroll_offset >= write_index - (line_size * visible_lines)) {
-			return;
+			return false;
 		}
 	}
 	else {
 		if (scroll_offset == (buffer_extent - (line_size * visible_lines)) - line_size) {
-			return;
+			return false;
 		}
 	}
 	scroll_offset += line_size;
+	return true;
 }
 
 void Console::scroll_top() {
-	while (scroll_offset != 0) {
-		scroll_offset -= line_size;
-	}
+	while (scroll_up());
 }
 
 void Console::scroll_bottom() {
-	int limit = math::min((write_index - (line_size * visible_lines)) % buffer_extent, 0);
-	while (scroll_offset != limit) {
-		scroll_offset += line_size;
-	}
+	while (scroll_down());
 }
