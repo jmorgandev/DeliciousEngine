@@ -45,6 +45,7 @@ private:
 
 	char	input_buffer[CON_INPUT_SIZE];
 	uint8	input_index;
+	uint8	input_scroll;
 
 	uint16	history_buffer[CON_HISTORY_SIZE];
 
@@ -63,10 +64,11 @@ private:
 
 	std::vector<console_var> variables;
 
-	void write_str(cstring str);
-	void write_str(cstring str, uint32 size);
+	void write_str(cstring str, bool new_line = false);
+	void write_str(cstring str, uint32 size, bool new_line = false);
 	void write_char(uchar c);
-	void buffer_alloc(uint32 lines);
+
+	void buffer_alloc(uint32 size);
 
 	console_var* fetch_var(cstring name);
 

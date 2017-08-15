@@ -14,6 +14,8 @@ namespace dcf {
 	cstring str_prev_instance(cstring str, cstring min, char c);
 	cstring str_next_word(cstring str);
 
+	uint32 str_count(cstring str, char c);
+
 	bool is_glyph(const char c);
 	bool str_cmp(cstring lhs, cstring rhs);
 	bool str_cmp_exact(cstring lhs, cstring rhs);

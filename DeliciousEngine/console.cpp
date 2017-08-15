@@ -17,6 +17,7 @@ bool Console::init(Engine* engine_in) {
 	border_y = 0;
 	scroll_offset = 0;
 	back_index = 0;
+	input_scroll = 0;
 	buffer_loop = false;
 
 	for (const auto& cvar : standard_cvars) {
@@ -53,35 +54,40 @@ bool Console::init(Engine* engine_in) {
 	return true;
 }
 
-void Console::write_str(cstring str) { 
-	write_str(str, dcf::str_len(str));
+void Console::write_str(cstring str, bool new_line) { 
+	write_str(str, dcf::str_len(str), new_line);
 }
 //
 // Main writing function, handles the buffer and any line deletion / wrapping / overflows
 // @TODO - Tidy this function up
 //
-void Console::write_str(cstring str, uint32 size) {
-	uint16 lines_required = 2 + (size / line_size);	//Always allocate at least 2 lines.
-
-	buffer_alloc(lines_required);	//Make sure there is enough space for the string to overwrite the buffer contents
+void Console::write_str(cstring str, uint32 size, bool new_line) {
 	while (*str != NULL) {	//Keep looping until no more words left in string
 
-		if (size > line_size) {
-			// @TODO - Properly use line wrapping for when the string is larger than the line_size
+		int str_remaining = dcf::str_len(str);
+
+		if (str_remaining > line_size - (write_index % line_size)) {
+			buffer_alloc(line_size);
 		}
 		else {
-			//Write the string, and then fill the rest of the line space with null characters
-			for (int i = 0; i < size; i++) {
+			while (*str != NULL) {
 				if (*str == '\n') {
 					str++;
-					break;
+					buffer_alloc(line_size);
+					while (write_index % line_size != 0) {
+						write_char('\0');
+					}
 				}
-				else write_char(*str++);
+				else {
+					write_char(*str++);
+				}
 			}
-			// @TODO - Only fill rest of line with null characters if you encounter a \n character
-			while (write_index % line_size) {
-				write_char('\0');
-			}
+		}
+	}
+	if (new_line && write_index % line_size != 0) {
+		buffer_alloc(line_size);
+		while (write_index % line_size != 0) {
+			write_char('\0');
 		}
 	}
 }
@@ -90,31 +96,18 @@ void Console::write_char(uchar c) {
 	write_index = ++write_index % buffer_extent;
 }
 
-void Console::buffer_alloc(uint32 lines) {
-	uint32 required_size = lines * line_size;
-	//uint16 space = math::delta(back_index, front_index);
-	//if (size >= space) {
-	//	back_index = (back_index + (size - space)) % CON_BUFFER_SIZE;
-	//	while (text_buffer[back_index] != '\n') {
-	//		back_index = (back_index + 1) % CON_BUFFER_SIZE;
-	//	}
-	//	back_index++;
-	//}
-	uint16 available_space = 0;
+void Console::buffer_alloc(uint32 size) {
+	int available_space = 0;
 	if (buffer_loop == false) {
 		available_space = buffer_extent - write_index;
-		if (required_size > available_space) {
+		while (size > available_space) {
 			buffer_loop = true;
-			back_index += required_size - available_space;
+			back_index += line_size;
+			available_space += line_size;
 		}
 	}
 	else {
-		for (int i = write_index; i != back_index; i = (i + line_size) % buffer_extent) {
-			available_space += line_size;
-		}
-		if (required_size > available_space) {
-			back_index = (back_index + (required_size - available_space)) % buffer_extent;
-		}
+		
 	}
 }
 
@@ -241,7 +234,6 @@ void Console::render() {
 	}
 	
 	//Draw Input Box
-
 	// @TODO - Scroll the input box horizontally when the user input exceeds the line_size
 	for (int i = 0; i < CON_INPUT_SIZE; i++) {
 		if (input_buffer[i] == '\0') {
@@ -264,7 +256,7 @@ Console& Console::operator<<(const bool& rhs) {
 }
 
 Console& Console::operator<<(const char& rhs) {
-	
+	return *this;
 }
 
 BoxRenderer* Console::get_box_renderer() {
@@ -272,6 +264,7 @@ BoxRenderer* Console::get_box_renderer() {
 }
 
 void Console::key_event(SDL_KeyboardEvent ev) {
+	static int num = 0;
 	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
 		if (input_index == 0) {
@@ -291,13 +284,17 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 			break;
 		}
 		//Execute the input found in the input buffer
-		write_str(input_buffer);
+		write_str(input_buffer, true);
 		clear_input();
+		num++;
 		//scroll_bottom();
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
-		for (int i = 0; i < CON_INPUT_SIZE - 60; i++) {
+		input_buffer[0] = (num % 10) + '0';
+		input_buffer[1] = '.';
+		input_buffer[2] = ' ';
+		for (int i = 3; i < CON_INPUT_SIZE - 60; i++) {
 			input_buffer[i] = ((i + write_index) % 94) + '!';
 		}
 		break;
@@ -350,7 +347,7 @@ bool Console::scroll_down() {
 		}
 	}
 	else {
-		if (scroll_offset == (buffer_extent - (line_size * visible_lines)) - line_size) {
+		if (scroll_offset == (buffer_extent - line_size) - (line_size * visible_lines)) {
 			return false;
 		}
 	}

@@ -49,6 +49,14 @@ namespace dcf {
 		return NULL;
 	}
 
+	uint32 str_count(cstring str, char c) {
+		int result = 0;
+		while (*str != NULL) {
+			if (*str++ == c) result++;
+		}
+		return result;
+	}
+
 	bool is_glyph(const char c) {
 		return (c > 32 && c < 127);
 	}
