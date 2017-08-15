@@ -12,6 +12,8 @@ namespace math {
 	uint16 abs(int16 value);
 	uint32 abs(int32 value);
 
+	int32 min(int32 value, int32 min);
+
 	float wrapf(float v, float min, float max);
 
 	int mem_diff(cstring first, cstring second);

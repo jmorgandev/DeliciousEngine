@@ -216,11 +216,19 @@ void Console::render() {
 
 	//Draw message box
 	int x_cursor = 0, y_cursor = 0;
-	int render_start = (back_index) % buffer_extent;
+	int render_start = (back_index + scroll_offset) % buffer_extent;
 	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
-		if (y_cursor == visible_lines) break;
+		if (y_cursor == visible_lines) {
+			break;
+		}
 		if (text_buffer[i] == '\0') {
-			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+			//text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+			x_cursor++;
+			if (x_cursor == line_size) {
+				x_cursor = 0;
+				y_cursor++;
+			}
+			continue;
 		}
 		else {
 			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
@@ -317,35 +325,35 @@ void Console::clear_input() {
 }
 
 void Console::scroll_up() {
-	if (scroll_offset == (back_index % buffer_extent)) {
+	if (scroll_offset == 0) {
 		return;
 	}
 	scroll_offset -= line_size;
 }
 
 void Console::scroll_down() {
-	int limit = (write_index - (line_size * visible_lines)) % buffer_extent;
-	if (limit % line_size) {
-		int a = limit % line_size;
-		int b = 0;
+	if (buffer_loop == false) {
+		if (scroll_offset >= write_index - (line_size * visible_lines)) {
+			return;
+		}
 	}
-	if (limit < 0) limit = 0;
-	if (scroll_offset >= limit) {
-		return;
+	else {
+		if (scroll_offset == (buffer_extent - (line_size * visible_lines)) - line_size) {
+			return;
+		}
 	}
 	scroll_offset += line_size;
 }
 
 void Console::scroll_top() {
 	while (scroll_offset != 0) {
-		scroll_up();
+		scroll_offset -= line_size;
 	}
 }
 
 void Console::scroll_bottom() {
-	int limit = write_index - (line_size * visible_lines);
-	if (limit < 0) limit = 0;
+	int limit = math::min((write_index - (line_size * visible_lines)) % buffer_extent, 0);
 	while (scroll_offset != limit) {
-		scroll_down();
+		scroll_offset += line_size;
 	}
 }
