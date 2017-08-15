@@ -100,14 +100,19 @@ void Console::buffer_alloc(uint32 size) {
 	int available_space = 0;
 	if (buffer_loop == false) {
 		available_space = buffer_extent - write_index;
-		while (size > available_space) {
+		if (size > available_space)	{
 			buffer_loop = true;
-			back_index += line_size;
-			available_space += line_size;
 		}
 	}
 	else {
-		
+		int next_line = (write_index + (line_size - (write_index % line_size))) % buffer_extent;
+		for (int i = next_line; i != back_index; i += line_size) {
+			available_space += line_size;
+		}
+	}
+	while (size > available_space) {
+		back_index = (back_index + line_size) % buffer_extent;
+		available_space += line_size;
 	}
 }
 
@@ -175,17 +180,6 @@ void Console::set_font(Font* fnt) {
 	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
-	back_index = 0;
-
-	//cstring txts[] = {
-	//	"Jamie Morgan\n",
-	//	"Hello World!\n",
-	//	"Is anyone out there?\n",
-	//	"Seriously say something\n"
-	//};
-	//for (int i = 0; i < visible_lines - 3; i++) {
-	//	write_str(txts[i % 4]);
-	//}
 }
 
 void Console::render() {
@@ -216,12 +210,7 @@ void Console::render() {
 			break;
 		}
 		if (text_buffer[i] == '\0') {
-			x_cursor++;
-			if (x_cursor == line_size) {
-				x_cursor = 0;
-				y_cursor++;
-			}
-			continue;
+			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
 		}
 		else {
 			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
@@ -256,6 +245,35 @@ Console& Console::operator<<(const bool& rhs) {
 }
 
 Console& Console::operator<<(const char& rhs) {
+	buffer_alloc(1);
+	write_char(rhs);
+	return *this;
+}
+
+Console& Console::operator<<(const int& rhs) {
+	std::string str = std::to_string(rhs);
+	write_str(str.c_str());
+	return *this;
+}
+
+Console& Console::operator<<(const float& rhs) {
+	std::string str = std::to_string(rhs);
+	write_str(str.c_str());
+	return *this;
+}
+
+Console& Console::operator<<(const double& rhs) {
+	std::string str = std::to_string(rhs);
+	write_str(str.c_str());
+	return *this;
+}
+
+Console & Console::operator<<(cstring rhs) {
+	write_str(rhs);
+	return *this;
+}
+Console & Console::operator<<(const std::string & rhs) {
+	write_str(rhs.c_str());
 	return *this;
 }
 
