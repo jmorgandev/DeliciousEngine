@@ -27,18 +27,10 @@ void Engine::run() {
 	while (running) {
 		glClearBufferfv(GL_COLOR, 0, bg_color);
 
-		//glUseProgram(font->shader->id);
-		//glBindTexture(GL_TEXTURE_2D, font->texture->id);
-		//glBindVertexArray(font->gui_vao);
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);		
-
 		flush_events();
 		console.render();
-
 		screen.update();
 	}
-
-	
 }
 
 void Engine::flush_events() {

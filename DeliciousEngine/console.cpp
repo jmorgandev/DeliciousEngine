@@ -210,7 +210,7 @@ void Console::render() {
 			break;
 		}
 		if (text_buffer[i] == '\0') {
-			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+			//text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
 		}
 		else {
 			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
@@ -309,15 +309,21 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
-		input_buffer[0] = (num % 10) + '0';
-		input_buffer[1] = '.';
-		input_buffer[2] = ' ';
-		for (int i = 3; i < CON_INPUT_SIZE - 60; i++) {
-			input_buffer[i] = ((i + write_index) % 94) + '!';
-		}
 		break;
 	case SDLK_DOWN:
 		//Cycle forward through previously entered commands
+		break;
+	case SDLK_LEFT:
+		//Shift the input cursor to the left
+		if (input_index != 0) {
+			input_index--;
+		}
+		break;
+	case SDLK_RIGHT:
+		//Shift the input cursor to the right
+		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_SIZE-1) {
+			input_index++;
+		}
 		break;
 	case SDLK_PAGEUP:
 		scroll_up();
@@ -325,13 +331,11 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 	case SDLK_PAGEDOWN:
 		scroll_down();
 		break;
+	case SDLK_INSERT:
+		//Toggle insertion mode
+		break;
 	default:
 		break;
-		//if (dcf::printable(input.sym) == false || input_index == CON_INPUT_SIZE) {
-		//	break;
-		//}
-		//input_buffer[input_index++] = 
-		//break;
 	}
 }
 
