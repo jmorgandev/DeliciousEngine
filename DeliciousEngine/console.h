@@ -46,6 +46,7 @@ private:
 	char	input_buffer[CON_INPUT_SIZE];
 	uint8	input_index;
 	uint8	input_scroll;
+	bool	input_insert;
 
 	uint16	history_buffer[CON_HISTORY_SIZE];
 

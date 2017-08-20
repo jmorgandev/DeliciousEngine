@@ -288,8 +288,17 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		if (input_index == 0) {
 			break;
 		}
-		input_index--;
-		input_buffer[input_index] = NULL;
+		if (input_buffer[input_index] == NULL) {
+			input_index--;
+			input_buffer[input_index] = NULL;
+		}
+		else {
+			auto input_size = dcf::str_len(input_buffer);
+			input_index--;
+			for (int i = input_index; i < input_size; i++) {
+				input_buffer[i] = input_buffer[i + 1];
+			}
+		}
 		break;
 	case SDLK_TAB:
 		//Partial command or variable completion
@@ -333,6 +342,7 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		break;
 	case SDLK_INSERT:
 		//Toggle insertion mode
+		input_insert = !input_insert;
 		break;
 	default:
 		break;
@@ -340,11 +350,29 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 }
 
 void Console::text_event(SDL_TextInputEvent ev) {
+	//@TODO - Shift the contents of the input buffer to the right if not in
+	//		  insertion mode.
 	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_SIZE) {
 		return;
 	}
-	input_buffer[input_index] = *ev.text;
-	input_index++;
+	if (input_insert || input_buffer[input_index] == NULL) {
+		//Overwrite the characters over the input cursor
+		input_buffer[input_index] = *ev.text;
+		input_index++;
+	}
+	else {
+
+		//Shift the input characters to the right if there is space
+		auto input_size = dcf::str_len(input_buffer);
+		if (input_size != CON_INPUT_SIZE) {
+			//Loop over the input buffer and shift right
+			for (int i = input_size; i != input_index; i--) {
+				input_buffer[i] = input_buffer[i - 1];
+			}
+			input_buffer[input_index] = *ev.text;
+			input_index++;
+		}
+	}
 }
 
 void Console::clear_input() {
