@@ -21,6 +21,10 @@ private:
 	Shader* shader;
 	float pixel_width;
 	float pixel_height;
+
+	int uniform_translation;
+	int uniform_scale;
+	int uniform_color;
 };
 
 #endif

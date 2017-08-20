@@ -1,5 +1,6 @@
 #include "box_renderer.h"
 #include "shader.h"
+#include "mesh.h"
 
 BoxRenderer::BoxRenderer() {
 	box_vao = 0;
@@ -11,6 +12,10 @@ void BoxRenderer::set_vao(GLuint vao) {
 
 void BoxRenderer::set_shader(Shader* s) {
 	shader = s;
+
+	uniform_translation = glGetUniformLocation(shader->id, "translation");
+	uniform_scale = glGetUniformLocation(shader->id, "scale");
+	uniform_color = glGetUniformLocation(shader->id, "color");
 }
 
 void BoxRenderer::begin(int screen_w, int screen_h) {
@@ -36,8 +41,8 @@ void BoxRenderer::draw(int from_x, int from_y, int to_x, int to_y, glm::vec4 col
 	float scale_x = ((to_x - from_x) * pixel_width) * 2.0f;
 	float scale_y = ((to_y - from_y) * pixel_height) * 2.0f;
 
-	glUniform2f(2, render_x, -render_y);
-	glUniform2f(3, scale_x, scale_y);
-	glUniform4f(4, color.r, color.g, color.b, color.a);
+	glUniform2f(uniform_translation, render_x, -render_y);
+	glUniform2f(uniform_scale, scale_x, scale_y);
+	glUniform4f(uniform_color, color.r, color.g, color.b, color.a);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

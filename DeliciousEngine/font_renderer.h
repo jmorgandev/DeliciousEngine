@@ -24,6 +24,11 @@ private:
 	float texcell_height;
 	float pixel_width;
 	float pixel_height;
+
+	int uniform_translation;
+	int uniform_scale;
+	int uniform_tex_offset;
+	int uniform_tex_scale;
 };
 
 #endif

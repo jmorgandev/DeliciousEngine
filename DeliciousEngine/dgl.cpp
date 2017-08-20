@@ -1,6 +1,7 @@
 #include "dgl.h"
 #include "dtypes.h"
 #include "dcf.h"
+#include "build_info.h"
 #include <algorithm>
 
 namespace dgl {
@@ -84,11 +85,7 @@ namespace dgl {
 		return num_buffers;
 	}
 	*/
+
 	
-	GLuint create_vao() {
-		GLuint new_vao;
-		glCreateVertexArrays(1, &new_vao);
-		return new_vao;
-	}
 
 }

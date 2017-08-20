@@ -23,51 +23,69 @@ float gui_texcoords[] = {
 	1.0f, 1.0f
 };
 
-MeshData std_triangle
-{
-	{
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f),
-		glm::vec3(0.0f, 0.5f, 0.0f)
-	},
-	{
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f)
-	},
-	{
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(0.5f, 1.0f),
-	}
-};
 
-MeshData std_quad
-{
-	{
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f),
-		glm::vec3(-0.5f, -0.5f, 0.0f),
-		glm::vec3(0.5f, 0.5f, 0.0f),
-		glm::vec3(-0.5f, 0.5f, 0.0f)
-	},
-	{
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f)
-	},
-	{
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(1.0f, 1.0f),
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 1.0f),
-		glm::vec2(0.0f, 1.0f)
-	}
+const float std_triangle[] = {
+	-0.5f, -0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	 0.0f,  0.5f, 0.0f,
+
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+
+	 0.0f, 0.0f,
+	 1.0f, 0.0f,
+	 0.5f, 1.0f
 };
+const float std_triangle_2d[] = {
+	-0.5f, -0.5f,
+	 0.5f, -0.5f,
+	 0.0f,  0.5f,
+	 	    
+	 0.0f, 0.0f,
+	 1.0f, 0.0f,
+	 0.5f, 1.0f
+};
+const int std_triangle_vcount = 3;
+
+
+const float std_quad[] = {
+	-0.5f, -0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	 0.5f,  0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f,
+	 0.5f,  0.5f, 0.0f,
+	-0.5f,  0.5f, 0.0f,
+
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+	 0.0f,  0.0f, 1.0f,
+
+	 0.0f, 0.0f,
+	 1.0f, 0.0f,
+	 1.0f, 1.0f,
+	 0.0f, 0.0f,
+	 1.0f, 1.0f,
+	 0.0f, 1.0f
+};
+const float std_quad_2d[] = {
+	-0.5f, -0.5f,
+	 0.5f, -0.5f,
+	 0.5f,  0.5f,
+	-0.5f, -0.5f,
+	 0.5f,  0.5f,	
+	-0.5f,  0.5f,
+
+	0.0f, 0.0f,
+	1.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 0.0f,
+	1.0f, 1.0f,
+	0.0f, 1.0f
+};
+const int std_quad_vcount = 6;
 
 #endif

@@ -19,8 +19,8 @@ bool Resources::init(Engine* engine_in) {
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 	
 
-	make_mesh("triangle", std_triangle);
-	make_mesh("quad", std_quad);
+	//make_mesh("triangle", std_triangle);
+	//make_mesh("quad", std_quad);
 	//make_mesh("quad", primitive_quad);
 
 	load_gui_resources();
@@ -70,15 +70,17 @@ Texture* Resources::load_texture(std::string filepath) {
 		return nullptr;
 	}
 	//Otherwise we have the surface
-	GLuint texture_object;
-	glCreateTextures(GL_TEXTURE_2D, 1, &texture_object);
 
-	//glBindTexture(GL_TEXTURE_2D, texture_object);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_surface->w, temp_surface->h, 0, GL_RGB, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
-	//glGenerateMipmap(GL_TEXTURE_2D);
-	glTextureStorage2D(texture_object, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
-	glTextureSubImage2D(texture_object, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
-	glTextureParameteri(texture_object, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//@TODO - Switch to Non-DSA code
+	GLuint texture_object;
+	glGenTextures(1, &texture_object);
+	glBindTexture(GL_TEXTURE_2D, texture_object);
+
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	//@TODO - Have some way of specifying the texture parameters outside this function
 
 	new_texture.id = texture_object;
 	new_texture.width = temp_surface->w;
@@ -112,8 +114,8 @@ Shader* Resources::load_shader(std::string filepath) {
 	if (vertex_source.empty() || fragment_source.empty()) {
 		return nullptr;
 	}
-	std::string version_string = DEFAULT_GLSL_VERSION;
 	size_t version_index = shader_source.find("#version");
+	std::string version_string = "";
 	if (version_index != std::string::npos) {
 		size_t size = shader_source.find('\n', version_index) - version_index;
 		version_string = shader_source.substr(version_index, size);
@@ -141,6 +143,7 @@ Shader* Resources::load_shader(std::string filepath) {
 	}
 	glAttachShader(shader_program, vertex_shader);
 	glAttachShader(shader_program, fragment_shader);
+
 	glLinkProgram(shader_program);
 
 	glDeleteShader(vertex_shader);
@@ -174,26 +177,30 @@ Mesh * Resources::fetch_mesh(std::string filename) {
 Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	Mesh new_mesh = {};
 
-	glCreateVertexArrays(1, &new_mesh.vao);
-	glCreateBuffers(NUM_BUFFERS, new_mesh.vbo);
+	//Create VAO
+	glGenVertexArrays(1, &new_mesh.vao);
+	glBindVertexArray(new_mesh.vao);
+
+	//Create VBOs
+	glGenBuffers(NUM_BUFFERS, new_mesh.vbo);
 
 	// VERTICES
-	glNamedBufferStorage(new_mesh.vbo[VERTICES], data.vertices.size() * sizeof(glm::vec3), &data.vertices[0], NULL);
-	glVertexArrayVertexBuffer(new_mesh.vao, 0, new_mesh.vbo[VERTICES], 0, sizeof(glm::vec3));
-	glVertexArrayAttribFormat(new_mesh.vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-	glEnableVertexArrayAttrib(new_mesh.vao, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[VERTICES]);
+	glBufferData(GL_ARRAY_BUFFER, data.vertices.size() * sizeof(glm::vec3), &data.vertices[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(0);
 
 	// NORMALS
-	glNamedBufferStorage(new_mesh.vbo[NORMALS], data.normals.size() * sizeof(glm::vec3), &data.normals[0], NULL);
-	glVertexArrayVertexBuffer(new_mesh.vao, 1, new_mesh.vbo[NORMALS], 0, sizeof(glm::vec3));
-	glVertexArrayAttribFormat(new_mesh.vao, 1, 3, GL_FLOAT, GL_FALSE, 0);
-	glEnableVertexArrayAttrib(new_mesh.vao, 1);
+	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[NORMALS]);
+	glBufferData(GL_ARRAY_BUFFER, data.normals.size() * sizeof(glm::vec3), &data.normals[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
 	
 	// TEXCOORDS
-	glNamedBufferStorage(new_mesh.vbo[TEXCOORDS], data.texcoords.size() * sizeof(glm::vec2), &data.texcoords[0], NULL);
-	glVertexArrayVertexBuffer(new_mesh.vao, 2, new_mesh.vbo[TEXCOORDS], 0, sizeof(glm::vec2));
-	glVertexArrayAttribFormat(new_mesh.vao, 2, 2, GL_FLOAT, GL_FALSE, 0);
-	glEnableVertexArrayAttrib(new_mesh.vao, 2);
+	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[TEXCOORDS]);
+	glBufferData(GL_ARRAY_BUFFER, data.texcoords.size() * sizeof(glm::vec2), &data.texcoords[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(2);
 
 	new_mesh.vertex_count = data.vertices.size();
 	new_mesh.triangle_count = new_mesh.vertex_count / 3;
@@ -231,18 +238,20 @@ Font* Resources::fetch_font(std::string name) {
 }
 
 void Resources::load_gui_resources() {
-	glCreateVertexArrays(1, &gui_vertex_array);
-	glCreateBuffers(2, gui_vertex_buffers);
+	glGenVertexArrays(1, &gui_vertex_array);
+	glBindVertexArray(gui_vertex_array);
 
-	glNamedBufferStorage(gui_vertex_buffers[0], sizeof(gui_vertices), gui_vertices, NULL);
-	glVertexArrayVertexBuffer(gui_vertex_array, 0, gui_vertex_buffers[0], 0, sizeof(float) * 2);
-	glVertexArrayAttribFormat(gui_vertex_array, 0, 2, GL_FLOAT, GL_FALSE, 0);
-	glEnableVertexArrayAttrib(gui_vertex_array, 0);
+	glGenBuffers(2, gui_vertex_buffers);
 
-	glNamedBufferStorage(gui_vertex_buffers[1], sizeof(gui_texcoords), gui_texcoords, NULL);
-	glVertexArrayVertexBuffer(gui_vertex_array, 1, gui_vertex_buffers[1], 0, sizeof(float) * 2);
-	glVertexArrayAttribFormat(gui_vertex_array, 1, 2, GL_FLOAT, GL_FALSE, 0);
-	glEnableVertexArrayAttrib(gui_vertex_array, 1);
+	glBindBuffer(GL_ARRAY_BUFFER, gui_vertex_buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gui_vertices), gui_vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, gui_vertex_buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gui_texcoords), gui_texcoords, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(1);
 }
 
 void Resources::unload_gui_resources() {

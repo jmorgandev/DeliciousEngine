@@ -8,6 +8,7 @@ enum MeshAttributes {
 	VERTICES,
 	NORMALS,
 	TEXCOORDS,
+	COLORS,
 	NUM_BUFFERS
 };
 struct Mesh {
