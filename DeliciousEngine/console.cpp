@@ -191,9 +191,9 @@ void Console::render() {
 	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
 	
 	box_renderer.draw(
-		(input_index * fnt->cell_width) + fnt->cell_width,
+		((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width,
 		(fnt->cell_height * visible_lines) + 2,
-		((input_index * fnt->cell_width) + fnt->cell_width) + 3,
+		(((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width) + 3,
 		((fnt->cell_height * visible_lines) + fnt->cell_height) - 2,
 		glm::vec4(1.0f, 1.0f, 1.0f, 0.8f)
 	);
@@ -223,12 +223,12 @@ void Console::render() {
 	}
 	
 	//Draw Input Box
-	// @TODO - Scroll the input box horizontally when the user input exceeds the line_size
+	//@TODO - Scroll the input box horizontally when the user input exceeds the line_size
 	for (int i = 0; i < CON_INPUT_SIZE; i++) {
-		if (input_buffer[i] == '\0') {
+		if (input_buffer[i + input_scroll] == '\0') {
 			break;
 		}
-		text_renderer.draw_char(input_buffer[i], (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
+		text_renderer.draw_char(input_buffer[i + input_scroll], (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
 	}
 
 	text_renderer.end();
@@ -282,13 +282,12 @@ BoxRenderer* Console::get_box_renderer() {
 }
 
 void Console::key_event(SDL_KeyboardEvent ev) {
-	static int num = 0;
 	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
 		if (input_index == 0) {
 			break;
 		}
-		if (input_buffer[input_index] == NULL) {
+		if (input_buffer[input_index] == NULL || input_index == CON_INPUT_SIZE) {
 			input_index--;
 			input_buffer[input_index] = NULL;
 		}
@@ -299,6 +298,7 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 				input_buffer[i] = input_buffer[i + 1];
 			}
 		}
+		scroll_left();
 		break;
 	case SDLK_TAB:
 		//Partial command or variable completion
@@ -313,7 +313,6 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Execute the input found in the input buffer
 		write_str(input_buffer, true);
 		clear_input();
-		num++;
 		//scroll_bottom();
 		break;
 	case SDLK_UP:
@@ -326,12 +325,14 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Shift the input cursor to the left
 		if (input_index != 0) {
 			input_index--;
+			scroll_left();
 		}
 		break;
 	case SDLK_RIGHT:
 		//Shift the input cursor to the right
-		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_SIZE-1) {
+		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_SIZE) {
 			input_index++;
+			scroll_right();
 		}
 		break;
 	case SDLK_PAGEUP:
@@ -361,7 +362,6 @@ void Console::text_event(SDL_TextInputEvent ev) {
 		input_index++;
 	}
 	else {
-
 		//Shift the input characters to the right if there is space
 		auto input_size = dcf::str_len(input_buffer);
 		if (input_size != CON_INPUT_SIZE) {
@@ -373,6 +373,7 @@ void Console::text_event(SDL_TextInputEvent ev) {
 			input_index++;
 		}
 	}
+	scroll_right();
 }
 
 void Console::clear_input() {
@@ -411,4 +412,26 @@ void Console::scroll_top() {
 
 void Console::scroll_bottom() {
 	while (scroll_down());
+}
+
+bool Console::scroll_left() {
+	if (input_index - input_scroll < 0) {
+		if (input_scroll - (line_size / 4) < 0) {
+			input_scroll = 0;
+		}
+		else input_scroll -= line_size / 4;
+		return true;
+	}
+	return false;
+}
+
+bool Console::scroll_right() {
+	if (input_index - input_scroll == line_size) {
+		input_scroll += line_size / 4;
+		if (input_scroll > CON_INPUT_SIZE - line_size) {
+			input_scroll = CON_INPUT_SIZE - line_size;
+		}
+		return true;
+	}
+	else return false;
 }

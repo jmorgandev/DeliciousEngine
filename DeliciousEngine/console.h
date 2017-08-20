@@ -43,9 +43,10 @@ private:
 	uint16	back_index;
 	bool    buffer_loop;
 
-	char	input_buffer[CON_INPUT_SIZE];
+	//@HACK - Plus one input size to include null terminator
+	char	input_buffer[CON_INPUT_SIZE + 1];
 	uint8	input_index;
-	uint8	input_scroll;
+	uint16	input_scroll;
 	bool	input_insert;
 
 	uint16	history_buffer[CON_HISTORY_SIZE];
@@ -84,6 +85,9 @@ private:
 
 	void scroll_top();
 	void scroll_bottom();
+
+	bool scroll_left();
+	bool scroll_right();
 };
 
 #endif
