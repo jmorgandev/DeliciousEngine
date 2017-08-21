@@ -58,7 +58,7 @@ void Console::write_str(cstring str, bool new_line) {
 	write_str(str, dcf::str_len(str), new_line);
 }
 //
-// Main writing function, handles the buffer and any line deletion / wrapping / overflows
+// Main writing function, handles the buffer and any wrapping / overflows
 // @TODO - Tidy this function up
 //
 void Console::write_str(cstring str, uint32 size, bool new_line) {
@@ -68,6 +68,26 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 
 		if (str_remaining > line_size - (write_index % line_size)) {
 			buffer_alloc(line_size);
+			//Decide where to wrap the string
+			cstring wrap_point = str + line_size;
+			if (*wrap_point != ' ' && *wrap_point != '\n') {
+				cstring soft_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
+				if (soft_wrap != NULL) {
+					wrap_point = soft_wrap;
+				}
+				else if (soft_wrap = dcf::str_prev_instance(wrap_point, str, ' ')) {
+					wrap_point = soft_wrap;
+				}
+				while (str != wrap_point) {
+					write_char(*str++);
+				}
+			}
+			else {
+				while (str != wrap_point) {
+					write_char(*str++);
+				}
+				str++;
+			}
 		}
 		else {
 			while (*str != NULL) {
@@ -313,12 +333,15 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Execute the input found in the input buffer
 		write_str(input_buffer, true);
 		clear_input();
+		input_scroll = 0;
 		//scroll_bottom();
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
+		dcf::str_cpy("The quick brown fox jumped over the lazy dogs and then proceeded to eat half a kilo of butter", input_buffer);
 		break;
 	case SDLK_DOWN:
+		dcf::str_cpy("The quick brown fox jumped over the lazy dog and then proceeded to eat half a kilo of butter", input_buffer);
 		//Cycle forward through previously entered commands
 		break;
 	case SDLK_LEFT:

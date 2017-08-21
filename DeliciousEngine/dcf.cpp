@@ -12,8 +12,8 @@ namespace dcf {
 		return len;
 	}
 	cstring str_find(cstring str, char c) {
-		while (*str++ != NULL) {
-			if (*str == c) return str;
+		while (*str != NULL) {
+			if (*str++ == c) return str;
 		}
 		return NULL;
 	}
@@ -39,6 +39,14 @@ namespace dcf {
 	cstring str_prev_instance(cstring str, cstring min, char c) {
 		while (str-- != min) {
 			if (*str == c) return str;
+		}
+		return NULL;
+	}
+	cstring str_prev_instance(cstring str, cstring min, cstring chrs) {
+		while (str-- != min) {
+			if (dcf::str_contains(chrs, *str)) {
+				return str;
+			}
 		}
 		return NULL;
 	}
@@ -72,12 +80,23 @@ namespace dcf {
 		}
 		return (*lhs == *rhs);
 	}
+	bool str_contains(cstring str, char c) {
+		while (*str != NULL) {
+			if (*str++ == c) return true;
+		}
+		return false;
+	}
 	bool printable(const char c) {
 		if (c >= ' ' && c <= '~') {
 			return true;
 		}
 		else {
 			return false;
+		}
+	}
+	void str_cpy(cstring src, char* dst) {
+		while (*src) {
+			*dst++ = *src++;
 		}
 	}
 }
