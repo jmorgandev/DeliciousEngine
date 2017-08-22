@@ -88,6 +88,8 @@ private:
 
 	bool scroll_left();
 	bool scroll_right();
+
+	void terminate_current_line();
 };
 
 #endif

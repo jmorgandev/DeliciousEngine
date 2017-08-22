@@ -62,53 +62,47 @@ void Console::write_str(cstring str, bool new_line) {
 // @TODO - Tidy this function up
 //
 void Console::write_str(cstring str, uint32 size, bool new_line) {
-	while (*str != NULL) {	//Keep looping until no more words left in string
-
-		int str_remaining = dcf::str_len(str);
-
-		if (str_remaining > line_size - (write_index % line_size)) {
+	while (*str != '\0') {
+		int remaining_line = line_size - (write_index % line_size);
+		int remaining_string = dcf::str_len(str);
+		if (remaining_string > remaining_line) {
 			buffer_alloc(line_size);
-			//Decide where to wrap the string
 			cstring wrap_point = str + line_size;
-			if (*wrap_point != ' ' && *wrap_point != '\n') {
-				cstring soft_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
-				if (soft_wrap != NULL) {
-					wrap_point = soft_wrap;
+			if (dcf::is_wspace(*wrap_point) == false) {
+				cstring newline_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
+				cstring space_wrap = dcf::str_prev_instance(wrap_point, str, ' ');
+				if (newline_wrap) {
+					wrap_point = newline_wrap;
 				}
-				else if (soft_wrap = dcf::str_prev_instance(wrap_point, str, ' ')) {
-					wrap_point = soft_wrap;
-				}
-				while (str != wrap_point) {
-					write_char(*str++);
+				else if (space_wrap) {
+					wrap_point = space_wrap;
 				}
 			}
-			else {
-				while (str != wrap_point) {
-					write_char(*str++);
-				}
+			//print string up to the wrap point
+			while (str != wrap_point) {
+				write_char(*str++);
+			}
+			if (dcf::is_wspace(*str)) {
 				str++;
 			}
+			terminate_current_line();
 		}
 		else {
-			while (*str != NULL) {
+			//Just print the string
+			while (*str != '\0') {
 				if (*str == '\n') {
+					terminate_current_line();
 					str++;
-					buffer_alloc(line_size);
-					while (write_index % line_size != 0) {
-						write_char('\0');
-					}
 				}
 				else {
 					write_char(*str++);
 				}
 			}
+			break;
 		}
 	}
 	if (new_line && write_index % line_size != 0) {
-		buffer_alloc(line_size);
-		while (write_index % line_size != 0) {
-			write_char('\0');
-		}
+		terminate_current_line();
 	}
 }
 void Console::write_char(uchar c) {
@@ -230,7 +224,7 @@ void Console::render() {
 			break;
 		}
 		if (text_buffer[i] == '\0') {
-			//text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
 		}
 		else {
 			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
@@ -457,4 +451,10 @@ bool Console::scroll_right() {
 		return true;
 	}
 	else return false;
+}
+
+void Console::terminate_current_line() {
+	while (write_index % line_size != 0) {
+		write_char('\0');
+	}
 }

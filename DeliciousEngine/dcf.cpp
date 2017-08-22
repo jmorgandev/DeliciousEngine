@@ -5,12 +5,6 @@
 #endif
 
 namespace dcf {
-
-	uint32 str_len(cstring str) {
-		uint32 len = 0;
-		while (*str++) len++;
-		return len;
-	}
 	cstring str_find(cstring str, char c) {
 		while (*str != NULL) {
 			if (*str++ == c) return str;
@@ -56,7 +50,11 @@ namespace dcf {
 		}
 		return NULL;
 	}
-
+	uint32 str_len(cstring str) {
+		uint32 len = 0;
+		while (*str++) len++;
+		return len;
+	}
 	uint32 str_count(cstring str, char c) {
 		int result = 0;
 		while (*str != NULL) {
@@ -64,9 +62,16 @@ namespace dcf {
 		}
 		return result;
 	}
-
+	uint32 str_word_len(cstring str) {
+		uint32 len = 0;
+		for (; *str != NULL && *str != ' '; str++) len++;
+		return len;
+	}
 	bool is_glyph(const char c) {
 		return (c > 32 && c < 127);
+	}
+	bool is_wspace(const char c) {
+		return (c == ' ' || c == '\n' || c == '\t');
 	}
 	bool str_cmp(cstring lhs, cstring rhs) {
 		while (*lhs && *rhs) {
