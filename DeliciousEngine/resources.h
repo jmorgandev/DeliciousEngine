@@ -17,7 +17,7 @@ class Console;
 
 class Resources {
 public:
-	bool init(Engine* engine_in);
+	bool init(Engine* eng);
 	void cleanup();
 
 	Texture* load_texture(std::string filepath);
@@ -32,8 +32,8 @@ public:
 	Mesh* fetch_mesh(std::string filename);
 	Mesh* make_mesh(std::string name, MeshData data);	
 private:
-	Console* console_ref;
-	Engine* engine_ref;
+	Console* console;
+	Engine* engine;
 
 	std::unordered_map<std::string, Texture> texture_catalog;
 	std::unordered_map<std::string, Shader> shader_catalog;

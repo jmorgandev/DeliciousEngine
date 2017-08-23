@@ -10,26 +10,31 @@
 #define CON_BUFFER_SIZE 2048
 //#define CON_BUFFER_SIZE 65535
 #define CON_INPUT_SIZE 128
-#define CON_HISTORY_SIZE 32
+#define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
+
+#define CON_HISTORY_SIZE 10
 
 class Engine;
+class Screen;
 class Console {
 public:
-	bool init(Engine* engine_in);
+	bool init(Engine* eng);
+	void render();
 
-	void register_variable(const console_var& var);
+	//Console variable functions
+	void  register_variable(const console_var& var);
 	float read_variable(cstring name);
-	void write_variable(cstring name, float data);
+	void  write_variable(cstring name, float data);
 
+	//Input handling
 	void key_event(SDL_KeyboardEvent ev);
 	void text_event(SDL_TextInputEvent ev);
 
+	//Renderer properties
 	void set_font(Font* fnt);
-	
-	BoxRenderer* get_box_renderer();
+	void set_gui_properties(GLuint vao, Shader* shader);
 
-	void render();
-
+	//Operator overloads
 	Console& operator<<(const bool& rhs);
 	Console& operator<<(const char& rhs);
 	Console& operator<<(const int& rhs);
@@ -38,58 +43,63 @@ public:
 	Console& operator<<(cstring rhs);
 	Console& operator<<(const std::string& rhs);
 private:
-	char	text_buffer[CON_BUFFER_SIZE];		//Circular buffer
-	uint16	write_index;
-	uint16	back_index;
-	bool    buffer_loop;
+	//System references
+	Engine* engine;
+	Screen* screen;
 
-	//@HACK - Plus one input size to include null terminator
-	char	input_buffer[CON_INPUT_SIZE + 1];
-	uint8	input_index;
-	uint16	input_scroll;
-	bool	input_insert;
-
-	uint16	history_buffer[CON_HISTORY_SIZE];
-
-	uint16 scroll_offset;
-
-	int line_size;
-	int visible_lines;
-	int total_lines;
-	int buffer_extent;
-
-	uint8 border_x;
-	uint8 border_y;
-
+	//GUI Renderers
 	BoxRenderer box_renderer;
 	FontRenderer text_renderer;
 
-	std::vector<console_var> variables;
+	//Main text buffer variables
+	char	text_buffer[CON_BUFFER_SIZE];
+	uint16  buffer_extent;
+	uint16	write_index;
+	uint16	back_index;
+	uint16	scroll_offset;
+	bool	buffer_loop;
 
+	//Input buffer variables
+	char	input_buffer[CON_INPUT_SIZE];
+	uint16	input_index;
+	uint16	input_scroll;
+	bool	input_insert;
+
+	//History & Auto-complete variables
+	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];
+
+	//Rendering variables
+	int line_size;
+	int visible_lines;
+	int total_lines;
+	uint8 border_x;
+	uint8 border_y;
+
+	//Console variable and command lists
+	std::vector<console_var> variables;
+	
+	//Printing Functions
 	void write_str(cstring str, bool new_line = false);
 	void write_str(cstring str, uint32 size, bool new_line = false);
 	void write_char(uchar c);
-
 	void buffer_alloc(uint32 size);
+	void terminate_current_line();
 
+	//Variable & Cmd Functions
 	console_var* fetch_var(cstring name);
 
+	//Input Functions
 	void write_to_input(cstring str);
 	void execute_input(bool user_input);
 	void clear_input();
 
-	Engine* engine;
-
+	//User scroll functions
 	bool scroll_up();
 	bool scroll_down();
-
 	void scroll_top();
 	void scroll_bottom();
-
 	bool scroll_left();
 	bool scroll_right();
-
-	void terminate_current_line();
 };
 
 #endif

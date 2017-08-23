@@ -14,8 +14,10 @@
 #include "build_info.h"
 #include <iostream>
 
-bool Resources::init(Engine* engine_in) {
-	console_ref = engine_in->get_console();
+bool Resources::init(Engine* eng) {
+	engine = eng;
+	console = eng->get_console();
+
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 	
 
@@ -30,26 +32,24 @@ bool Resources::init(Engine* engine_in) {
 		//ERROR
 		return false;
 	}
-	Texture* font_texture = load_texture("res/consolas_32.tga");
+	Texture* font_texture = load_texture("res/consolas_24.tga");
 	if (font_texture == nullptr) {
 		//ERROR
 		return false;
 	}
-	Font* con_font = make_font("consolas_32", font_texture, font_shader, 32);
+	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
 	if (con_font == nullptr) {
 		//ERROR
 		return false;
 	}
-	console_ref->set_font(con_font);
+	console->set_font(con_font);
 
 	Shader* box_shader = load_shader("res/shape.glsl");
 	if (box_shader == nullptr) {
 		//ERROR
 		return false;
 	}
-	BoxRenderer* con_box_renderer = console_ref->get_box_renderer();
-	con_box_renderer->set_shader(box_shader);
-	con_box_renderer->set_vao(gui_vertex_array);
+	console->set_gui_properties(gui_vertex_array, box_shader);
 
 	return true;
 }
@@ -212,8 +212,8 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 Font* Resources::make_font(std::string name, Texture* texture, Shader* shader, int font_px) {
 	Font new_font = {};
 
-	new_font.char_offset = ' ';
-	new_font.total_cells = ('~' - ' ') + 1;
+	new_font.char_offset = '!';
+	new_font.total_cells = ('~' - '!') + 1;
 	new_font.cell_height = font_px;
 	new_font.cell_width = (font_px / 2);
 	new_font.cell_rows = texture->height / new_font.cell_height;

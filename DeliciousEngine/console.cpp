@@ -7,9 +7,21 @@
 #include "dmath.h"
 #include "engine.h"
 #include "std_cvars.h"
+#ifndef self
+#define self *this
+#endif
 
-bool Console::init(Engine* engine_in) {
-	engine = engine_in;
+/*
+Console initialization:										
+1. Initialize member variables							
+2. Register default console variables					
+3. Register default console commands					
+4. Load user variable values from config.cfg			
+	4a. If the file does not exist, create it.			
+5. Open a new logging file to echo console messages to.
+*/
+bool Console::init(Engine* eng) {
+	engine = eng;
 
 	write_index = 0;
 	line_size = 0;
@@ -23,52 +35,84 @@ bool Console::init(Engine* engine_in) {
 	for (const auto& cvar : standard_cvars) {
 		register_variable(cvar);
 	}
-	/*
-	std::fstream config_file("config.cfg", std::fstream::in);
-	if (config_file.is_open()) {
-		std::string line_in;
-		while (std::getline(config_file, line_in)) {
-			write_to_input(line_in.c_str());
-			execute_input(false);
-		}
-		return true;
-	}
-	else {
-		config_file.open("config.cfg", std::fstream::out);
-		if (!config_file.is_open()) return false;
-
-		for (const auto& cvar : variables) {
-			if (cvar.flags & CVAR_WRITE) {
-				config_file << cvar.name << " ";
-				switch (cvar.type) {
-				case VAR_INT: config_file << (int)cvar.data; break;
-				case VAR_BOOL: config_file << (cvar.data < 1.0f) ? false : true; break;
-				case VAR_FLOAT: config_file << cvar.data; break;
-				}
-				config_file << "\n";
-			}
-		}
-		return true;
-	}
-	*/
 	return true;
 }
 
+/*
+Render the console with a bitmap font and a gui box renderer. The amount of lines
+that are rendered is precalculated based upon the font that the console uses.
+*/
+void Console::render() {
+	Screen* scr = engine->get_screen();
+	Font* fnt = text_renderer.get_font();
+
+	box_renderer.begin(scr->get_width(), scr->get_height());
+	box_renderer.draw(0, 0, scr->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
+	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
+
+	box_renderer.draw(
+		((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width,
+		(fnt->cell_height * visible_lines) + 2,
+		(((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width) + 3,
+		((fnt->cell_height * visible_lines) + fnt->cell_height) - 2,
+		glm::vec4(1.0f, 1.0f, 1.0f, 0.8f)
+	);
+
+	box_renderer.end();
+
+	text_renderer.begin(scr->get_width(), scr->get_height());
+
+	//Draw message box
+	int x_cursor = 0, y_cursor = 0;
+	int render_start = (back_index + scroll_offset) % buffer_extent;
+	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
+		if (y_cursor == visible_lines) {
+			break;
+		}
+		if (dcf::is_glyph(text_buffer[i])) {
+			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
+		}
+		x_cursor++;
+		if (x_cursor == line_size) {
+			x_cursor = 0;
+			y_cursor++;
+		}
+	}
+
+	//Draw Input Box
+	for (int i = 0; i < line_size && i < CON_INPUT_LENGTH; i++) {
+		char c = input_buffer[i + input_scroll];
+		if (dcf::is_glyph(c)) {
+			text_renderer.draw_char(c, (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
+		}
+	}
+
+	text_renderer.end();
+}
+
+/*
+Checks the size of the string to write before passing it to the
+overloaded function.
+*/
 void Console::write_str(cstring str, bool new_line) { 
 	write_str(str, dcf::str_len(str), new_line);
 }
-//
-// Main writing function, handles the buffer and any wrapping / overflows
-// @TODO - Tidy this function up
-//
+
+/*
+Main string printing function, makes necessary word wrapping and
+circular buffer allocations to print the passed in string.
+"new_line" is used to end this printing call with a new line.
+*/
 void Console::write_str(cstring str, uint32 size, bool new_line) {
-	while (*str != '\0') {
+	while (*str != '\0') {	//keep printing the string until no more string is left
 		int remaining_line = line_size - (write_index % line_size);
 		int remaining_string = dcf::str_len(str);
 		if (remaining_string > remaining_line) {
 			buffer_alloc(line_size);
+			//initially try to wrap from the character that causes the overflow
 			cstring wrap_point = str + line_size;
 			if (dcf::is_wspace(*wrap_point) == false) {
+				//check if we can wrap from a newline or space character
 				cstring newline_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
 				cstring space_wrap = dcf::str_prev_instance(wrap_point, str, ' ');
 				if (newline_wrap) {
@@ -88,7 +132,7 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 			terminate_current_line();
 		}
 		else {
-			//Just print the string
+			//just print the string as normal
 			while (*str != '\0') {
 				if (*str == '\n') {
 					terminate_current_line();
@@ -101,15 +145,27 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 			break;
 		}
 	}
+	//if we need to move to the next line...
 	if (new_line && write_index % line_size != 0) {
+		buffer_alloc(line_size);
 		terminate_current_line();
 	}
 }
+
+/*
+Puts a character in the text buffer and advances
+the write index. Keeps the write index within range of
+the buffer extent
+*/
 void Console::write_char(uchar c) {
 	text_buffer[write_index] = c;
 	write_index = ++write_index % buffer_extent;
 }
 
+/*
+Allocates room on the circular text buffer for <size> characters.
+Releases memory in blocks of <line_size>
+*/
 void Console::buffer_alloc(uint32 size) {
 	int available_space = 0;
 	if (buffer_loop == false) {
@@ -130,14 +186,50 @@ void Console::buffer_alloc(uint32 size) {
 	}
 }
 
+/*
+Fills the rest of the current line (determined with the write_index) with
+null characters in order to start printing at the start of the next line
+*/
+void Console::terminate_current_line() {
+	while (write_index % line_size != 0) {
+		write_char('\0');
+	}
+}
+
+//Copies a string directly to the input buffer
+void Console::write_to_input(cstring str) {
+	cstring sp = str;
+	while (*sp != NULL && input_index != CON_INPUT_LENGTH) {
+		input_buffer[input_index++] = *sp++;
+	}
+}
+
+/*
+Attempts to register a brand new variable to the variable list. If one already
+exists with the same name, print an error to the console.
+*/
 void Console::register_variable(const console_var& var) {
 	if (fetch_var(var.name)) {
-		//Print an error log to console about already existing variable...
-		return;
+		self << "The variable \"" << var.name << "\" already exists.\n";
 	}
 	variables.push_back(var);
 }
 
+/*
+Attempts to return the value of a registered variable. Prints an error
+if the variable does not exist.
+*/
+float Console::read_variable(cstring name) {
+	if (console_var* var = fetch_var(name)) {
+		return var->value;
+	}
+	self << "The variable \"" << name << "\" does not exist.\n";
+}
+
+/*
+Attempts to fetch a pointer of a registered variable. Only returns a
+valid pointer if the names match exactly.
+*/
 console_var* Console::fetch_var(cstring name) {
 	for (auto it = variables.begin(); it != variables.end(); it++) {
 		if (dcf::str_cmp_exact(name, it->name)) {
@@ -147,47 +239,44 @@ console_var* Console::fetch_var(cstring name) {
 	return NULL;
 }
 
-float Console::read_variable(cstring name) {
-	if (console_var* var = fetch_var(name)) {
-		return var->data;
-	}
-	//Error: Variable does not exist...
-}
-
-//
-// Format the variable depending upon it's type whenever it is modified.
-//
-void Console::write_variable(cstring name, float data) {
+/*
+Attempts to write data to a registered variable. Constrains the assigned value
+based upon the type of the registered variable. Prints an error if the registered
+variable cannot be edited at runtime or if it does not exist.
+*/
+void Console::write_variable(cstring name, float value) {
 	if (console_var* var = fetch_var(name)) {
 		if (var->flags & CVAR_EDIT) {
 			switch (var->type) {
-			case VAR_BOOL:  var->data = (data > 0.0f) ? 1.0f : 0.0f; break;
-			case VAR_INT:   var->data = truncf(data);
-			case VAR_FLOAT: var->data = data;
+			case CVAR_BOOL:  var->value = (value > 0.0f) ? 1.0f : 0.0f; break;
+			case CVAR_FLOAT: var->value = value;						break;
+			case CVAR_INT:   var->value = static_cast<int>(value);		break;
 			}
 		}
 		else {
-			//Error: variable is read-only
+			self << "The variable \"" << name << "\" is read-only.\n";
 		}
 	}
-	//Error: variable does not exist.
+	self << "The variable \"" << name << "\" does not exist.\n";
 }
 
-void Console::write_to_input(cstring str) {
-	cstring sp = str;
-	while (*sp != NULL && input_index != CON_INPUT_SIZE) {
-		input_buffer[input_index++] = *sp++;
-	}
-}
-
+/*
+Separates the input buffer into tokens and attempts to execute the corresponding
+command / variable assignment. Echos the input to the message box if it was entered
+by the user (With the return key).
+*/
 void Console::execute_input(bool user_input) {
 	if (user_input) {
-		write_str(input_buffer, dcf::str_len(input_buffer) + 1);
-		write_char('\n');
+		write_str(input_buffer, true);
 	}
-	
+	//@TODO - Make commands a thing
 }
 
+/*
+Sets the bitmap font that the console renders in. Uses the font size to calculate
+how many characters can fit in one line (line_size), how many lines can be rendered
+before scrolling (visible_lines) and the aligned extent of the text buffer.
+*/
 void Console::set_font(Font* fnt) {
 	text_renderer.set_font(fnt);
 
@@ -196,92 +285,32 @@ void Console::set_font(Font* fnt) {
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
 }
 
-void Console::render() {
-	Screen* scr = engine->get_screen();
-	Font* fnt = text_renderer.get_font();
-
-	box_renderer.begin(scr->get_width(), scr->get_height());
-	box_renderer.draw(0, 0, scr->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
-	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
-	
-	box_renderer.draw(
-		((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width,
-		(fnt->cell_height * visible_lines) + 2,
-		(((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width) + 3,
-		((fnt->cell_height * visible_lines) + fnt->cell_height) - 2,
-		glm::vec4(1.0f, 1.0f, 1.0f, 0.8f)
-	);
-
-	box_renderer.end();
-
-	text_renderer.begin(scr->get_width(), scr->get_height());
-
-	//Draw message box
-	int x_cursor = 0, y_cursor = 0;
-	int render_start = (back_index + scroll_offset) % buffer_extent;
-	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
-		if (y_cursor == visible_lines) {
-			break;
-		}
-		if (text_buffer[i] == '\0') {
-			text_renderer.draw_char('#', (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
-		}
-		else {
-			text_renderer.draw_char(text_buffer[i], (x_cursor + border_x) * fnt->cell_width, ((y_cursor + border_y) * fnt->cell_height));
-		}
-		x_cursor++;
-		if (x_cursor == line_size) {
-			x_cursor = 0;
-			y_cursor++;
-		}
-	}
-	
-	//Draw Input Box
-	//@TODO - Scroll the input box horizontally when the user input exceeds the line_size
-	for (int i = 0; i < CON_INPUT_SIZE; i++) {
-		if (input_buffer[i + input_scroll] == '\0') {
-			break;
-		}
-		text_renderer.draw_char(input_buffer[i + input_scroll], (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
-	}
-
-	text_renderer.end();
-}
-
+//OPERATOR OVERLOADS
 Console& Console::operator<<(const bool& rhs) {
-	if (rhs == true) {
-		write_str("true");
-	}
-	else {
-		write_str("false");
-	}
+	if (rhs == true) write_str("true");
+	else write_str("false");
 	return *this;
 }
-
 Console& Console::operator<<(const char& rhs) {
 	buffer_alloc(1);
 	write_char(rhs);
 	return *this;
 }
-
 Console& Console::operator<<(const int& rhs) {
 	std::string str = std::to_string(rhs);
 	write_str(str.c_str());
 	return *this;
 }
-
 Console& Console::operator<<(const float& rhs) {
 	std::string str = std::to_string(rhs);
 	write_str(str.c_str());
 	return *this;
 }
-
 Console& Console::operator<<(const double& rhs) {
 	std::string str = std::to_string(rhs);
 	write_str(str.c_str());
 	return *this;
 }
-
 Console & Console::operator<<(cstring rhs) {
 	write_str(rhs);
 	return *this;
@@ -291,17 +320,17 @@ Console & Console::operator<<(const std::string & rhs) {
 	return *this;
 }
 
-BoxRenderer* Console::get_box_renderer() {
-	return &box_renderer;
-}
-
+/*
+Processes user input that was not detected as a text event. Handles scrolling,
+erasing, executing, auto-completion, input history, and toggling the console.
+*/
 void Console::key_event(SDL_KeyboardEvent ev) {
 	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
 		if (input_index == 0) {
 			break;
 		}
-		if (input_buffer[input_index] == NULL || input_index == CON_INPUT_SIZE) {
+		if (input_buffer[input_index] == NULL || input_index == CON_INPUT_LENGTH) {
 			input_index--;
 			input_buffer[input_index] = NULL;
 		}
@@ -347,7 +376,7 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		break;
 	case SDLK_RIGHT:
 		//Shift the input cursor to the right
-		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_SIZE) {
+		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_LENGTH) {
 			input_index++;
 			scroll_right();
 		}
@@ -367,10 +396,13 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 	}
 }
 
+/*
+Processes user input that was detected as a text event. Handles inserting
+characters in the middle of the buffer, and whether the typed character
+can be printed to the screen or not.
+*/
 void Console::text_event(SDL_TextInputEvent ev) {
-	//@TODO - Shift the contents of the input buffer to the right if not in
-	//		  insertion mode.
-	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_SIZE) {
+	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_LENGTH) {
 		return;
 	}
 	if (input_insert || input_buffer[input_index] == NULL) {
@@ -381,7 +413,7 @@ void Console::text_event(SDL_TextInputEvent ev) {
 	else {
 		//Shift the input characters to the right if there is space
 		auto input_size = dcf::str_len(input_buffer);
-		if (input_size != CON_INPUT_SIZE) {
+		if (input_size != CON_INPUT_LENGTH) {
 			//Loop over the input buffer and shift right
 			for (int i = input_size; i != input_index; i--) {
 				input_buffer[i] = input_buffer[i - 1];
@@ -393,13 +425,20 @@ void Console::text_event(SDL_TextInputEvent ev) {
 	scroll_right();
 }
 
+/*
+Wipes the input buffer with null characters and resets the input index.
+*/
 void Console::clear_input() {
-	for (int i = 0; i < CON_INPUT_SIZE; i++) {
+	for (int i = 0; i < CON_INPUT_LENGTH; i++) {
 		input_buffer[i] = NULL;
 	}
 	input_index = 0;
 }
 
+/*
+Scrolls the message box up by one line unless the scroll offset is zero.
+Returns true if the scroll was successful.
+*/
 bool Console::scroll_up() {
 	if (scroll_offset == 0) {
 		return false;
@@ -408,6 +447,9 @@ bool Console::scroll_up() {
 	return true;
 }
 
+/*
+Scrolls the message box down by one line
+*/
 bool Console::scroll_down() {
 	if (buffer_loop == false) {
 		if (scroll_offset >= write_index - (line_size * visible_lines)) {
@@ -445,16 +487,15 @@ bool Console::scroll_left() {
 bool Console::scroll_right() {
 	if (input_index - input_scroll == line_size) {
 		input_scroll += line_size / 4;
-		if (input_scroll > CON_INPUT_SIZE - line_size) {
-			input_scroll = CON_INPUT_SIZE - line_size;
+		if (input_scroll > CON_INPUT_LENGTH - line_size) {
+			input_scroll = CON_INPUT_LENGTH - line_size;
 		}
 		return true;
 	}
 	else return false;
 }
 
-void Console::terminate_current_line() {
-	while (write_index % line_size != 0) {
-		write_char('\0');
-	}
+void Console::set_gui_properties(GLuint vao, Shader* shader) {
+	box_renderer.set_vao(vao);
+	box_renderer.set_shader(shader);
 }

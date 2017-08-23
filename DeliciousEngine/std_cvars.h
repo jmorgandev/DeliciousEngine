@@ -4,15 +4,13 @@
 #include "console_types.h"
 
 console_var standard_cvars[] = {
-	{ "log_init", 0, VAR_BOOL, CVAR_SYSTEM},
-	{ "vid_init", 0, VAR_BOOL, CVAR_SYSTEM},
+	{ "log_init", CVAR_BOOL, 0, CVAR_SYSTEM},
+	{ "vid_init", CVAR_BOOL, 0, CVAR_SYSTEM},
 
-	{ "vid_width", 800, VAR_INT, CVAR_USER},
-	{ "vid_height", 600, VAR_INT, CVAR_USER},
-	{ "vid_fullscreen", 0, VAR_BOOL, CVAR_USER},
-	{ "vid_borderless", 0, VAR_BOOL, CVAR_USER},
-
-	{ "res_log", 0, VAR_BOOL, CVAR_USER}
+	{ "vid_width", CVAR_INT, 800, CVAR_WRITE},
+	{ "vid_height", CVAR_INT, 600, CVAR_WRITE},
+	{ "vid_fullscreen", CVAR_INT, 0, CVAR_WRITE},
+	{ "vid_borderless", CVAR_INT, 0, CVAR_WRITE}
 };
 
 #endif
