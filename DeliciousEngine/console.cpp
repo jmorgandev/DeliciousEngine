@@ -24,6 +24,7 @@ Console initialization:
 bool Console::init(Engine* eng) {
 	engine = eng;
 
+	//Initialize member variables
 	write_index = 0;
 	line_size = 0;
 	border_x = 1;
@@ -33,6 +34,7 @@ bool Console::init(Engine* eng) {
 	input_scroll = 0;
 	buffer_loop = false;
 
+	//Register default console variables
 	for (const auto& cvar : standard_cvars) {
 		register_variable(cvar);
 	}
@@ -479,36 +481,51 @@ bool Console::scroll_down() {
 	return true;
 }
 
+/*
+Continues to scroll the message box up until it cannot anymore
+*/
 void Console::scroll_top() {
-	while (scroll_up());
+	while (scroll_up() == true);
 }
 
+/*
+Continues to scroll the message box down until it cannot anymore
+*/
 void Console::scroll_bottom() {
-	while (scroll_down());
+	while (scroll_down() == true);
 }
 
+/*
+Scrolls the input box left by a multiple of the line size
+*/
 bool Console::scroll_left() {
 	if (input_index - input_scroll < 0) {
-		if (input_scroll - (line_size / 4) < 0) {
+		if (input_scroll - (line_size / CON_INPUT_SCROLL_MULTIPLE) < 0) {
 			input_scroll = 0;
 		}
-		else input_scroll -= line_size / 4;
+		else input_scroll -= line_size / CON_INPUT_SCROLL_MULTIPLE;
 		return true;
 	}
 	return false;
 }
 
+/*
+Scrolls the input box right by a multiple of the line size
+*/
 bool Console::scroll_right() {
 	if (input_index - input_scroll == line_size) {
-		input_scroll += line_size / 4;
+		input_scroll += line_size / CON_INPUT_SCROLL_MULTIPLE;
 		if (input_scroll > CON_INPUT_LENGTH - line_size) {
 			input_scroll = CON_INPUT_LENGTH - line_size;
 		}
 		return true;
 	}
-	else return false;
+	return false;
 }
 
+/*
+Sets up the GUI rendering properties of the Console
+*/
 void Console::set_gui_properties(GLuint vao, Shader* shader) {
 	box_renderer.set_vao(vao);
 	box_renderer.set_shader(shader);
