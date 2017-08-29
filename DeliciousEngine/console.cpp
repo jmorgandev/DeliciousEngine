@@ -7,6 +7,7 @@
 #include "dmath.h"
 #include "engine.h"
 #include "std_cvars.h"
+
 #ifndef self
 #define self *this
 #endif
@@ -105,10 +106,11 @@ circular buffer allocations to print the passed in string.
 */
 void Console::write_str(cstring str, uint32 size, bool new_line) {
 	while (*str != '\0') {	//keep printing the string until no more string is left
+		line_alloc();
 		int remaining_line = line_size - (write_index % line_size);
 		int remaining_string = dcf::str_len(str);
 		if (remaining_string > remaining_line) {
-			buffer_alloc(line_size);
+			//buffer_alloc(line_size);
 			//initially try to wrap from the character that causes the overflow
 			cstring wrap_point = str + line_size;
 			if (dcf::is_wspace(*wrap_point) == false) {
@@ -147,8 +149,9 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 	}
 	//if we need to move to the next line...
 	if (new_line && write_index % line_size != 0) {
-		buffer_alloc(line_size);
+		//buffer_alloc(line_size);
 		terminate_current_line();
+		line_alloc();
 	}
 }
 
@@ -167,6 +170,7 @@ Allocates room on the circular text buffer for <size> characters.
 Releases memory in blocks of <line_size>
 */
 void Console::buffer_alloc(uint32 size) {
+	//@DEPRECATED
 	int available_space = 0;
 	if (buffer_loop == false) {
 		available_space = buffer_extent - write_index;
@@ -183,6 +187,21 @@ void Console::buffer_alloc(uint32 size) {
 	while (size > available_space) {
 		back_index = (back_index + line_size) % buffer_extent;
 		available_space += line_size;
+	}
+
+	if (buffer_loop == false) {
+		int available_lines = (buffer_extent - write_index) / line_size;
+		if (available_lines == 0) {
+			buffer_loop = true;
+		}
+	}
+	back_index = ((back_index + line_size) * line_size) % buffer_extent;
+}
+
+void Console::line_alloc() {
+	if (write_index == back_index && text_buffer[back_index] != '\0') {
+		back_index = (back_index + line_size) % buffer_extent;
+		dcf::str_fill(text_buffer + write_index, '\0', line_size);
 	}
 }
 
@@ -292,8 +311,8 @@ Console& Console::operator<<(const bool& rhs) {
 	return *this;
 }
 Console& Console::operator<<(const char& rhs) {
-	buffer_alloc(1);
-	write_char(rhs);
+	char temp_str[2] = {rhs, '\0'};
+	write_str(temp_str);
 	return *this;
 }
 Console& Console::operator<<(const int& rhs) {
@@ -451,15 +470,10 @@ bool Console::scroll_up() {
 Scrolls the message box down by one line
 */
 bool Console::scroll_down() {
-	if (buffer_loop == false) {
-		if (scroll_offset >= write_index - (line_size * visible_lines)) {
-			return false;
-		}
-	}
-	else {
-		if (scroll_offset == (buffer_extent - line_size) - (line_size * visible_lines)) {
-			return false;
-		}
+	int scroll_edge = (scroll_offset + (line_size * visible_lines)) % buffer_extent;
+	int visible_edge = (buffer_extent - line_size) - (line_size * visible_lines);
+	if (text_buffer[scroll_edge] == '\0' || scroll_offset == visible_edge) {
+		return false;
 	}
 	scroll_offset += line_size;
 	return true;

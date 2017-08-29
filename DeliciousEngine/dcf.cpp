@@ -104,4 +104,9 @@ namespace dcf {
 			*dst++ = *src++;
 		}
 	}
+	void str_fill(char* src, char c, int amount) {
+		for (int i = 0; i < amount; i++) {
+			src[i] = c;
+		}
+	}
 }

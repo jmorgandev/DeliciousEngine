@@ -25,6 +25,7 @@ namespace dcf {
 	bool printable(const char c);
 
 	void str_cpy(cstring src, char* dst);
+	void str_fill(char* src, char c, int amount);
 }
 
 #endif

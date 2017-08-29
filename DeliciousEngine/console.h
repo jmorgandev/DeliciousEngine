@@ -83,6 +83,7 @@ private:
 	void write_str(cstring str, uint32 size, bool new_line = false);
 	void write_char(uchar c);
 	void buffer_alloc(uint32 size);
+	void line_alloc();
 	void terminate_current_line();
 
 	//Variable & Cmd Functions
