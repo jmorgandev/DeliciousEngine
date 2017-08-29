@@ -143,5 +143,8 @@
     <ClInclude Include="box_renderer.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
+    <ClInclude Include="std_cmds.h">
+      <Filter>Header Files\standards</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

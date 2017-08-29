@@ -56,7 +56,7 @@ private:
 	char	text_buffer[CON_BUFFER_SIZE];
 	uint16  buffer_extent;
 	uint16	write_index;
-	uint16	back_index;
+	uint16	read_index;
 	uint16	scroll_offset;
 	bool	buffer_loop;
 
@@ -78,6 +78,7 @@ private:
 
 	//Console variable and command lists
 	std::vector<console_var> variables;
+	std::vector<console_cmd> commands;
 	
 	//Printing Functions
 	void write_str(cstring str, bool new_line = false);

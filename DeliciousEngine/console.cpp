@@ -30,7 +30,7 @@ bool Console::init(Engine* eng) {
 	border_x = 1;
 	border_y = 0;
 	scroll_offset = 0;
-	back_index = 0;
+	read_index = 0;
 	input_scroll = 0;
 	buffer_loop = false;
 
@@ -67,7 +67,7 @@ void Console::render() {
 
 	//Draw message box
 	int x_cursor = 0, y_cursor = 0;
-	int render_start = (back_index + scroll_offset) % buffer_extent;
+	int render_start = (read_index + scroll_offset) % buffer_extent;
 	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
 		if (y_cursor == visible_lines) {
 			break;
@@ -182,12 +182,12 @@ void Console::buffer_alloc(uint32 size) {
 	}
 	else {
 		int next_line = (write_index + (line_size - (write_index % line_size))) % buffer_extent;
-		for (int i = next_line; i != back_index; i += line_size) {
+		for (int i = next_line; i != read_index; i += line_size) {
 			available_space += line_size;
 		}
 	}
 	while (size > available_space) {
-		back_index = (back_index + line_size) % buffer_extent;
+		read_index = (read_index + line_size) % buffer_extent;
 		available_space += line_size;
 	}
 
@@ -197,12 +197,12 @@ void Console::buffer_alloc(uint32 size) {
 			buffer_loop = true;
 		}
 	}
-	back_index = ((back_index + line_size) * line_size) % buffer_extent;
+	read_index = ((read_index + line_size) * line_size) % buffer_extent;
 }
 
 void Console::line_alloc() {
-	if (write_index == back_index && text_buffer[back_index] != '\0') {
-		back_index = (back_index + line_size) % buffer_extent;
+	if (write_index == read_index && text_buffer[read_index] != '\0') {
+		read_index = (read_index + line_size) % buffer_extent;
 		dcf::str_fill(text_buffer + write_index, '\0', line_size);
 	}
 }

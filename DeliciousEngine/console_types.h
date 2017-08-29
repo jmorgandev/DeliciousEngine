@@ -22,6 +22,7 @@ typedef void(*func_t)(void);
 struct console_cmd {
 	char name[CON_MAX_NAME];
 	func_t callback;
+	bool lua_call;
 };
 
 #endif
