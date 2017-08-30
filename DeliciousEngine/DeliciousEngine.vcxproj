@@ -156,6 +156,7 @@
     <ClInclude Include="std_cmds.h" />
     <ClInclude Include="std_cvars.h" />
     <ClInclude Include="std_primitives.h" />
+    <ClInclude Include="system_interface.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

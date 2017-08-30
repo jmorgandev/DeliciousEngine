@@ -4,7 +4,6 @@
 #include <SDL/SDL_image.h>
 #include <algorithm>
 #include <glm/geometric.hpp>
-#include "engine.h"
 #include "console.h"
 #include "screen.h"
 #include "dff.h"
@@ -14,10 +13,7 @@
 #include "build_info.h"
 #include <iostream>
 
-bool Resources::init(Engine* eng) {
-	engine = eng;
-	console = eng->get_console();
-
+bool Resources::init(System_Interface sys) {
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 	
 
@@ -42,14 +38,14 @@ bool Resources::init(Engine* eng) {
 		//ERROR
 		return false;
 	}
-	console->set_font(con_font);
+	sys.console->set_font(con_font);
 
 	Shader* box_shader = load_shader("res/shape.glsl");
 	if (box_shader == nullptr) {
 		//ERROR
 		return false;
 	}
-	console->set_gui_properties(gui_vertex_array, box_shader);
+	sys.console->set_gui_properties(gui_vertex_array, box_shader);
 
 	return true;
 }

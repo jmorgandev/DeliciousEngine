@@ -146,5 +146,8 @@
     <ClInclude Include="std_cmds.h">
       <Filter>Header Files\standards</Filter>
     </ClInclude>
+    <ClInclude Include="system_interface.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

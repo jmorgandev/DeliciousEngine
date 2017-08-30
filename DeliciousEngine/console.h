@@ -6,6 +6,7 @@
 #include "console_types.h"
 #include "font_renderer.h"
 #include "box_renderer.h"
+#include "system_interface.h"
 
 #define CON_BUFFER_SIZE 2048
 //#define CON_BUFFER_SIZE 65535
@@ -15,11 +16,9 @@
 
 #define CON_HISTORY_SIZE 10
 
-class Engine;
-class Screen;
 class Console {
 public:
-	bool init(Engine* eng);
+	bool init(System_Interface sys);
 	void render();
 
 	//Console variable functions
@@ -44,9 +43,7 @@ public:
 	Console& operator<<(cstring rhs);
 	Console& operator<<(const std::string& rhs);
 private:
-	//System references
-	Engine* engine;
-	Screen* screen;
+	System_Interface systems;
 
 	//GUI Renderers
 	BoxRenderer box_renderer;

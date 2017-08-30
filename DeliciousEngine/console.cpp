@@ -21,9 +21,7 @@ Console initialization:
 	4a. If the file does not exist, create it.			
 5. Open a new logging file to echo console messages to.
 */
-bool Console::init(Engine* eng) {
-	engine = eng;
-
+bool Console::init(System_Interface sys) {
 	//Initialize member variables
 	write_index = 0;
 	line_size = 0;
@@ -46,7 +44,7 @@ Render the console with a bitmap font and a gui box renderer. The amount of line
 that are rendered is precalculated based upon the font that the console uses.
 */
 void Console::render() {
-	Screen* scr = engine->get_screen();
+	Screen* scr = systems.screen;
 	Font* fnt = text_renderer.get_font();
 
 	box_renderer.begin(scr->get_width(), scr->get_height());
@@ -299,10 +297,11 @@ how many characters can fit in one line (line_size), how many lines can be rende
 before scrolling (visible_lines) and the aligned extent of the text buffer.
 */
 void Console::set_font(Font* fnt) {
+	Screen* scr = systems.screen;
 	text_renderer.set_font(fnt);
 
-	line_size = (engine->get_screen()->get_width() / fnt->cell_width) - (border_x * 2);
-	visible_lines = (engine->get_screen()->get_height() / fnt->cell_height) - (border_y * 2) - 1;
+	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
+	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
 }
 

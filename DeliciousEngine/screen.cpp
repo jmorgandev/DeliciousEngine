@@ -2,12 +2,11 @@
 
 #include <SDL/SDL.h>
 #include <iostream>
-#include "engine.h"
+#include "console.h"
 #include "build_info.h"
 
-bool Screen::init(Engine* engine_in) {
+bool Screen::init(System_Interface sys) {
 	window = NULL;
-	Console* console_ref = engine_in->get_console();
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		std::cout << "SDL could not be initialised: " << SDL_GetError() << "\n";
@@ -27,8 +26,8 @@ bool Screen::init(Engine* engine_in) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	int video_width = static_cast<int>(console_ref->read_variable("vid_width"));
-	int video_height = static_cast<int>(console_ref->read_variable("vid_height"));
+	int video_width = static_cast<int>(sys.console->read_variable("vid_width"));
+	int video_height = static_cast<int>(sys.console->read_variable("vid_height"));
 
 	window = SDL_CreateWindow(
 		"Window Test!",

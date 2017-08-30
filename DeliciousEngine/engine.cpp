@@ -4,15 +4,21 @@
 #include <fstream>
 #include "font_renderer.h"
 #include "dmath.h"
+#include "system_interface.h"
 
 bool Engine::init(char** argv, int argc) {
-	if (!console.init(this)) {
+	System_Interface sys;
+	sys.console		= &console;
+	sys.screen		= &screen;
+	sys.resources	= &resources;
+
+	if (!console.init(sys)) {
 		return false;
 	}
-	if (!screen.init(this)) {
+	if (!screen.init(sys)) {
 		return false;
 	}
-	if (!resources.init(this)) {
+	if (!resources.init(sys)) {
 		return false;
 	}
 	return true;

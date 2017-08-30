@@ -3,10 +3,11 @@
 
 #include <SDL/SDL_video.h>
 
-class Engine;
+#include "system_interface.h"
+
 class Screen {
 public:
-	bool init(Engine* engine_in);
+	bool init(System_Interface sys);
 
 	void update();
 
