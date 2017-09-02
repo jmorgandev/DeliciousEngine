@@ -18,10 +18,11 @@ struct console_var {
 	uint16	  flags;
 };
 
-typedef void(*func_t)(void);
+struct System_Interface;
+typedef void(*cmd_callback)(System_Interface, char*, int);
 struct console_cmd {
 	char name[CON_MAX_NAME];
-	func_t callback;
+	cmd_callback callback;
 	bool lua_call;
 };
 

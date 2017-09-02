@@ -1,6 +1,0 @@
-#ifndef DELICIOUS_STANDARD_CMDS_H
-#define DELICIOUS_STANDARD_CMDS_H
-
-
-
-#endif

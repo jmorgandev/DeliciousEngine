@@ -50,6 +50,26 @@ namespace dcf {
 		}
 		return NULL;
 	}
+	char* str_next_word(char* str) {
+		while (*str++ != NULL) {
+			if (*str == ' ' && is_glyph(*str + 1)) {
+				return str + 1;
+			}
+		}
+		return NULL;
+	}
+	cstring str_next_glyph(cstring str) {
+		while (*str++ != NULL) {
+			if (is_glyph(*str)) return str;
+		}
+		return NULL;
+	}
+	char* str_next_glyph(char* str) {
+		while (*str++ != NULL) {
+			if (is_glyph(*str)) return str;
+		}
+		return NULL;
+	}
 	uint32 str_len(cstring str) {
 		uint32 len = 0;
 		while (*str++) len++;
@@ -108,5 +128,21 @@ namespace dcf {
 		for (int i = 0; i < amount; i++) {
 			src[i] = c;
 		}
+	}
+	void str_trim_spaces(char* str) {
+		char* sp = str;
+		if (is_glyph(*str) == false) {
+			str = str_next_glyph(str);
+		}
+		while (*str != NULL) {
+			if (is_glyph(*str)) {
+				*sp++ = *str++;
+			}
+			else {
+				if (!(str = str_next_glyph(str))) *sp++ = NULL;
+				else *sp++ = ' ';
+			}
+		}
+		while (sp != str) *sp++ = NULL;
 	}
 }

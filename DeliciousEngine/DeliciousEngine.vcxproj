@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="box_renderer.cpp" />
+    <ClCompile Include="cmds.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
     <ClCompile Include="dff.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />
+    <ClInclude Include="dcm.h" />
     <ClInclude Include="dff.h" />
     <ClInclude Include="dgl.h" />
     <ClInclude Include="dmath.h" />
@@ -153,9 +155,9 @@
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="shader.h" />
-    <ClInclude Include="std_cmds.h" />
-    <ClInclude Include="std_cvars.h" />
-    <ClInclude Include="std_primitives.h" />
+    <ClInclude Include="cmds.h" />
+    <ClInclude Include="cvars.h" />
+    <ClInclude Include="primitives.h" />
     <ClInclude Include="system_interface.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>

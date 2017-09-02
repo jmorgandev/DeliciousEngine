@@ -20,9 +20,11 @@ class Console {
 public:
 	bool init(System_Interface sys);
 	void render();
+	void clear_buffer();
 
-	//Console variable functions
-	void  register_variable(const console_var& var);
+	void register_variable(const console_var& var);
+	void register_command(const console_cmd& cmd);
+
 	float read_variable(cstring name);
 	void  write_variable(cstring name, float data);
 
@@ -55,7 +57,6 @@ private:
 	uint16	write_index;
 	uint16	read_index;
 	uint16	scroll_offset;
-	bool	buffer_loop;
 
 	//Input buffer variables
 	char	input_buffer[CON_INPUT_SIZE];
@@ -81,12 +82,12 @@ private:
 	void write_str(cstring str, bool new_line = false);
 	void write_str(cstring str, uint32 size, bool new_line = false);
 	void write_char(uchar c);
-	void buffer_alloc(uint32 size);
-	void line_alloc();
+	void buffer_alloc();
 	void terminate_current_line();
 
 	//Variable & Cmd Functions
 	console_var* fetch_var(cstring name);
+	console_cmd* fetch_cmd(cstring name);
 
 	//Input Functions
 	void write_to_input(cstring str);

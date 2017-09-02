@@ -9,7 +9,7 @@
 #include "dff.h"
 #include "dcf.h"
 #include "dgl.h"
-#include "std_primitives.h"
+#include "primitives.h"
 #include "build_info.h"
 #include <iostream>
 

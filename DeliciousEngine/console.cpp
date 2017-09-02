@@ -4,9 +4,11 @@
 #include <fstream>
 #include <string>
 #include "dcf.h"
+#include "dcm.h"
 #include "dmath.h"
 #include "engine.h"
-#include "std_cvars.h"
+#include "cvars.h"
+#include "cmds.h"
 
 #ifndef self
 #define self *this
@@ -22,7 +24,6 @@ Console initialization:
 5. Open a new logging file to echo console messages to.
 */
 bool Console::init(System_Interface sys) {
-	//Initialize member variables
 	write_index = 0;
 	line_size = 0;
 	border_x = 1;
@@ -30,12 +31,15 @@ bool Console::init(System_Interface sys) {
 	scroll_offset = 0;
 	read_index = 0;
 	input_scroll = 0;
-	buffer_loop = false;
 
-	//Register default console variables
-	for (const auto& cvar : standard_cvars) {
+	for (const auto& cvar : default_cvars) {
 		register_variable(cvar);
 	}
+	for (const auto& cmd : default_cmds) {
+		register_command(cmd);
+	}
+
+
 	return true;
 }
 
@@ -106,7 +110,7 @@ circular buffer allocations to print the passed in string.
 */
 void Console::write_str(cstring str, uint32 size, bool new_line) {
 	while (*str != '\0') {	//keep printing the string until no more string is left
-		line_alloc();
+		buffer_alloc();
 		int remaining_line = line_size - (write_index % line_size);
 		int remaining_string = dcf::str_len(str);
 		if (remaining_string > remaining_line) {
@@ -151,7 +155,7 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 	if (new_line && write_index % line_size != 0) {
 		//buffer_alloc(line_size);
 		terminate_current_line();
-		line_alloc();
+		buffer_alloc();
 	}
 }
 
@@ -165,40 +169,7 @@ void Console::write_char(uchar c) {
 	write_index = ++write_index % buffer_extent;
 }
 
-/*
-Allocates room on the circular text buffer for <size> characters.
-Releases memory in blocks of <line_size>
-*/
-void Console::buffer_alloc(uint32 size) {
-	//@DEPRECATED
-	int available_space = 0;
-	if (buffer_loop == false) {
-		available_space = buffer_extent - write_index;
-		if (size > available_space)	{
-			buffer_loop = true;
-		}
-	}
-	else {
-		int next_line = (write_index + (line_size - (write_index % line_size))) % buffer_extent;
-		for (int i = next_line; i != read_index; i += line_size) {
-			available_space += line_size;
-		}
-	}
-	while (size > available_space) {
-		read_index = (read_index + line_size) % buffer_extent;
-		available_space += line_size;
-	}
-
-	if (buffer_loop == false) {
-		int available_lines = (buffer_extent - write_index) / line_size;
-		if (available_lines == 0) {
-			buffer_loop = true;
-		}
-	}
-	read_index = ((read_index + line_size) * line_size) % buffer_extent;
-}
-
-void Console::line_alloc() {
+void Console::buffer_alloc() {
 	if (write_index == read_index && text_buffer[read_index] != '\0') {
 		read_index = (read_index + line_size) % buffer_extent;
 		dcf::str_fill(text_buffer + write_index, '\0', line_size);
@@ -224,14 +195,25 @@ void Console::write_to_input(cstring str) {
 }
 
 /*
-Attempts to register a brand new variable to the variable list. If one already
+Attempts to register a variable to the variable list. If one already
 exists with the same name, print an error to the console.
 */
 void Console::register_variable(const console_var& var) {
 	if (fetch_var(var.name)) {
-		self << "The variable \"" << var.name << "\" already exists.\n";
+		self << "Register variable: '" << var.name << "' already exists.\n";
 	}
-	variables.push_back(var);
+	else variables.push_back(var);
+}
+
+/*
+Attempts to register a command to the command list. If one already exists
+with the same name, print an error to the console.
+*/
+void Console::register_command(const console_cmd& cmd) {
+	if (fetch_cmd(cmd.name)) {
+		self << "Register command: '" << cmd.name << "' already exists.\n";
+	}
+	else commands.push_back(cmd);
 }
 
 /*
@@ -243,6 +225,7 @@ float Console::read_variable(cstring name) {
 		return var->value;
 	}
 	self << "The variable \"" << name << "\" does not exist.\n";
+	return 0.0f;
 }
 
 /*
@@ -251,6 +234,15 @@ valid pointer if the names match exactly.
 */
 console_var* Console::fetch_var(cstring name) {
 	for (auto it = variables.begin(); it != variables.end(); it++) {
+		if (dcf::str_cmp_exact(name, it->name)) {
+			return &(*it);
+		}
+	}
+	return NULL;
+}
+
+console_cmd* Console::fetch_cmd(cstring name) {
+	for (auto it = commands.begin(); it != commands.end(); it++) {
 		if (dcf::str_cmp_exact(name, it->name)) {
 			return &(*it);
 		}
@@ -288,7 +280,13 @@ void Console::execute_input(bool user_input) {
 	if (user_input) {
 		write_str(input_buffer, true);
 	}
-	//@TODO - Make commands a thing
+	dcf::str_trim_spaces(input_buffer);
+	char* cmd = input_buffer;
+	uint argc = dcf::str_count(input_buffer, ' ');
+	char* argv = dcf::str_next_word(cmd);
+	if (argv != NULL) *(argv - 1) = '\0';
+
+
 }
 
 /*
@@ -357,7 +355,7 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		else {
 			auto input_size = dcf::str_len(input_buffer);
 			input_index--;
-			for (int i = input_index; i < input_size; i++) {
+			for (uint i = input_index; i < input_size; i++) {
 				input_buffer[i] = input_buffer[i + 1];
 			}
 		}
@@ -528,4 +526,15 @@ Sets up the GUI rendering properties of the Console
 void Console::set_gui_properties(GLuint vao, Shader* shader) {
 	box_renderer.set_vao(vao);
 	box_renderer.set_shader(shader);
+}
+
+/*
+Wipe the message box by filling it with null characters. Also reset the readwrite indexes and the
+scroll offset.
+*/
+void Console::clear_buffer() {
+	std::memset(text_buffer, '\0', CON_BUFFER_SIZE);
+	read_index = 0;
+	write_index = 0;
+	scroll_offset = 0;
 }

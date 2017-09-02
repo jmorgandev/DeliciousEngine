@@ -22,9 +22,6 @@
     <Filter Include="Header Files\system_types">
       <UniqueIdentifier>{e5d4ba57-a749-4ef7-b5d8-277895f67e51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\standards">
-      <UniqueIdentifier>{e4f227d9-c824-4f52-8634-dec3dfb8fcde}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,12 @@
     </Filter>
     <Filter Include="Source Files\toolbox">
       <UniqueIdentifier>{44f97e9a-3a54-43a5-83b5-b3ba676033d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\system_defaults">
+      <UniqueIdentifier>{e4f227d9-c824-4f52-8634-dec3dfb8fcde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\system_defaults">
+      <UniqueIdentifier>{a97aba70-234f-49d1-ba6f-34855517e649}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +84,9 @@
     <ClCompile Include="box_renderer.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="cmds.cpp">
+      <Filter>Source Files\system_defaults</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -104,9 +110,6 @@
     <ClInclude Include="dmath.h">
       <Filter>Header Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="std_cvars.h">
-      <Filter>Header Files\standards</Filter>
-    </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
@@ -128,9 +131,6 @@
     <ClInclude Include="font_renderer.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="std_primitives.h">
-      <Filter>Header Files\standards</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
@@ -143,11 +143,20 @@
     <ClInclude Include="box_renderer.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="std_cmds.h">
-      <Filter>Header Files\standards</Filter>
-    </ClInclude>
     <ClInclude Include="system_interface.h">
       <Filter>Header Files\system_types</Filter>
+    </ClInclude>
+    <ClInclude Include="cmds.h">
+      <Filter>Header Files\system_defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="cvars.h">
+      <Filter>Header Files\system_defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives.h">
+      <Filter>Header Files\system_defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="dcm.h">
+      <Filter>Source Files\toolbox</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
