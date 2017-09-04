@@ -11,6 +11,12 @@ namespace dcf {
 		}
 		return NULL;
 	}
+	char* str_find(char* str, char c) {
+		while (*str != NULL) {
+			if (*str++ == c) return str;
+		}
+		return NULL;
+	}
 	cstring str_find_last(cstring str, char c) {
 		cstring sp = NULL;
 		while (*str++ != NULL) {
@@ -144,5 +150,11 @@ namespace dcf {
 			}
 		}
 		while (sp != str) *sp++ = NULL;
+	}
+	void str_shift_left(char* str, uint index) {
+		uint str_size = str_len(str);
+		for (uint i = index; i < str_size; i++) {
+			str[i] = str[i + 1];
+		}
 	}
 }

@@ -6,7 +6,7 @@
 #include "console_types.h"
 #include "font_renderer.h"
 #include "box_renderer.h"
-#include "system_interface.h"
+#include "system_ref.h"
 
 #define CON_BUFFER_SIZE 2048
 //#define CON_BUFFER_SIZE 65535
@@ -18,15 +18,16 @@
 
 class Console {
 public:
-	bool init(System_Interface sys);
+	bool init(System_Ref sys);
 	void render();
-	void clear_buffer();
 
 	void register_variable(const console_var& var);
 	void register_command(const console_cmd& cmd);
 
-	float read_variable(cstring name);
-	void  write_variable(cstring name, float data);
+	console_var* find_variable(cstring name);
+
+	void set_variable(cstring name, cstring value);
+	void set_variable(console_var* cvar, cstring value);
 
 	//Input handling
 	void key_event(SDL_KeyboardEvent ev);
@@ -35,6 +36,10 @@ public:
 	//Renderer properties
 	void set_font(Font* fnt);
 	void set_gui_properties(GLuint vao, Shader* shader);
+
+	void clear_buffer();
+
+	bool is_open();
 
 	//Operator overloads
 	Console& operator<<(const bool& rhs);
@@ -45,7 +50,7 @@ public:
 	Console& operator<<(cstring rhs);
 	Console& operator<<(const std::string& rhs);
 private:
-	System_Interface systems;
+	System_Ref system;
 
 	//GUI Renderers
 	BoxRenderer box_renderer;
@@ -74,6 +79,8 @@ private:
 	uint8 border_x;
 	uint8 border_y;
 
+	bool display_console;
+
 	//Console variable and command lists
 	std::vector<console_var> variables;
 	std::vector<console_cmd> commands;
@@ -85,9 +92,7 @@ private:
 	void buffer_alloc();
 	void terminate_current_line();
 
-	//Variable & Cmd Functions
-	console_var* fetch_var(cstring name);
-	console_cmd* fetch_cmd(cstring name);
+	console_cmd* find_command(cstring name);
 
 	//Input Functions
 	void write_to_input(cstring str);

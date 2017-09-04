@@ -2,24 +2,32 @@
 #define DELICIOUS_CONSOLE_TYPES_H
 
 #include "dtypes.h"
+#include "system_ref.h"
 
 #define CON_MAX_NAME	32
 
-#define CVAR_SYSTEM	0x00						//Cannot be edited by the user, or written to config file
-#define CVAR_EDIT	0x01						//Can be edited during runtime
-#define CVAR_WRITE	0x02						//Is written to the config file
-#define CVAR_USER	(CVAR_EDIT | CVAR_WRITE)	//Can be edited by the user and is written to the config file
+#define CVAR_SYSTEM		0x00					//Cannot be edited by the user, or written to config file
+#define CVAR_MUTABLE	0x01					//Can be edited during runtime
+#define CVAR_CONFIG		0x02					//Is written to the config file
+#define CVAR_USER	(CVAR_MUTABLE | CVAR_CONFIG)//Can be edited by the user and is written to the config file
 
 enum cvar_type {CVAR_BOOL, CVAR_FLOAT, CVAR_INT};	//The cvar type determines how the data value is restricted
+union system_var {
+	int   as_int;
+	float as_float;
+	bool  as_bool;
+	system_var(int value) { as_int = value; }
+	system_var(float value) { as_float = value; }
+	system_var(bool value) { as_bool = value; }
+};
 struct console_var {
-	char	  name[CON_MAX_NAME];
-	cvar_type type;
-	float	  value;
-	uint16	  flags;
+	char	    name[CON_MAX_NAME];
+	cvar_type   type;
+	system_var value;
+	uint16	    flags;
 };
 
-struct System_Interface;
-typedef void(*cmd_callback)(System_Interface, char*, int);
+typedef void(*cmd_callback)(System_Ref, char*, int);
 struct console_cmd {
 	char name[CON_MAX_NAME];
 	cmd_callback callback;

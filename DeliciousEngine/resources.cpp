@@ -13,10 +13,11 @@
 #include "build_info.h"
 #include <iostream>
 
-bool Resources::init(System_Interface sys) {
+bool Resources::init(System_Ref sys) {
+	system = sys;
+
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 	
-
 	//make_mesh("triangle", std_triangle);
 	//make_mesh("quad", std_quad);
 	//make_mesh("quad", primitive_quad);

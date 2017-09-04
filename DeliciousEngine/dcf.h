@@ -5,6 +5,7 @@
 
 namespace dcf {
 	cstring str_find(cstring str, char c);
+	char*	str_find(char* str, char c);
 	cstring str_find_last(cstring str, char c);
 
 	cstring str_prev_glyph(cstring str, cstring min);
@@ -30,6 +31,7 @@ namespace dcf {
 	void str_cpy(cstring src, char* dst);
 	void str_fill(char* src, char c, int amount);
 	void str_trim_spaces(char* str);
+	void str_shift_left(char* str, uint index);
 }
 
 #endif

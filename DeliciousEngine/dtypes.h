@@ -1,6 +1,8 @@
 #ifndef DTYPES_H
 #define DTYPES_H
 
+#include <stdint.h>
+
 typedef unsigned long long uint64, qword;
 typedef signed long long int64;
 typedef unsigned int uint32, dword;

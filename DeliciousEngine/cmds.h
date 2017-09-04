@@ -3,6 +3,7 @@
 
 #include "console_types.h"
 #include <vector>
+#include <array>
 
 extern std::vector<console_cmd> default_cmds;
 

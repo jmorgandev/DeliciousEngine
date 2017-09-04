@@ -5,7 +5,7 @@ class Console;
 class Resources;
 class Screen;
 
-struct System_Interface {
+struct System_Ref {
 	Console* console;
 	Resources* resources;
 	Screen* screen;

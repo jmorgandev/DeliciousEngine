@@ -143,9 +143,6 @@
     <ClInclude Include="box_renderer.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="system_interface.h">
-      <Filter>Header Files\system_types</Filter>
-    </ClInclude>
     <ClInclude Include="cmds.h">
       <Filter>Header Files\system_defaults</Filter>
     </ClInclude>
@@ -156,7 +153,10 @@
       <Filter>Header Files\system_defaults</Filter>
     </ClInclude>
     <ClInclude Include="dcm.h">
-      <Filter>Source Files\toolbox</Filter>
+      <Filter>Header Files\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="system_ref.h">
+      <Filter>Header Files\system_types</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

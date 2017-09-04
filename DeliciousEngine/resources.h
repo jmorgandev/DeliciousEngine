@@ -12,11 +12,11 @@
 #include "mesh.h"
 #include "font.h"
 
-#include "system_interface.h"
+#include "system_ref.h"
 
 class Resources {
 public:
-	bool init(System_Interface sys);
+	bool init(System_Ref sys);
 	void cleanup();
 
 	Texture* load_texture(std::string filepath);
@@ -31,7 +31,7 @@ public:
 	Mesh* fetch_mesh(std::string filename);
 	Mesh* make_mesh(std::string name, MeshData data);	
 private:
-	System_Interface systems;
+	System_Ref system;
 
 	std::unordered_map<std::string, Texture> texture_catalog;
 	std::unordered_map<std::string, Shader> shader_catalog;

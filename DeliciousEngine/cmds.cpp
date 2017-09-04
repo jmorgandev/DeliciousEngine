@@ -1,8 +1,8 @@
 #include "cmds.h"
-#include "system_interface.h"
+#include "system_ref.h"
 #include "console.h"
 
-#define ConsoleCommand(a) void cmd_##a(System_Interface system, char* argv, int argc)
+#define ConsoleCommand(a) void cmd_##a(System_Ref system, char* argv, int argc)
 #define CMD(a) ConsoleCommand(a);
 COMMAND_LIST
 #undef CMD

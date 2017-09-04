@@ -3,11 +3,11 @@
 
 #include <SDL/SDL_video.h>
 
-#include "system_interface.h"
+#include "system_ref.h"
 
 class Screen {
 public:
-	bool init(System_Interface sys);
+	bool init(System_Ref sys);
 
 	void update();
 

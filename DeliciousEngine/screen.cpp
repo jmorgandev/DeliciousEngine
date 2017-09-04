@@ -5,7 +5,7 @@
 #include "console.h"
 #include "build_info.h"
 
-bool Screen::init(System_Interface sys) {
+bool Screen::init(System_Ref sys) {
 	window = NULL;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -26,8 +26,8 @@ bool Screen::init(System_Interface sys) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	int video_width = static_cast<int>(sys.console->read_variable("vid_width"));
-	int video_height = static_cast<int>(sys.console->read_variable("vid_height"));
+	int video_width = sys.console->find_variable("vid_width")->value.as_int;
+	int video_height = sys.console->find_variable("vid_height")->value.as_int;
 
 	window = SDL_CreateWindow(
 		"Window Test!",

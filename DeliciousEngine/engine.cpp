@@ -4,10 +4,10 @@
 #include <fstream>
 #include "font_renderer.h"
 #include "dmath.h"
-#include "system_interface.h"
+#include "system_ref.h"
 
 bool Engine::init(char** argv, int argc) {
-	System_Interface sys;
+	System_Ref sys;
 	sys.console		= &console;
 	sys.screen		= &screen;
 	sys.resources	= &resources;

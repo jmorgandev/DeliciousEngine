@@ -4,15 +4,12 @@
 #include <fstream>
 #include <string>
 #include "dcf.h"
+#include "dff.h"
 #include "dcm.h"
 #include "dmath.h"
 #include "engine.h"
 #include "cvars.h"
 #include "cmds.h"
-
-#ifndef self
-#define self *this
-#endif
 
 /*
 Console initialization:										
@@ -23,7 +20,9 @@ Console initialization:
 	4a. If the file does not exist, create it.			
 5. Open a new logging file to echo console messages to.
 */
-bool Console::init(System_Interface sys) {
+bool Console::init(System_Ref sys) {
+	system = sys;
+
 	write_index = 0;
 	line_size = 0;
 	border_x = 1;
@@ -31,6 +30,7 @@ bool Console::init(System_Interface sys) {
 	scroll_offset = 0;
 	read_index = 0;
 	input_scroll = 0;
+	display_console = true;
 
 	for (const auto& cvar : default_cvars) {
 		register_variable(cvar);
@@ -39,6 +39,36 @@ bool Console::init(System_Interface sys) {
 		register_command(cmd);
 	}
 
+	std::fstream config_file("config.cfg", std::fstream::in);
+	if (config_file.is_open()) {
+		std::string line;
+		while (std::getline(config_file, line)) {
+			dcf::str_cpy(line.c_str(), input_buffer);
+			dcf::str_trim_spaces(input_buffer);
+			char* label = input_buffer;
+			char* value = dcf::str_next_word(label);
+			if (value != NULL) {
+				*(value - 1) = '\0';
+				set_variable(label, value);
+			}
+			else continue;
+		}
+	}
+	else {
+		config_file.open("config.cfg", std::fstream::out);
+		for (const auto& cvar : variables) {
+			if (cvar.flags & CVAR_CONFIG) {
+				config_file << cvar.name << " ";
+				switch (cvar.type) {
+				case CVAR_BOOL: config_file << cvar.value.as_bool; break;
+				case CVAR_INT: config_file << cvar.value.as_int; break;
+				case CVAR_FLOAT: config_file << cvar.value.as_float; break;
+				}
+				config_file << '\n';
+			}
+		}
+	}
+	config_file.close();
 
 	return true;
 }
@@ -48,7 +78,7 @@ Render the console with a bitmap font and a gui box renderer. The amount of line
 that are rendered is precalculated based upon the font that the console uses.
 */
 void Console::render() {
-	Screen* scr = systems.screen;
+	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 
 	box_renderer.begin(scr->get_width(), scr->get_height());
@@ -188,9 +218,8 @@ void Console::terminate_current_line() {
 
 //Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
-	cstring sp = str;
-	while (*sp != NULL && input_index != CON_INPUT_LENGTH) {
-		input_buffer[input_index++] = *sp++;
+	while (*str != NULL && input_index != CON_INPUT_LENGTH) {
+		input_buffer[input_index++] = *str++;
 	}
 }
 
@@ -199,7 +228,7 @@ Attempts to register a variable to the variable list. If one already
 exists with the same name, print an error to the console.
 */
 void Console::register_variable(const console_var& var) {
-	if (fetch_var(var.name)) {
+	if (find_variable(var.name)) {
 		self << "Register variable: '" << var.name << "' already exists.\n";
 	}
 	else variables.push_back(var);
@@ -210,29 +239,17 @@ Attempts to register a command to the command list. If one already exists
 with the same name, print an error to the console.
 */
 void Console::register_command(const console_cmd& cmd) {
-	if (fetch_cmd(cmd.name)) {
+	if (find_command(cmd.name)) {
 		self << "Register command: '" << cmd.name << "' already exists.\n";
 	}
 	else commands.push_back(cmd);
 }
 
 /*
-Attempts to return the value of a registered variable. Prints an error
-if the variable does not exist.
-*/
-float Console::read_variable(cstring name) {
-	if (console_var* var = fetch_var(name)) {
-		return var->value;
-	}
-	self << "The variable \"" << name << "\" does not exist.\n";
-	return 0.0f;
-}
-
-/*
-Attempts to fetch a pointer of a registered variable. Only returns a
+Attempts to fetch the pointer of a registered variable. Only returns a
 valid pointer if the names match exactly.
 */
-console_var* Console::fetch_var(cstring name) {
+console_var* Console::find_variable(cstring name) {
 	for (auto it = variables.begin(); it != variables.end(); it++) {
 		if (dcf::str_cmp_exact(name, it->name)) {
 			return &(*it);
@@ -241,7 +258,11 @@ console_var* Console::fetch_var(cstring name) {
 	return NULL;
 }
 
-console_cmd* Console::fetch_cmd(cstring name) {
+/*
+Attempts to fetch the pointer of a registered command. Only returns a
+valid pointer if the names match exactly.
+*/
+console_cmd* Console::find_command(cstring name) {
 	for (auto it = commands.begin(); it != commands.end(); it++) {
 		if (dcf::str_cmp_exact(name, it->name)) {
 			return &(*it);
@@ -255,20 +276,25 @@ Attempts to write data to a registered variable. Constrains the assigned value
 based upon the type of the registered variable. Prints an error if the registered
 variable cannot be edited at runtime or if it does not exist.
 */
-void Console::write_variable(cstring name, float value) {
-	if (console_var* var = fetch_var(name)) {
-		if (var->flags & CVAR_EDIT) {
-			switch (var->type) {
-			case CVAR_BOOL:  var->value = (value > 0.0f) ? 1.0f : 0.0f; break;
-			case CVAR_FLOAT: var->value = value;						break;
-			case CVAR_INT:   var->value = static_cast<int>(value);		break;
-			}
-		}
-		else {
-			self << "The variable \"" << name << "\" is read-only.\n";
+void Console::set_variable(cstring name, cstring value) {
+	if (console_var* cvar = find_variable(name)) {
+		set_variable(cvar, value);
+	}
+	else {
+		self << "Set variable: '" << name << "' does not exist.\n";
+	}
+}
+void Console::set_variable(console_var* cvar, cstring value) {
+	if (cvar->flags & CVAR_MUTABLE) {
+		switch (cvar->type) {
+		case CVAR_INT: cvar->value.as_int = atoi(value); break;
+		case CVAR_FLOAT: cvar->value.as_float = atof(value); break;
+		case CVAR_BOOL: cvar->value.as_bool = (atoi(value) == 0) ? true : false; break;
 		}
 	}
-	self << "The variable \"" << name << "\" does not exist.\n";
+	else {
+		self << "Set variable: '" << cvar->name << "' is read-only.\n";
+	}
 }
 
 /*
@@ -281,12 +307,33 @@ void Console::execute_input(bool user_input) {
 		write_str(input_buffer, true);
 	}
 	dcf::str_trim_spaces(input_buffer);
-	char* cmd = input_buffer;
+
+	self << "Execute: '" << input_buffer << "'\n";
+
+	char* label = input_buffer;
 	uint argc = dcf::str_count(input_buffer, ' ');
-	char* argv = dcf::str_next_word(cmd);
-	if (argv != NULL) *(argv - 1) = '\0';
+	char* argv = NULL;
+	if (argc > 0) {
+		argv = dcf::str_next_word(input_buffer);
+		*dcf::str_find(label, ' ') = '\0';
+	}
 
+	if (console_var* cvar = find_variable(label)) {
+		if (argc == 1) {
+			set_variable(cvar, argv);
+		}
+		else {
+			self << "Set variable usage: <var> <value>\n";
+		}
+	}
+	else if (console_cmd* cmd = find_command(label)) {
+		cmd->callback(system, argv, argc);
+	}
+	else {
+		self << "Unknown command/variable: '" << label << "'\n";
+	}
 
+	clear_input();
 }
 
 /*
@@ -295,7 +342,7 @@ how many characters can fit in one line (line_size), how many lines can be rende
 before scrolling (visible_lines) and the aligned extent of the text buffer.
 */
 void Console::set_font(Font* fnt) {
-	Screen* scr = systems.screen;
+	Screen* scr = system.screen;
 	text_renderer.set_font(fnt);
 
 	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
@@ -353,11 +400,8 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 			input_buffer[input_index] = NULL;
 		}
 		else {
-			auto input_size = dcf::str_len(input_buffer);
 			input_index--;
-			for (uint i = input_index; i < input_size; i++) {
-				input_buffer[i] = input_buffer[i + 1];
-			}
+			dcf::str_shift_left(input_buffer, input_index);
 		}
 		scroll_left();
 		break;
@@ -365,7 +409,7 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		//Partial command or variable completion
 		break;
 	case SDLK_BACKQUOTE:
-		//Toggle the console
+		display_console = !display_console;
 		break;
 	case SDLK_RETURN:
 		if (input_buffer[0] == NULL) {
@@ -379,10 +423,8 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
-		dcf::str_cpy("The quick brown fox jumped over the lazy dogs and then proceeded to eat half a kilo of butter", input_buffer);
 		break;
 	case SDLK_DOWN:
-		dcf::str_cpy("The quick brown fox jumped over the lazy dog and then proceeded to eat half a kilo of butter", input_buffer);
 		//Cycle forward through previously entered commands
 		break;
 	case SDLK_LEFT:
@@ -537,4 +579,8 @@ void Console::clear_buffer() {
 	read_index = 0;
 	write_index = 0;
 	scroll_offset = 0;
+}
+
+bool Console::is_open() {
+	return display_console;
 }
