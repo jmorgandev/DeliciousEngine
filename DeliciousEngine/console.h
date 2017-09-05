@@ -106,6 +106,8 @@ private:
 	void scroll_bottom();
 	bool scroll_left();
 	bool scroll_right();
+
+	void load_config();
 };
 
 #endif

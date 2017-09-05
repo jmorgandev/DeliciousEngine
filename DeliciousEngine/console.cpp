@@ -39,36 +39,7 @@ bool Console::init(System_Ref sys) {
 		register_command(cmd);
 	}
 
-	std::fstream config_file("config.cfg", std::fstream::in);
-	if (config_file.is_open()) {
-		std::string line;
-		while (std::getline(config_file, line)) {
-			dcf::str_cpy(line.c_str(), input_buffer);
-			dcf::str_trim_spaces(input_buffer);
-			char* label = input_buffer;
-			char* value = dcf::str_next_word(label);
-			if (value != NULL) {
-				*(value - 1) = '\0';
-				set_variable(label, value);
-			}
-			else continue;
-		}
-	}
-	else {
-		config_file.open("config.cfg", std::fstream::out);
-		for (const auto& cvar : variables) {
-			if (cvar.flags & CVAR_CONFIG) {
-				config_file << cvar.name << " ";
-				switch (cvar.type) {
-				case CVAR_BOOL: config_file << cvar.value.as_bool; break;
-				case CVAR_INT: config_file << cvar.value.as_int; break;
-				case CVAR_FLOAT: config_file << cvar.value.as_float; break;
-				}
-				config_file << '\n';
-			}
-		}
-	}
-	config_file.close();
+	load_config();
 
 	return true;
 }
@@ -293,7 +264,7 @@ void Console::set_variable(console_var* cvar, cstring value) {
 		}
 	}
 	else {
-		self << "Set variable: '" << cvar->name << "' is read-only.\n";
+		self << "'" << cvar->name << "' is read-only.\n";
 	}
 }
 
@@ -583,4 +554,44 @@ void Console::clear_buffer() {
 
 bool Console::is_open() {
 	return display_console;
+}
+
+void Console::load_config() {
+	std::fstream config_file("config.cfg", std::fstream::in);
+	if (config_file.is_open()) {
+		std::string line;
+		while (std::getline(config_file, line)) {
+			dcf::str_cpy(line.c_str(), input_buffer);
+			dcf::str_trim_spaces(input_buffer);
+			char* label = input_buffer;
+			char* value = dcf::str_next_word(label);
+			if (value != NULL) {
+				cstring a = dcf::str_find(label, ' ');
+				*dcf::str_find(label, ' ') = '\0';
+				if (console_var* cvar = find_variable(label)) {
+					switch (cvar->type) {
+					case CVAR_INT: cvar->value.as_int = atoi(value); break;
+					case CVAR_FLOAT: cvar->value.as_float = atof(value); break;
+					case CVAR_BOOL: cvar->value.as_bool = (atoi(value) == 0) ? true : false; break;
+					}
+				}
+			}
+		}
+		clear_input();
+	}
+	else {
+		config_file.open("config.cfg", std::fstream::out);
+		for (const auto& cvar : variables) {
+			if (cvar.flags & CVAR_CONFIG) {
+				config_file << cvar.name << " ";
+				switch (cvar.type) {
+				case CVAR_BOOL: config_file << cvar.value.as_bool; break;
+				case CVAR_INT: config_file << cvar.value.as_int; break;
+				case CVAR_FLOAT: config_file << cvar.value.as_float; break;
+				}
+				config_file << '\n';
+			}
+		}
+	}
+	config_file.close();
 }

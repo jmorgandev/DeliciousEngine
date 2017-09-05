@@ -7,13 +7,15 @@
 namespace dcf {
 	cstring str_find(cstring str, char c) {
 		while (*str != NULL) {
-			if (*str++ == c) return str;
+			if (*str == c) return str;
+			str++;
 		}
 		return NULL;
 	}
 	char* str_find(char* str, char c) {
 		while (*str != NULL) {
-			if (*str++ == c) return str;
+			if (*str == c) return str;
+			str++;
 		}
 		return NULL;
 	}
