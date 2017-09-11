@@ -49,6 +49,9 @@ Render the console with a bitmap font and a gui box renderer. The amount of line
 that are rendered is precalculated based upon the font that the console uses.
 */
 void Console::render() {
+	if (display_console == false) {
+		return;
+	}
 	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 
@@ -247,16 +250,16 @@ Attempts to write data to a registered variable. Constrains the assigned value
 based upon the type of the registered variable. Prints an error if the registered
 variable cannot be edited at runtime or if it does not exist.
 */
-void Console::set_variable(cstring name, cstring value) {
+void Console::set_variable(cstring name, cstring value, bool internal) {
 	if (console_var* cvar = find_variable(name)) {
-		set_variable(cvar, value);
+		set_variable(cvar, value, internal);
 	}
 	else {
 		self << "Set variable: '" << name << "' does not exist.\n";
 	}
 }
-void Console::set_variable(console_var* cvar, cstring value) {
-	if (cvar->flags & CVAR_MUTABLE) {
+void Console::set_variable(console_var* cvar, cstring value, bool internal) {
+	if (cvar->flags & CVAR_MUTABLE || internal) {
 		switch (cvar->type) {
 		case CVAR_INT: cvar->value.as_int = atoi(value); break;
 		case CVAR_FLOAT: cvar->value.as_float = atof(value); break;
@@ -277,9 +280,6 @@ void Console::execute_input(bool user_input) {
 	if (user_input) {
 		write_str(input_buffer, true);
 	}
-	dcf::str_trim_spaces(input_buffer);
-
-	self << "Execute: '" << input_buffer << "'\n";
 
 	char* label = input_buffer;
 	uint argc = dcf::str_count(input_buffer, ' ');
@@ -303,7 +303,6 @@ void Console::execute_input(bool user_input) {
 	else {
 		self << "Unknown command/variable: '" << label << "'\n";
 	}
-
 	clear_input();
 }
 
@@ -360,7 +359,7 @@ Console & Console::operator<<(const std::string & rhs) {
 Processes user input that was not detected as a text event. Handles scrolling,
 erasing, executing, auto-completion, input history, and toggling the console.
 */
-void Console::key_event(SDL_KeyboardEvent ev) {
+bool Console::key_event(SDL_KeyboardEvent ev) {
 	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
 		if (input_index == 0) {
@@ -386,11 +385,9 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		if (input_buffer[0] == NULL) {
 			break;
 		}
-		//Execute the input found in the input buffer
-		write_str(input_buffer, true);
-		clear_input();
+		//Execute the string in the input buffer
+		execute_input(true);
 		input_scroll = 0;
-		//scroll_bottom();
 		break;
 	case SDLK_UP:
 		//Cycle back through previously entered commands
@@ -423,8 +420,9 @@ void Console::key_event(SDL_KeyboardEvent ev) {
 		input_insert = !input_insert;
 		break;
 	default:
-		break;
+		return false;
 	}
+	return true;
 }
 
 /*
@@ -566,15 +564,8 @@ void Console::load_config() {
 			char* label = input_buffer;
 			char* value = dcf::str_next_word(label);
 			if (value != NULL) {
-				cstring a = dcf::str_find(label, ' ');
 				*dcf::str_find(label, ' ') = '\0';
-				if (console_var* cvar = find_variable(label)) {
-					switch (cvar->type) {
-					case CVAR_INT: cvar->value.as_int = atoi(value); break;
-					case CVAR_FLOAT: cvar->value.as_float = atof(value); break;
-					case CVAR_BOOL: cvar->value.as_bool = (atoi(value) == 0) ? true : false; break;
-					}
-				}
+				set_variable(label, value, true);
 			}
 		}
 		clear_input();
@@ -594,4 +585,13 @@ void Console::load_config() {
 		}
 	}
 	config_file.close();
+}
+
+void Console::send_event(SDL_Event ev) {
+	if (ev.type == SDL_KEYDOWN) {
+		event_handled = key_event(ev.key);
+	}
+	if (ev.type == SDL_TEXTINPUT && event_handled == false) {
+		text_event(ev.text);
+	}
 }

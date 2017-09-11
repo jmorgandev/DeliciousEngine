@@ -43,8 +43,7 @@ void Engine::flush_events() {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) running = false;
-		if (e.type == SDL_KEYDOWN) console.key_event(e.key);
-		if (e.type == SDL_TEXTINPUT) console.text_event(e.text);
+		console.send_event(e);
 	}
 }
 

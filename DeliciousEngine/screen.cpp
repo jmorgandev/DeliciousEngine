@@ -6,6 +6,7 @@
 #include "build_info.h"
 
 bool Screen::init(System_Ref sys) {
+	system = sys;
 	window = NULL;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -67,6 +68,39 @@ void Screen::update() {
 	
 
 	SDL_GL_SwapWindow(window);
+}
+
+void Screen::refresh() {
+	if (window != NULL) {
+		SDL_GL_DeleteContext(gl_context);
+		SDL_DestroyWindow(window);
+		window = NULL;
+	}
+
+	int video_width = system.console->find_variable("vid_width")->value.as_int;
+	int video_height = system.console->find_variable("vid_height")->value.as_int;
+
+	window = SDL_CreateWindow(
+		"Window Test!",
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
+		video_width, video_height,
+		SDL_WINDOW_OPENGL
+	);
+	screen_width = video_width;
+	screen_height = video_height;
+
+	if (!window) {
+		std::cout << "Window could not be refreshed: " << SDL_GetError() << '\n';
+		while (true);
+	}
+	gl_context = SDL_GL_CreateContext(window);
+	if (!gl_context) {
+		std::cout << "GL context could not be refreshed: " << SDL_GetError() << '\n';
+		while (true);
+	}
+
+	glewInit();
 }
 
 int Screen::get_width() {

@@ -159,4 +159,12 @@ namespace dcf {
 			str[i] = str[i + 1];
 		}
 	}
+	void str_split(char* str, char seperator) {
+		while (*str != NULL) {
+			if (*str == seperator) {
+				*str == '\0';
+			}
+			str++;
+		}
+	}
 }

@@ -26,12 +26,10 @@ public:
 
 	console_var* find_variable(cstring name);
 
-	void set_variable(cstring name, cstring value);
-	void set_variable(console_var* cvar, cstring value);
+	void set_variable(cstring name, cstring value, bool internal = false);
+	void set_variable(console_var* cvar, cstring value, bool internal = false);
 
-	//Input handling
-	void key_event(SDL_KeyboardEvent ev);
-	void text_event(SDL_TextInputEvent ev);
+	void send_event(SDL_Event ev);
 
 	//Renderer properties
 	void set_font(Font* fnt);
@@ -68,6 +66,7 @@ private:
 	uint16	input_index;
 	uint16	input_scroll;
 	bool	input_insert;
+	bool	event_handled;
 
 	//History & Auto-complete variables
 	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];
@@ -95,6 +94,8 @@ private:
 	console_cmd* find_command(cstring name);
 
 	//Input Functions
+	bool key_event(SDL_KeyboardEvent ev);
+	void text_event(SDL_TextInputEvent ev);
 	void write_to_input(cstring str);
 	void execute_input(bool user_input);
 	void clear_input();
