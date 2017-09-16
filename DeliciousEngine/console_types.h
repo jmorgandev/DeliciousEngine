@@ -12,18 +12,18 @@
 #define CVAR_USER	(CVAR_MUTABLE | CVAR_CONFIG)//Can be edited by the user and is written to the config file
 
 enum cvar_type {CVAR_BOOL, CVAR_FLOAT, CVAR_INT};	//The cvar type determines how the data value is restricted
-union system_var {
+union var_data {
 	int   as_int;
 	float as_float;
 	bool  as_bool;
-	system_var(int value) { as_int = value; }
-	system_var(float value) { as_float = value; }
-	system_var(bool value) { as_bool = value; }
+	var_data(int value) { as_int = value; }
+	var_data(float value) { as_float = value; }
+	var_data(bool value) { as_bool = value; }
 };
 struct console_var {
 	char	    name[CON_MAX_NAME];
 	cvar_type   type;
-	system_var value;
+	var_data value;
 	uint16	    flags;
 };
 

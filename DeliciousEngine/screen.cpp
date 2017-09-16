@@ -103,6 +103,17 @@ void Screen::refresh() {
 	glewInit();
 }
 
+bool Screen::create_window() {
+	if (window != nullptr) {
+		SDL_GL_DeleteContext(gl_context);
+		SDL_DestroyWindow(window);
+		gl_context = nullptr;
+		window = nullptr;
+	}
+
+
+}
+
 int Screen::get_width() {
 	return screen_width;
 }

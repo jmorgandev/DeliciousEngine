@@ -245,6 +245,13 @@ console_cmd* Console::find_command(cstring name) {
 	return NULL;
 }
 
+var_data Console::read_variable(cstring name) {
+	if (console_var* cvar = find_variable(name)) {
+		return cvar->value;
+	}
+	self << "'" << name << "' does not exist.\n";
+}
+
 /*
 Attempts to write data to a registered variable. Constrains the assigned value
 based upon the type of the registered variable. Prints an error if the registered

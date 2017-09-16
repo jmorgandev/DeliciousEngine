@@ -25,6 +25,7 @@ public:
 	void register_command(const console_cmd& cmd);
 
 	console_var* find_variable(cstring name);
+	var_data read_variable(cstring name);
 
 	void set_variable(cstring name, cstring value, bool internal = false);
 	void set_variable(console_var* cvar, cstring value, bool internal = false);

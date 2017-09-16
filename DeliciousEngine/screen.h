@@ -10,6 +10,7 @@ public:
 	bool init(System_Ref sys);
 
 	void update();
+	bool create_window();
 	void refresh();
 
 	int get_width();
