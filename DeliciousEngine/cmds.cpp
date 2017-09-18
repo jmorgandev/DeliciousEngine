@@ -34,3 +34,7 @@ ConsoleCommand(add) {
 	int result = a + b;
 	*system.console << a << " + " << b << " = " << result << '\n';
 }
+
+ConsoleCommand(quit) {
+	system.console->write_variable("eng_running", false);
+}

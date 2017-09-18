@@ -10,10 +10,10 @@ class Engine {
 public:
 	bool init(char** argv, int argc);
 	void run();
-	void clean();
 
+	void clean();
 private:
-	bool running;
+	system_var eng_running = false;
 
 	Console		console;
 	Resources	resources;

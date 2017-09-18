@@ -107,11 +107,13 @@ bool Screen::reload_window() {
 	return create_window();
 }
 
+GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 void Screen::update() {
 
 	
 
 	SDL_GL_SwapWindow(window);
+	glClearBufferfv(GL_COLOR, 0, bg_color);
 }
 
 int Screen::get_width() {

@@ -131,6 +131,7 @@ namespace dcf {
 		while (*src) {
 			*dst++ = *src++;
 		}
+		*dst = '\0';
 	}
 	void str_fill(char* src, char c, int amount) {
 		for (int i = 0; i < amount; i++) {

@@ -17,6 +17,8 @@ bool Engine::init(char** argv, int argc) {
 	if (resources.init(systems) == false) return false;
 	if (input.init(systems) == false) return false;
 
+	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
+
 	//console load config
 	if (screen.create_window() == false) return false;
 	if (resources.load_default_resources() == false) return false;
@@ -25,13 +27,12 @@ bool Engine::init(char** argv, int argc) {
 }
 
 void Engine::run() {
-	running = true;
-
-	GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	eng_running.as_bool = true;
 
 	SDL_StartTextInput();
-	while (running) {
-		glClearBufferfv(GL_COLOR, 0, bg_color);
+	while (eng_running.as_bool == true) {
+		//glClearBufferfv(GL_COLOR, 0, bg_color);
+		
 
 		flush_events();
 		console.render();
@@ -40,11 +41,7 @@ void Engine::run() {
 }
 
 void Engine::flush_events() {
-	SDL_Event e;
-	while (SDL_PollEvent(&e)) {
-		if (e.type == SDL_QUIT) running = false;
-		console.input_event(e);
-	}
+	input.process_events();
 }
 
 void Engine::clean() {

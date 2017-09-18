@@ -12,6 +12,7 @@ extern std::vector<console_cmd> default_cmds;
 //
 #define COMMAND_LIST\
 	CMD(clear)\
-	CMD(add)
+	CMD(add)\
+	CMD(quit)
 
 #endif
