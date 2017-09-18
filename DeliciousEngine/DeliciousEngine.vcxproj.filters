@@ -87,6 +87,9 @@
     <ClCompile Include="cmds.cpp">
       <Filter>Source Files\system_defaults</Filter>
     </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -159,6 +162,12 @@
       <Filter>Header Files\system_types</Filter>
     </ClInclude>
     <ClInclude Include="system_var.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="input_types.h">
       <Filter>Header Files\system_types</Filter>
     </ClInclude>
   </ItemGroup>

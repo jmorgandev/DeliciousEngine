@@ -4,6 +4,7 @@
 #include "console.h"
 #include "screen.h"
 #include "resources.h"
+#include "input.h"
 
 class Engine {
 public:
@@ -11,16 +12,13 @@ public:
 	void run();
 	void clean();
 
-	Console* get_console() { return &console; }
-	Resources* get_resources() { return &resources; }
-	Screen* get_screen() { return &screen; }
-
 private:
 	bool running;
 
-	Console	console;
-	Resources resources;
-	Screen	screen;
+	Console		console;
+	Resources	resources;
+	Screen		screen;
+	Input		input;
 
 	void flush_events();
 };

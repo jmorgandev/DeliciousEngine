@@ -15,6 +15,7 @@ bool Engine::init(char** argv, int argc) {
 	if (console.init(systems) == false) return false;
 	if (screen.init(systems) == false) return false;
 	if (resources.init(systems) == false) return false;
+	if (input.init(systems) == false) return false;
 
 	//console load config
 	if (screen.create_window() == false) return false;

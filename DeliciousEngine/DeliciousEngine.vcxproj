@@ -132,6 +132,7 @@
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="font_renderer.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
@@ -150,6 +151,8 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="font_renderer.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="input_types.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_data.h" />
     <ClInclude Include="resources.h" />
