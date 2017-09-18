@@ -8,6 +8,9 @@
 bool Input::init(System_Ref sys) {
 	system = sys;
 
+	bind(SDLK_BACKQUOTE, "con_toggle");
+	bind(SDLK_ESCAPE, "quit");
+
 	return true;
 }
 
