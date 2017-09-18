@@ -38,7 +38,6 @@ Texture* Resources::load_texture(std::string filepath) {
 	}
 	//Otherwise we have the surface
 
-	//@TODO - Switch to Non-DSA code
 	GLuint texture_object;
 	glGenTextures(1, &texture_object);
 	glBindTexture(GL_TEXTURE_2D, texture_object);

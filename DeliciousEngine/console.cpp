@@ -381,7 +381,8 @@ bool Console::key_event(SDL_KeyboardEvent ev) {
 	case SDLK_BACKQUOTE:
 		display_console = !display_console;
 		break;
-	case SDLK_RETURN:
+	case SDLK_RETURN: 
+	case SDLK_KP_ENTER:
 		if (input_buffer[0] == NULL) {
 			break;
 		}

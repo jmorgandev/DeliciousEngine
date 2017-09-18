@@ -2,6 +2,7 @@
 #define DELICIOUS_SCREEN_H
 
 #include <SDL/SDL_video.h>
+#include <GL/glew.h>
 
 #include "system_ref.h"
 #include "system_var.h"
@@ -17,11 +18,17 @@ public:
 
 	int get_width();
 	int get_height();
+
+	void gui_begin();
+	void gui_end();
 private:
 	System_Ref system;
 
 	SDL_Window* window;
 	SDL_GLContext gl_context;
+
+	GLuint gui_vertex_array;
+	GLuint gui_vertex_buffers[2];
 
 	system_var vid_init = false;
 	system_var vid_width = 800;

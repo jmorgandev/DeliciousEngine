@@ -8,9 +8,9 @@
 
 bool Engine::init(char** argv, int argc) {
 	System_Ref systems;
-	systems.console		= &console;
-	systems.screen		= &screen;
-	systems.resources	= &resources;
+	systems.console	= &console;
+	systems.screen = &screen;
+	systems.resources = &resources;
 
 	if (console.init(systems) == false) return false;
 	if (screen.init(systems) == false) return false;
