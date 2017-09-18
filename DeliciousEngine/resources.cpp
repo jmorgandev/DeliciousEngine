@@ -17,36 +17,6 @@ bool Resources::init(System_Ref sys) {
 	system = sys;
 
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
-	
-	//make_mesh("triangle", std_triangle);
-	//make_mesh("quad", std_quad);
-	//make_mesh("quad", primitive_quad);
-
-	load_gui_resources();
-
-	Shader* font_shader = load_shader("res/bmp_font.glsl");
-	if (font_shader == nullptr) {
-		//ERROR
-		return false;
-	}
-	Texture* font_texture = load_texture("res/consolas_24.tga");
-	if (font_texture == nullptr) {
-		//ERROR
-		return false;
-	}
-	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
-	if (con_font == nullptr) {
-		//ERROR
-		return false;
-	}
-	sys.console->set_font(con_font);
-
-	Shader* box_shader = load_shader("res/shape.glsl");
-	if (box_shader == nullptr) {
-		//ERROR
-		return false;
-	}
-	sys.console->set_gui_properties(gui_vertex_array, box_shader);
 
 	return true;
 }
@@ -254,4 +224,24 @@ void Resources::load_gui_resources() {
 void Resources::unload_gui_resources() {
 	glDeleteBuffers(2, gui_vertex_buffers);
 	glDeleteVertexArrays(1, &gui_vertex_array);
+}
+
+bool Resources::load_default_resources() {
+	load_gui_resources();
+
+	Shader* font_shader = load_shader("res/bmp_font.glsl");
+	if (font_shader == nullptr)	return false;
+
+	Texture* font_texture = load_texture("res/consolas_24.tga");
+	if (font_texture == nullptr) return false;
+
+	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
+	if (con_font == nullptr) return false;
+	system.console->set_font(con_font);
+
+	Shader* box_shader = load_shader("res/shape.glsl");
+	if (box_shader == nullptr) return false;
+	system.console->set_gui_properties(gui_vertex_array, box_shader);
+
+	return true;
 }

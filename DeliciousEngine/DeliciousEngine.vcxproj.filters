@@ -146,9 +146,6 @@
     <ClInclude Include="cmds.h">
       <Filter>Header Files\system_defaults</Filter>
     </ClInclude>
-    <ClInclude Include="cvars.h">
-      <Filter>Header Files\system_defaults</Filter>
-    </ClInclude>
     <ClInclude Include="primitives.h">
       <Filter>Header Files\system_defaults</Filter>
     </ClInclude>
@@ -156,6 +153,12 @@
       <Filter>Header Files\toolbox</Filter>
     </ClInclude>
     <ClInclude Include="system_ref.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
+    <ClInclude Include="screen_types.h">
+      <Filter>Header Files\system_types</Filter>
+    </ClInclude>
+    <ClInclude Include="system_var.h">
       <Filter>Header Files\system_types</Filter>
     </ClInclude>
   </ItemGroup>

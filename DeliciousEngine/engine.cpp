@@ -7,20 +7,19 @@
 #include "system_ref.h"
 
 bool Engine::init(char** argv, int argc) {
-	System_Ref sys;
-	sys.console		= &console;
-	sys.screen		= &screen;
-	sys.resources	= &resources;
+	System_Ref systems;
+	systems.console		= &console;
+	systems.screen		= &screen;
+	systems.resources	= &resources;
 
-	if (!console.init(sys)) {
-		return false;
-	}
-	if (!screen.init(sys)) {
-		return false;
-	}
-	if (!resources.init(sys)) {
-		return false;
-	}
+	if (console.init(systems) == false) return false;
+	if (screen.init(systems) == false) return false;
+	if (resources.init(systems) == false) return false;
+
+	//console load config
+	if (screen.create_window() == false) return false;
+	if (resources.load_default_resources() == false) return false;
+
 	return true;
 }
 
@@ -43,7 +42,7 @@ void Engine::flush_events() {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) running = false;
-		console.send_event(e);
+		console.input_event(e);
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include "dtypes.h"
 #include "system_ref.h"
+#include "system_var.h"
 
 #define CON_MAX_NAME	32
 
@@ -12,19 +13,11 @@
 #define CVAR_USER	(CVAR_MUTABLE | CVAR_CONFIG)//Can be edited by the user and is written to the config file
 
 enum cvar_type {CVAR_BOOL, CVAR_FLOAT, CVAR_INT};	//The cvar type determines how the data value is restricted
-union var_data {
-	int   as_int;
-	float as_float;
-	bool  as_bool;
-	var_data(int value) { as_int = value; }
-	var_data(float value) { as_float = value; }
-	var_data(bool value) { as_bool = value; }
-};
 struct console_var {
-	char	    name[CON_MAX_NAME];
-	cvar_type   type;
-	var_data value;
-	uint16	    flags;
+	char		name[CON_MAX_NAME];
+	system_var* value;
+	cvar_type	type;
+	uint16		flags;
 };
 
 typedef void(*cmd_callback)(System_Ref, char*, int);

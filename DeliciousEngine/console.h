@@ -19,18 +19,19 @@
 class Console {
 public:
 	bool init(System_Ref sys);
+	void load_config();
 	void render();
 
-	void register_variable(const console_var& var);
+	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(const console_cmd& cmd);
 
-	console_var* find_variable(cstring name);
-	var_data read_variable(cstring name);
+	system_var* read_variable(cstring name);
+	void write_variable(cstring name, int value);
+	void write_variable(cstring name, float value);
+	void write_variable(cstring name, bool value);
+	void write_variable(cstring name, system_var value, cvar_type type);
 
-	void set_variable(cstring name, cstring value, bool internal = false);
-	void set_variable(console_var* cvar, cstring value, bool internal = false);
-
-	void send_event(SDL_Event ev);
+	void input_event(SDL_Event ev);
 
 	//Renderer properties
 	void set_font(Font* fnt);
@@ -92,7 +93,11 @@ private:
 	void buffer_alloc();
 	void terminate_current_line();
 
+	console_var* find_variable(cstring name);
 	console_cmd* find_command(cstring name);
+
+	void set_variable(cstring name, cstring value);
+	void set_variable(console_var* cvar, cstring value);
 
 	//Input Functions
 	bool key_event(SDL_KeyboardEvent ev);
@@ -108,8 +113,6 @@ private:
 	void scroll_bottom();
 	bool scroll_left();
 	bool scroll_right();
-
-	void load_config();
 };
 
 #endif

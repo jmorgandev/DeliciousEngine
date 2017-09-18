@@ -1,5 +1,6 @@
 #include "console.h"
 
+#include <iostream>
 #include <math.h>
 #include <fstream>
 #include <string>
@@ -8,17 +9,13 @@
 #include "dcm.h"
 #include "dmath.h"
 #include "engine.h"
-#include "cvars.h"
 #include "cmds.h"
 
 /*
 Console initialization:										
-1. Initialize member variables							
-2. Register default console variables					
-3. Register default console commands					
-4. Load user variable values from config.cfg			
-	4a. If the file does not exist, create it.			
-5. Open a new logging file to echo console messages to.
+1. Initialize member variables											
+2. Register default console commands							
+3. Open a new logging file to echo console messages to.
 */
 bool Console::init(System_Ref sys) {
 	system = sys;
@@ -32,14 +29,9 @@ bool Console::init(System_Ref sys) {
 	input_scroll = 0;
 	display_console = true;
 
-	for (const auto& cvar : default_cvars) {
-		register_variable(cvar);
-	}
 	for (const auto& cmd : default_cmds) {
 		register_command(cmd);
 	}
-
-	load_config();
 
 	return true;
 }
@@ -118,7 +110,6 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 		int remaining_line = line_size - (write_index % line_size);
 		int remaining_string = dcf::str_len(str);
 		if (remaining_string > remaining_line) {
-			//buffer_alloc(line_size);
 			//initially try to wrap from the character that causes the overflow
 			cstring wrap_point = str + line_size;
 			if (dcf::is_wspace(*wrap_point) == false) {
@@ -157,7 +148,6 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 	}
 	//if we need to move to the next line...
 	if (new_line && write_index % line_size != 0) {
-		//buffer_alloc(line_size);
 		terminate_current_line();
 		buffer_alloc();
 	}
@@ -201,11 +191,16 @@ void Console::write_to_input(cstring str) {
 Attempts to register a variable to the variable list. If one already
 exists with the same name, print an error to the console.
 */
-void Console::register_variable(const console_var& var) {
-	if (find_variable(var.name)) {
-		self << "Register variable: '" << var.name << "' already exists.\n";
+void Console::register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags) {
+	if (find_variable(name)) {
+		self << "register_variable: '" << name << "' already exists!\n";
 	}
-	else variables.push_back(var);
+	else {
+		assert(dcf::str_len(name) <= CON_MAX_NAME);
+		console_var new_cvar = { "", ref, type, access_flags };
+		dcf::str_cpy(name, new_cvar.name);
+		variables.push_back(new_cvar);
+	}
 }
 
 /*
@@ -214,7 +209,7 @@ with the same name, print an error to the console.
 */
 void Console::register_command(const console_cmd& cmd) {
 	if (find_command(cmd.name)) {
-		self << "Register command: '" << cmd.name << "' already exists.\n";
+		self << "register_command: '" << cmd.name << "' already exists!\n";
 	}
 	else commands.push_back(cmd);
 }
@@ -245,36 +240,34 @@ console_cmd* Console::find_command(cstring name) {
 	return NULL;
 }
 
-var_data Console::read_variable(cstring name) {
+system_var* Console::read_variable(cstring name) {
 	if (console_var* cvar = find_variable(name)) {
 		return cvar->value;
 	}
-	self << "'" << name << "' does not exist.\n";
+	self << "read_variable: '" << name << "' does not exist!\n";
+	return nullptr;
 }
 
-/*
-Attempts to write data to a registered variable. Constrains the assigned value
-based upon the type of the registered variable. Prints an error if the registered
-variable cannot be edited at runtime or if it does not exist.
-*/
-void Console::set_variable(cstring name, cstring value, bool internal) {
-	if (console_var* cvar = find_variable(name)) {
-		set_variable(cvar, value, internal);
-	}
-	else {
-		self << "Set variable: '" << name << "' does not exist.\n";
-	}
+void Console::write_variable(cstring name, int value) {
+	write_variable(name, value, CVAR_INT);
 }
-void Console::set_variable(console_var* cvar, cstring value, bool internal) {
-	if (cvar->flags & CVAR_MUTABLE || internal) {
-		switch (cvar->type) {
-		case CVAR_INT: cvar->value.as_int = atoi(value); break;
-		case CVAR_FLOAT: cvar->value.as_float = atof(value); break;
-		case CVAR_BOOL: cvar->value.as_bool = (atoi(value) == 0) ? true : false; break;
+void Console::write_variable(cstring name, float value) {
+	write_variable(name, value, CVAR_FLOAT);
+}
+void Console::write_variable(cstring name, bool value) {
+	write_variable(name, value, CVAR_BOOL);
+}
+void Console::write_variable(cstring name, system_var value, cvar_type type) {
+	if (console_var* cvar = find_variable(name)) {
+		if (cvar->type == type) {
+			*cvar->value = value;
+		}
+		else {
+			self << "write_variable: '" << name << "' type mismatch!\n";
 		}
 	}
 	else {
-		self << "'" << cvar->name << "' is read-only.\n";
+		self << "write_variable: '" << name << "' does not exist!\n";
 	}
 }
 
@@ -298,7 +291,7 @@ void Console::execute_input(bool user_input) {
 
 	if (console_var* cvar = find_variable(label)) {
 		if (argc == 1) {
-			set_variable(cvar, argv);
+			//set_variable(cvar, argv);
 		}
 		else {
 			self << "Set variable usage: <var> <value>\n";
@@ -316,7 +309,7 @@ void Console::execute_input(bool user_input) {
 /*
 Sets the bitmap font that the console renders in. Uses the font size to calculate
 how many characters can fit in one line (line_size), how many lines can be rendered
-before scrolling (visible_lines) and the aligned extent of the text buffer.
+before scrolling (visible_lines), and the aligned extent of the text buffer.
 */
 void Console::set_font(Font* fnt) {
 	Screen* scr = system.screen;
@@ -572,7 +565,7 @@ void Console::load_config() {
 			char* value = dcf::str_next_word(label);
 			if (value != NULL) {
 				*dcf::str_find(label, ' ') = '\0';
-				set_variable(label, value, true);
+				//set_variable(label, value, true);
 			}
 		}
 		clear_input();
@@ -583,9 +576,9 @@ void Console::load_config() {
 			if (cvar.flags & CVAR_CONFIG) {
 				config_file << cvar.name << " ";
 				switch (cvar.type) {
-				case CVAR_BOOL: config_file << cvar.value.as_bool; break;
-				case CVAR_INT: config_file << cvar.value.as_int; break;
-				case CVAR_FLOAT: config_file << cvar.value.as_float; break;
+				//case CVAR_BOOL: config_file << cvar.value.as_bool; break;
+				//case CVAR_INT: config_file << cvar.value.as_int; break;
+				//case CVAR_FLOAT: config_file << cvar.value.as_float; break;
 				}
 				config_file << '\n';
 			}
@@ -594,11 +587,62 @@ void Console::load_config() {
 	config_file.close();
 }
 
-void Console::send_event(SDL_Event ev) {
+void Console::input_event(SDL_Event ev) {
 	if (ev.type == SDL_KEYDOWN) {
 		event_handled = key_event(ev.key);
 	}
 	if (ev.type == SDL_TEXTINPUT && event_handled == false) {
 		text_event(ev.text);
+	}
+}
+
+//void Console::load_config() {
+//	std::fstream config_file("config.cfg", std::fstream::in);
+//	if (config_file.is_open()) {
+//		std::string line;
+//		while (std::getline(config_file, line)) {
+//			dcf::str_cpy(line.c_str(), input_buffer);
+//			dcf::str_trim_spaces(input_buffer);
+//			
+//			char* label = input_buffer;
+//			char* value = dcf::str_next_word(label);
+//			if (value != NULL) {
+//				*dcf::str_find(label, ' ') = '\0';
+//				set_variable(label, value);
+//			}
+//			clear_input();
+//		}
+//	}
+//	else {
+//		config_file.open("config.cfg", std::fstream::out);
+//		for (const auto& cvar : variables) {
+//			if (cvar.flags & CVAR_CONFIG) {
+//				config_file << cvar.name;
+//				switch (cvar.type) {
+//				case CVAR_INT: config_file << cvar.value->as_int; break;
+//				case CVAR_FLOAT: config_file << cvar.value->as_float; break;
+//				case CVAR_BOOL: config_file << cvar.value->as_bool; break;
+//				}
+//				config_file << '\n';
+//			}
+//		}
+//	}
+//	config_file.close();
+//}
+
+void Console::set_variable(cstring name, cstring value) {
+	if (console_var* cvar = find_variable(name)) {
+		set_variable(cvar, value);
+	}
+	else {
+		self << "set_variable: '" << name << "' does not exist!\n";
+	}
+}
+
+void Console::set_variable(console_var* cvar, cstring value) {
+	switch (cvar->type) {
+	case CVAR_INT: cvar->value->as_int = std::atoi(value); break;
+	case CVAR_FLOAT: cvar->value->as_float = std::atof(value); break;
+	case CVAR_BOOL: cvar->value->as_bool = (value[0] == '1') ? true : false; break;
 	}
 }

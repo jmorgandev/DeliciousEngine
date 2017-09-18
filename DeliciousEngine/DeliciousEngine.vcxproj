@@ -154,11 +154,12 @@
     <ClInclude Include="mesh_data.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
+    <ClInclude Include="screen_types.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="cmds.h" />
-    <ClInclude Include="cvars.h" />
     <ClInclude Include="primitives.h" />
     <ClInclude Include="system_ref.h" />
+    <ClInclude Include="system_var.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
