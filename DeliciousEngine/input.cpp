@@ -51,6 +51,9 @@ void Input::process_events() {
 				record->state = KEY_HOLD;
 			}
 			else {
+				// @TODO - Give console input priority and prevent keybindings from being
+				//		   triggered whilst the console has focus.
+
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
 					//call the keybind console command
 				}
