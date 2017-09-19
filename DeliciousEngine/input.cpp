@@ -10,16 +10,16 @@ bool Input::init(System_Ref sys) {
 
 	key_records.reserve(10);
 
-	bind(SDLK_BACKQUOTE, "con_toggle");
+	bind(SDLK_BACKQUOTE, "toggleconsole");
 	bind(SDLK_ESCAPE, "quit");
 
 	return true;
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {
-	for (auto keybind : key_binds) {
-		if (keybind.keycode == keycode) {
-			dcf::str_cpy(command, keybind.command);
+	for (auto bind : key_binds) {
+		if (bind.keycode == keycode) {
+			dcf::str_cpy(command, bind.command);
 			return;
 		}
 	}
@@ -54,8 +54,13 @@ void Input::process_events() {
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
 					//call the keybind console command
 				}
-				key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
-				key_records.push_back(new_record);
+				else if (system.console->is_open()) {
+					system.console->input_event(event);
+				}
+				else {
+					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
+					key_records.push_back(new_record);
+				}
 			}
 			break;
 		case SDL_KEYUP:
@@ -63,10 +68,6 @@ void Input::process_events() {
 				record->state = KEY_RELEASED;
 			}
 			break;
-		}
-
-		if (system.console->is_open()) {
-			system.console->input_event(event);
 		}
 	}
 }
