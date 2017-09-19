@@ -1,6 +1,6 @@
 #include "dmath.h"
 
-unsigned abs(int value) { return value < 0 ? 0 - unsigned(value) : unsigned(value); }
+//unsigned abs(int value) { return value < 0 ? 0 - unsigned(value) : unsigned(value); }
 
 namespace math {
 
@@ -40,9 +40,5 @@ namespace math {
 		if (v < min) return max;
 		if (v > max) return min;
 		return v;
-	}
-	int mem_diff(cstring first, cstring second)	{
-		if (first > second) return first - second;
-		else return second - first;
 	}
 }

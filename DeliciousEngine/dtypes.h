@@ -1,17 +1,19 @@
 #ifndef DTYPES_H
 #define DTYPES_H
 
+#include <array>
 #include <stdint.h>
 
-typedef unsigned long long uint64, qword;
-typedef signed long long int64;
-typedef unsigned int uint32, dword;
-typedef signed int int32;
+typedef uint64_t uint64, qword;
+typedef int64_t int64;
+typedef uint32_t uint32, dword;
+typedef int32_t int32;
+typedef uint16_t uint16, word;
+typedef int16_t int16;
+typedef uint8_t uint8, uchar, byte;
+typedef int8_t int8;
+
 typedef unsigned int uint;
-typedef unsigned short uint16, word;
-typedef signed short int16;
-typedef unsigned char uint8, uchar, byte;
-typedef signed char int8;
 typedef const char *cstring;
 
 template <class type> class scoped_ptr {
@@ -45,6 +47,25 @@ public:
 	void free() { if (raw_pointer) { delete[] raw_pointer; raw_pointer = nullptr; } }
 private:
 	type* raw_pointer;
+};
+
+template <class type, size_t limit> class fixed_stack {
+public:
+	size_t count() { return array_count };
+	size_t size() { return array_size; }
+
+	bool push(type element) {
+		if (array_count == array_size) return false;
+		fixed_array[array_count++] = element;
+		return true;
+	}
+	void pop() {
+
+	}
+private:
+	std::array<type, limit> fixed_array;
+	size_t array_count = 0;
+	size_t array_size = 0;
 };
 
 #endif

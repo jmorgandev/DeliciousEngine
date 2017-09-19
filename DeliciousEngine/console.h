@@ -40,6 +40,7 @@ public:
 	void clear_buffer();
 
 	bool is_open();
+	void display(bool d);
 
 	//Operator overloads
 	Console& operator<<(const bool& rhs);

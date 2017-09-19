@@ -13,17 +13,18 @@ public:
 
 	void process_events();
 
-	bool get_keydown(SDL_Keycode keycode);
-	bool get_keyup(SDL_Keycode keycode);
-	bool get_keyhold(SDL_Keycode keycode);
-
 	void bind(SDL_Keycode keycode, cstring command);
 	void unbind(SDL_Keycode keycode);
 private:
 	System_Ref system;
 
-	std::vector<key_bind> key_bindings;
-	std::vector<key_record> key_stack;
+	std::vector<key_bind> key_binds;
+	std::vector<key_record> key_records;
+
+	key_bind* find_bind(SDL_Keycode key);
+	key_record* find_record(SDL_Keycode key);
+
+	void update_records();
 };
 
 #endif

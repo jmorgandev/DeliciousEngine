@@ -219,9 +219,9 @@ Attempts to fetch the pointer of a registered variable. Only returns a
 valid pointer if the names match exactly.
 */
 console_var* Console::find_variable(cstring name) {
-	for (auto it = variables.begin(); it != variables.end(); it++) {
-		if (dcf::str_cmp_exact(name, it->name)) {
-			return &(*it);
+	for (auto itr = variables.begin(); itr != variables.end(); itr++) {
+		if (dcf::str_cmp_exact(name, itr->name)) {
+			return &(*itr);
 		}
 	}
 	return NULL;
@@ -232,9 +232,9 @@ Attempts to fetch the pointer of a registered command. Only returns a
 valid pointer if the names match exactly.
 */
 console_cmd* Console::find_command(cstring name) {
-	for (auto it = commands.begin(); it != commands.end(); it++) {
-		if (dcf::str_cmp_exact(name, it->name)) {
-			return &(*it);
+	for (auto itr = commands.begin(); itr != commands.end(); itr++) {
+		if (dcf::str_cmp_exact(name, itr->name)) {
+			return &(*itr);
 		}
 	}
 	return NULL;
@@ -379,7 +379,7 @@ bool Console::key_event(SDL_KeyboardEvent ev) {
 		//Partial command or variable completion
 		break;
 	case SDLK_BACKQUOTE:
-		display_console = !display_console;
+		display(false);
 		break;
 	case SDLK_RETURN: 
 	case SDLK_KP_ENTER:
@@ -646,4 +646,8 @@ void Console::set_variable(console_var* cvar, cstring value) {
 	case CVAR_FLOAT: cvar->value->as_float = std::atof(value); break;
 	case CVAR_BOOL: cvar->value->as_bool = (value[0] == '1') ? true : false; break;
 	}
+}
+
+void Console::display(bool d) {
+	display_console = d;
 }

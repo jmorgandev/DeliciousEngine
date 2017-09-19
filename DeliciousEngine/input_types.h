@@ -14,6 +14,7 @@ struct key_record {
 	SDL_Keycode keycode;
 	key_state state;
 };
+
 struct key_bind {
 	SDL_Keycode keycode;
 	char command[CON_MAX_NAME];
