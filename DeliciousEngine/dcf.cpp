@@ -160,6 +160,12 @@ namespace dcf {
 			str[i] = str[i + 1];
 		}
 	}
+	void str_shift_right(char* str, uint index) {
+		uint str_size = str_len(str);
+		for (uint i = str_size; i > index; i--) {
+			str[i] = str[i - 1];
+		}
+	}
 	void str_split(char* str, char seperator) {
 		while (*str != NULL) {
 			if (*str == seperator) {

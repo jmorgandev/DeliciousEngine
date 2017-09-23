@@ -31,7 +31,10 @@ public:
 	void write_variable(cstring name, bool value);
 	void write_variable(cstring name, system_var value, cvar_type type);
 
-	void input_event(SDL_Event ev);
+	void execute_keybind(cstring bind_str);
+
+	void key_input(SDL_KeyboardEvent ev);
+	void text_input(SDL_TextInputEvent ev);
 
 	//Renderer properties
 	void set_font(Font* fnt);
@@ -41,6 +44,7 @@ public:
 
 	bool is_open();
 	void display(bool d);
+	void display_toggle();
 
 	//Operator overloads
 	Console& operator<<(const bool& rhs);
@@ -70,6 +74,7 @@ private:
 	uint16	input_scroll;
 	bool	input_insert;
 	bool	event_handled;
+	bool	ignore_next_text_input;
 
 	//History & Auto-complete variables
 	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];
@@ -100,9 +105,9 @@ private:
 	void set_variable(cstring name, cstring value);
 	void set_variable(console_var* cvar, cstring value);
 
+	void execute_string(cstring cmd_str);
+
 	//Input Functions
-	bool key_event(SDL_KeyboardEvent ev);
-	void text_event(SDL_TextInputEvent ev);
 	void write_to_input(cstring str);
 	void execute_input(bool user_input);
 	void clear_input();

@@ -17,19 +17,18 @@ bool Engine::init(char** argv, int argc) {
 	if (resources.init(systems) == false) return false;
 	if (input.init(systems) == false) return false;
 
-	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
-
 	//console load config
 	if (screen.create_window() == false) return false;
 	if (resources.load_default_resources() == false) return false;
+
+	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
 
 	return true;
 }
 
 void Engine::run() {
 	eng_running.as_bool = true;
-
-	SDL_StartTextInput();
+	
 	while (eng_running.as_bool == true) {
 		//glClearBufferfv(GL_COLOR, 0, bg_color);
 		

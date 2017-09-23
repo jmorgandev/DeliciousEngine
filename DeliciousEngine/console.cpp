@@ -280,12 +280,29 @@ void Console::execute_input(bool user_input) {
 	if (user_input) {
 		write_str(input_buffer, true);
 	}
+	execute_string(input_buffer);
+	clear_input();
+}
 
-	char* label = input_buffer;
-	uint argc = dcf::str_count(input_buffer, ' ');
-	char* argv = NULL;
+void Console::execute_keybind(cstring cmd_str) {
+	if (display_console == true && dcf::str_cmp_exact(cmd_str, "toggleconsole")) {
+		display_console = false;
+	}
+	else {
+		execute_string(cmd_str);
+	}
+}
+
+void Console::execute_string(cstring cmd_str) {
+	char buffer[CON_INPUT_SIZE];
+	dcf::str_cpy(cmd_str, buffer);
+	dcf::str_trim_spaces(buffer);
+
+	char* label = buffer;
+	char* argv = nullptr;
+	uint argc = dcf::str_count(buffer, ' ');
 	if (argc > 0) {
-		argv = dcf::str_next_word(input_buffer);
+		argv = dcf::str_next_word(buffer);
 		*dcf::str_find(label, ' ') = '\0';
 	}
 
@@ -303,7 +320,6 @@ void Console::execute_input(bool user_input) {
 	else {
 		self << "Unknown command/variable: '" << label << "'\n";
 	}
-	clear_input();
 }
 
 /*
@@ -359,27 +375,28 @@ Console & Console::operator<<(const std::string & rhs) {
 Processes user input that was not detected as a text event. Handles scrolling,
 erasing, executing, auto-completion, input history, and toggling the console.
 */
-bool Console::key_event(SDL_KeyboardEvent ev) {
+void Console::key_input(SDL_KeyboardEvent ev) {
 	switch (ev.keysym.sym) {
 	case SDLK_BACKSPACE:
-		if (input_index == 0) {
-			break;
+		if (input_index != 0) {
+			if (input_buffer[input_index] == '\0' || input_index == CON_INPUT_LENGTH) {
+				input_index--;
+				input_buffer[input_index] = '\0';
+			}
+			else {
+				input_index--;
+				dcf::str_shift_left(input_buffer, input_index);
+			}
+			scroll_left();
 		}
-		if (input_buffer[input_index] == NULL || input_index == CON_INPUT_LENGTH) {
-			input_index--;
-			input_buffer[input_index] = NULL;
-		}
-		else {
-			input_index--;
+		break;
+	case SDLK_DELETE:
+		if (input_index != CON_INPUT_LENGTH && input_buffer[input_index] + 1 != '\0') {
 			dcf::str_shift_left(input_buffer, input_index);
 		}
-		scroll_left();
 		break;
 	case SDLK_TAB:
 		//Partial command or variable completion
-		break;
-	case SDLK_BACKQUOTE:
-		display(false);
 		break;
 	case SDLK_RETURN: 
 	case SDLK_KP_ENTER:
@@ -421,9 +438,8 @@ bool Console::key_event(SDL_KeyboardEvent ev) {
 		input_insert = !input_insert;
 		break;
 	default:
-		return false;
+		break;
 	}
-	return true;
 }
 
 /*
@@ -431,28 +447,26 @@ Processes user input that was detected as a text event. Handles inserting
 characters in the middle of the buffer, and whether the typed character
 can be printed to the screen or not.
 */
-void Console::text_event(SDL_TextInputEvent ev) {
-	if (dcf::printable(*ev.text) == false || input_index == CON_INPUT_LENGTH) {
-		return;
-	}
-	if (input_insert || input_buffer[input_index] == NULL) {
-		//Overwrite the characters over the input cursor
-		input_buffer[input_index] = *ev.text;
-		input_index++;
-	}
-	else {
-		//Shift the input characters to the right if there is space
-		auto input_size = dcf::str_len(input_buffer);
-		if (input_size != CON_INPUT_LENGTH) {
-			//Loop over the input buffer and shift right
-			for (int i = input_size; i != input_index; i--) {
-				input_buffer[i] = input_buffer[i - 1];
+void Console::text_input(SDL_TextInputEvent ev) {
+	if (ignore_next_text_input == false) {
+		if (dcf::printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
+			if (input_insert == false && input_buffer[input_index] != '\0') {
+				uint input_size = dcf::str_len(input_buffer);
+				if (input_size != CON_INPUT_LENGTH) {
+					dcf::str_shift_right(input_buffer, input_index);
+					input_buffer[input_index++] = *ev.text;
+					scroll_right();
+				}
 			}
-			input_buffer[input_index] = *ev.text;
-			input_index++;
+			else {
+				input_buffer[input_index++] = *ev.text;
+				scroll_right();
+			}
 		}
 	}
-	scroll_right();
+	else {
+		ignore_next_text_input = false;
+	}
 }
 
 /*
@@ -588,15 +602,6 @@ void Console::load_config() {
 	config_file.close();
 }
 
-void Console::input_event(SDL_Event ev) {
-	if (ev.type == SDL_KEYDOWN) {
-		event_handled = key_event(ev.key);
-	}
-	if (ev.type == SDL_TEXTINPUT && event_handled == false) {
-		text_event(ev.text);
-	}
-}
-
 //void Console::load_config() {
 //	std::fstream config_file("config.cfg", std::fstream::in);
 //	if (config_file.is_open()) {
@@ -650,4 +655,10 @@ void Console::set_variable(console_var* cvar, cstring value) {
 
 void Console::display(bool d) {
 	display_console = d;
+	ignore_next_text_input = d;
+}
+
+void Console::display_toggle() {
+	display_console = !display_console;
+	ignore_next_text_input = true;
 }

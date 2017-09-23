@@ -38,3 +38,7 @@ ConsoleCommand(add) {
 ConsoleCommand(quit) {
 	system.console->write_variable("eng_running", false);
 }
+
+ConsoleCommand(toggleconsole) {
+	system.console->display_toggle();
+}

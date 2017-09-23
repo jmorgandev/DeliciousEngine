@@ -32,6 +32,7 @@ namespace dcf {
 	void str_fill(char* src, char c, int amount);
 	void str_trim_spaces(char* str);
 	void str_shift_left(char* str, uint index);
+	void str_shift_right(char* str, uint index);
 	void str_split(char* str, char seperator);
 }
 

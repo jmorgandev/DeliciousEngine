@@ -11,7 +11,6 @@ bool Input::init(System_Ref sys) {
 	key_records.reserve(10);
 
 	bind(SDLK_BACKQUOTE, "toggleconsole");
-	bind(SDLK_ESCAPE, "quit");
 
 	return true;
 }
@@ -47,18 +46,15 @@ void Input::process_events() {
 			system.console->write_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN:
+			if (system.console->is_open()) {
+				system.console->key_input(event.key);
+			}
 			if (key_record* record = find_record(event.key.keysym.sym)) {
 				record->state = KEY_HOLD;
 			}
 			else {
-				// @TODO - Give console input priority and prevent keybindings from being
-				//		   triggered whilst the console has focus.
-
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
-					//call the keybind console command
-				}
-				else if (system.console->is_open()) {
-					system.console->input_event(event);
+					system.console->execute_keybind(bind->command);
 				}
 				else {
 					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
@@ -69,6 +65,11 @@ void Input::process_events() {
 		case SDL_KEYUP:
 			if (key_record* record = find_record(event.key.keysym.sym)) {
 				record->state = KEY_RELEASED;
+			}
+			break;
+		case SDL_TEXTINPUT:
+			if (system.console->is_open()) {
+				system.console->text_input(event.text);
 			}
 			break;
 		}
