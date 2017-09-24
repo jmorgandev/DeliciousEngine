@@ -46,20 +46,20 @@ void Input::process_events() {
 			system.console->write_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN:
-			if (system.console->is_open()) {
-				system.console->key_input(event.key);
-			}
 			if (key_record* record = find_record(event.key.keysym.sym)) {
 				record->state = KEY_HOLD;
 			}
 			else {
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
-					system.console->execute_keybind(bind->command);
+					system.console->execute_keybind(bind);
 				}
 				else {
 					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
 					key_records.push_back(new_record);
 				}
+			}
+			if (system.console->is_open()) {
+				system.console->key_input(event.key);
 			}
 			break;
 		case SDL_KEYUP:

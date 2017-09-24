@@ -60,7 +60,7 @@ namespace dcf {
 	}
 	char* str_next_word(char* str) {
 		while (*str++ != NULL) {
-			if (*str == ' ' && is_glyph(*str + 1)) {
+			if (*str == ' ' && is_glyph(*(str + 1))) {
 				return str + 1;
 			}
 		}
@@ -140,19 +140,18 @@ namespace dcf {
 	}
 	void str_trim_spaces(char* str) {
 		char* sp = str;
-		if (is_glyph(*str) == false) {
-			str = str_next_glyph(str);
-		}
-		while (*str != NULL) {
-			if (is_glyph(*str)) {
-				*sp++ = *str++;
+		while (*str != '\0') {
+			if (*str == ' ' && *(str - 1) == ' ') {
+				str = str_next_word(str);
+			}
+			if (str == nullptr) {
+				break;
 			}
 			else {
-				if (!(str = str_next_glyph(str))) *sp++ = NULL;
-				else *sp++ = ' ';
+				*sp++ = *str++;
 			}
 		}
-		while (sp != str) *sp++ = NULL;
+		*sp = '\0';
 	}
 	void str_shift_left(char* str, uint index) {
 		uint str_size = str_len(str);

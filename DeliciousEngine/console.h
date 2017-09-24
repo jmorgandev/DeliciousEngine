@@ -7,6 +7,7 @@
 #include "font_renderer.h"
 #include "box_renderer.h"
 #include "system_ref.h"
+#include "input_types.h"
 
 #define CON_BUFFER_SIZE 2048
 //#define CON_BUFFER_SIZE 65535
@@ -31,7 +32,7 @@ public:
 	void write_variable(cstring name, bool value);
 	void write_variable(cstring name, system_var value, cvar_type type);
 
-	void execute_keybind(cstring bind_str);
+	void execute_keybind(key_bind* kb);
 
 	void key_input(SDL_KeyboardEvent ev);
 	void text_input(SDL_TextInputEvent ev);
@@ -69,12 +70,12 @@ private:
 	uint16	scroll_offset;
 
 	//Input buffer variables
-	char	input_buffer[CON_INPUT_SIZE];
-	uint16	input_index;
-	uint16	input_scroll;
-	bool	input_insert;
-	bool	event_handled;
-	bool	ignore_next_text_input;
+	char		input_buffer[CON_INPUT_SIZE];
+	uint16		input_index;
+	uint16		input_scroll;
+	bool		input_insert;
+	SDL_Keycode toggle_key;
+	SDL_Keycode last_input;
 
 	//History & Auto-complete variables
 	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];

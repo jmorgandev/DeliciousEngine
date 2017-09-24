@@ -284,26 +284,49 @@ void Console::execute_input(bool user_input) {
 	clear_input();
 }
 
-void Console::execute_keybind(cstring cmd_str) {
-	if (display_console == true && dcf::str_cmp_exact(cmd_str, "toggleconsole")) {
-		display_console = false;
+void Console::execute_keybind(key_bind* kb) {
+	if (dcf::str_cmp_exact(kb->command, "toggleconsole")) {
+		if (toggle_key != kb->keycode) {
+			toggle_key = kb->keycode;
+		}
+		execute_string(kb->command);
 	}
-	else {
-		execute_string(cmd_str);
+	else if (display_console == false) {
+		execute_string(kb->command);
 	}
 }
 
 void Console::execute_string(cstring cmd_str) {
+	if (dcf::is_glyph(*cmd_str) == false) {
+		cmd_str = dcf::str_next_glyph(cmd_str);
+		if (cmd_str == nullptr) {
+			return;
+		}
+	}
 	char buffer[CON_INPUT_SIZE];
 	dcf::str_cpy(cmd_str, buffer);
 	dcf::str_trim_spaces(buffer);
 
-	char* label = buffer;
-	char* argv = nullptr;
-	uint argc = dcf::str_count(buffer, ' ');
-	if (argc > 0) {
-		argv = dcf::str_next_word(buffer);
+	char* label = nullptr;
+	if (dcf::is_glyph(buffer[0])) {
+		label = buffer;
+	}
+	else {
+		label = dcf::str_next_glyph(buffer);
+		if (label == nullptr) {
+			return;
+		}
+	}
+
+	uint argc = 0;
+	char* argv = dcf::str_next_word(label);
+	if (argv != nullptr) {
 		*dcf::str_find(label, ' ') = '\0';
+		char* sp = argv;
+		while (sp != nullptr && *sp != '\0') {
+			argc++;
+			sp = dcf::str_next_word(sp);
+		}
 	}
 
 	if (console_var* cvar = find_variable(label)) {
@@ -376,70 +399,73 @@ Processes user input that was not detected as a text event. Handles scrolling,
 erasing, executing, auto-completion, input history, and toggling the console.
 */
 void Console::key_input(SDL_KeyboardEvent ev) {
-	switch (ev.keysym.sym) {
-	case SDLK_BACKSPACE:
-		if (input_index != 0) {
-			if (input_buffer[input_index] == '\0' || input_index == CON_INPUT_LENGTH) {
-				input_index--;
-				input_buffer[input_index] = '\0';
+	if (ev.keysym.sym != toggle_key) {
+		switch (ev.keysym.sym) {
+		case SDLK_BACKSPACE:
+			if (input_index != 0) {
+				if (input_buffer[input_index] == '\0' || input_index == CON_INPUT_LENGTH) {
+					input_index--;
+					input_buffer[input_index] = '\0';
+				}
+				else {
+					input_index--;
+					dcf::str_shift_left(input_buffer, input_index);
+				}
+				scroll_left();
 			}
-			else {
-				input_index--;
+			break;
+		case SDLK_DELETE:
+			if (input_index != CON_INPUT_LENGTH && input_buffer[input_index] + 1 != '\0') {
 				dcf::str_shift_left(input_buffer, input_index);
 			}
-			scroll_left();
-		}
-		break;
-	case SDLK_DELETE:
-		if (input_index != CON_INPUT_LENGTH && input_buffer[input_index] + 1 != '\0') {
-			dcf::str_shift_left(input_buffer, input_index);
-		}
-		break;
-	case SDLK_TAB:
-		//Partial command or variable completion
-		break;
-	case SDLK_RETURN: 
-	case SDLK_KP_ENTER:
-		if (input_buffer[0] == NULL) {
+			break;
+		case SDLK_TAB:
+			//Partial command or variable completion
+			break;
+		case SDLK_RETURN:
+		case SDLK_KP_ENTER:
+			if (input_buffer[0] == NULL) {
+				break;
+			}
+			//Execute the string in the input buffer
+			execute_input(true);
+			input_scroll = 0;
+			break;
+		case SDLK_UP:
+			//Cycle back through previously entered commands
+			break;
+		case SDLK_DOWN:
+			//Cycle forward through previously entered commands
+			break;
+		case SDLK_LEFT:
+			//Shift the input cursor to the left
+			if (input_index != 0) {
+				input_index--;
+				scroll_left();
+			}
+			break;
+		case SDLK_RIGHT:
+			//Shift the input cursor to the right
+			if (input_buffer[input_index] != NULL && input_index != CON_INPUT_LENGTH) {
+				input_index++;
+				scroll_right();
+			}
+			break;
+		case SDLK_PAGEUP:
+			scroll_up();
+			break;
+		case SDLK_PAGEDOWN:
+			scroll_down();
+			break;
+		case SDLK_INSERT:
+			//Toggle insertion mode
+			input_insert = !input_insert;
+			break;
+		default:
 			break;
 		}
-		//Execute the string in the input buffer
-		execute_input(true);
-		input_scroll = 0;
-		break;
-	case SDLK_UP:
-		//Cycle back through previously entered commands
-		break;
-	case SDLK_DOWN:
-		//Cycle forward through previously entered commands
-		break;
-	case SDLK_LEFT:
-		//Shift the input cursor to the left
-		if (input_index != 0) {
-			input_index--;
-			scroll_left();
-		}
-		break;
-	case SDLK_RIGHT:
-		//Shift the input cursor to the right
-		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_LENGTH) {
-			input_index++;
-			scroll_right();
-		}
-		break;
-	case SDLK_PAGEUP:
-		scroll_up();
-		break;
-	case SDLK_PAGEDOWN:
-		scroll_down();
-		break;
-	case SDLK_INSERT:
-		//Toggle insertion mode
-		input_insert = !input_insert;
-		break;
-	default:
-		break;
 	}
+	last_input = ev.keysym.sym;
 }
 
 /*
@@ -448,24 +474,19 @@ characters in the middle of the buffer, and whether the typed character
 can be printed to the screen or not.
 */
 void Console::text_input(SDL_TextInputEvent ev) {
-	if (ignore_next_text_input == false) {
-		if (dcf::printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
-			if (input_insert == false && input_buffer[input_index] != '\0') {
-				uint input_size = dcf::str_len(input_buffer);
-				if (input_size != CON_INPUT_LENGTH) {
-					dcf::str_shift_right(input_buffer, input_index);
-					input_buffer[input_index++] = *ev.text;
-					scroll_right();
-				}
-			}
-			else {
+	if (last_input != toggle_key && dcf::printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
+		if (input_insert == false && input_buffer[input_index] != '\0') {
+			uint input_size = dcf::str_len(input_buffer);
+			if (input_size != CON_INPUT_LENGTH) {
+				dcf::str_shift_right(input_buffer, input_index);
 				input_buffer[input_index++] = *ev.text;
 				scroll_right();
 			}
 		}
-	}
-	else {
-		ignore_next_text_input = false;
+		else {
+			input_buffer[input_index++] = *ev.text;
+			scroll_right();
+		}
 	}
 }
 
@@ -575,7 +596,7 @@ void Console::load_config() {
 		std::string line;
 		while (std::getline(config_file, line)) {
 			dcf::str_cpy(line.c_str(), input_buffer);
-			dcf::str_trim_spaces(input_buffer);
+			//dcf::str_trim_spaces(input_buffer);
 			char* label = input_buffer;
 			char* value = dcf::str_next_word(label);
 			if (value != NULL) {
@@ -655,10 +676,8 @@ void Console::set_variable(console_var* cvar, cstring value) {
 
 void Console::display(bool d) {
 	display_console = d;
-	ignore_next_text_input = d;
 }
 
 void Console::display_toggle() {
 	display_console = !display_console;
-	ignore_next_text_input = true;
 }
