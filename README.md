@@ -23,13 +23,13 @@ The same way that the engine can be scripted with lua, it can also be extended w
 - SDL2-mixer (May change to FMod)
 - Lua 5.3+
 
-## Current Version (0.0.4)
+### Current Version (0.0.4)
 - Basic developer console (Can be toggled with `)
 - Basic console commands
 - Simple GUI Rendering
 - Key binding
 
-## Next Version (0.1.0)
+### Next Version (0.1.0)
 - Embedded lua scripting
 - Game-object management
 - Scripting entry point
