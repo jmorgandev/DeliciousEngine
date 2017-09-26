@@ -15,13 +15,15 @@ The engine comes with a development console to allow inspection of the engine wi
 
 The same way that the engine can be scripted with lua, it can also be extended with lua. If the engine doesn't support a file format (Which could be an asset, or a level), then the engine will subsequently search for a lua script that tells the engine how to deal with that particular file format. As a result, the user can add support to any custom asset or level files that the engine doesn't know how to process.
 
-## Current Technologies
+## Technologies Used
 - OpenGL 4.3+
 - glew
 - SDL2
 - SDL2-image (May change to stb-image)
 - SDL2-mixer (May change to FMod)
 - Lua 5.3+
+
+## Development information
 
 ### Current Version (0.0.4)
 - Basic developer console (Can be toggled with `)
