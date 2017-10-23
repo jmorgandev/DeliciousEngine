@@ -29,14 +29,12 @@ Texture* Resources::load_texture(std::string filepath) {
 	Texture new_texture = {};
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
-
-	int bpp = temp_surface->format->BytesPerPixel;
-
 	if (temp_surface == nullptr) {
 		//Error, extension not supported by SDL_Image
 		return nullptr;
 	}
 	//Otherwise we have the surface
+	int bpp = temp_surface->format->BytesPerPixel;
 
 	GLuint texture_object;
 	glGenTextures(1, &texture_object);
