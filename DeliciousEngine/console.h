@@ -10,7 +10,7 @@
 #include "input_types.h"
 
 #define CON_BUFFER_SIZE 2048
-//#define CON_BUFFER_SIZE 65535
+//#define CON_BUFFER_SIZE 16384
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
 #define CON_INPUT_SCROLL_MULTIPLE	4
@@ -46,6 +46,7 @@ public:
 	bool is_open();
 	void display(bool d);
 	void display_toggle();
+	void display_reformat();
 
 	//Operator overloads
 	Console& operator<<(const bool& rhs);
@@ -59,7 +60,7 @@ private:
 	System_Ref system;
 
 	//GUI Renderers
-	BoxRenderer box_renderer;
+	BoxRenderer	box_renderer;
 	FontRenderer text_renderer;
 
 	//Main text buffer variables

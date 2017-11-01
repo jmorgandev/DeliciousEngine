@@ -2,7 +2,6 @@
 
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
-#include <algorithm>
 #include <glm/geometric.hpp>
 #include "console.h"
 #include "screen.h"
@@ -128,7 +127,7 @@ Shader* Resources::fetch_shader(std::string filename) {
 	}
 }
 
-Mesh * Resources::fetch_mesh(std::string filename) {
+Mesh* Resources::fetch_mesh(std::string filename) {
 	auto it = mesh_catalog.find(filename);
 	if (it == mesh_catalog.end()) {
 		return nullptr;
