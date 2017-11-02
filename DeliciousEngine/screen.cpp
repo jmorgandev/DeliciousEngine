@@ -42,6 +42,8 @@ bool Screen::init(System_Ref sys) {
 }
 
 bool Screen::create_window() {
+	Console& console = *system.console;
+
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
 	if (vid_fullscreen.as_bool == true && vid_borderless.as_bool == true) {
 		SDL_DisplayMode dm;
@@ -51,7 +53,7 @@ bool Screen::create_window() {
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
-			*system.console << "Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.\n";
+			console << "Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.\n";
 			vid_fullscreen = false;
 			vid_borderless = false;
 		}
@@ -72,14 +74,25 @@ bool Screen::create_window() {
 		sdl_flags
 	);
 	if (window == nullptr) {
-		*system.console << "SDL window could not be created: " << SDL_GetError() << "\n";
+		console << "SDL window could not be created: " << SDL_GetError() << "\n";
 		return false;
 	}
 
-	gl_context = SDL_GL_CreateContext(window);
-	if (gl_context == nullptr) {
-		*system.console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
-		return false;
+	if (gl_context != nullptr) {
+		if (SDL_GL_MakeCurrent(window, gl_context) != 0) {
+			console << "Could not attach existing GL context to SDL window: " << SDL_GetError() << "\n";
+			return false;
+		}
+		else {
+			
+		}
+	}
+	else {
+		gl_context = SDL_GL_CreateContext(window);
+		if (gl_context == nullptr) {
+			*system.console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
+			return false;
+		}
 	}
 
 	GLenum status = glewInit();
@@ -99,9 +112,7 @@ bool Screen::create_window() {
 
 bool Screen::reload_window() {
 	if (window != nullptr) {
-		SDL_GL_DeleteContext(gl_context);
 		SDL_DestroyWindow(window);
-		gl_context = nullptr;
 		window = nullptr;
 	}
 	return create_window();

@@ -139,6 +139,7 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 			while (*str != '\0') {
 				if (*str == '\n') {
 					terminate_current_line();
+					str++;
 				}
 				else {
 					write_char(*str++);
@@ -168,6 +169,7 @@ void Console::buffer_alloc() {
 	if (write_index == read_index && text_buffer[read_index] != '\0') {
 		read_index = (read_index + line_size) % buffer_extent;
 		std::memset(text_buffer + write_index, '\0', line_size);
+		//dcf::str_fill(text_buffer + write_index, '\0', line_size);
 	}
 }
 
@@ -577,7 +579,7 @@ Wipe the message box by filling it with null characters. Also reset the readwrit
 scroll offset.
 */
 void Console::clear() {
-	std::memset(text_buffer, ' ', CON_BUFFER_SIZE);
+	std::memset(text_buffer, '\0', CON_BUFFER_SIZE);
 	read_index = 0;
 	write_index = 0;
 	scroll_offset = 0;

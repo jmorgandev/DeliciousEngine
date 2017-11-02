@@ -14,5 +14,6 @@ extern std::vector<console_cmd> default_cmds;
 	CMD(clear)\
 	CMD(add)\
 	CMD(quit)\
-	CMD(toggleconsole)
+	CMD(toggleconsole)\
+	CMD(resize)
 #endif

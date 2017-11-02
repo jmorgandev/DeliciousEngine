@@ -42,3 +42,30 @@ ConsoleCommand(quit) {
 ConsoleCommand(toggleconsole) {
 	system.console->display_toggle();
 }
+
+ConsoleCommand(resize) {
+	Console& out = *system.console;
+	if (argc == 2) {
+		cstring arg0 = argv;
+		cstring arg1 = dcf::str_find(argv, ' ') + 1;
+		dcf::str_split(argv, ' ');
+
+		int w = atoi(arg0);
+		int h = atoi(arg1);
+		
+		//minimum res = 640 x 480
+
+		if (w < 640 || w > 1920) {
+			out << "resize: width must be between 640 and 1920\n";
+		}
+		else if (h < 480 || h > 1080) {
+			out << "resize: height must be between 480 and 1080\n";
+		}
+		else {
+			system.screen->resize(w, h);
+		}
+	}
+	else {
+		out << "Usage: resize <width> <height>\n";
+	}	
+}
