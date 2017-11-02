@@ -19,8 +19,7 @@ public:
 	int get_width();
 	int get_height();
 
-	void gui_begin();
-	void gui_end();
+	void resize(int width, int height);
 private:
 	System_Ref system;
 

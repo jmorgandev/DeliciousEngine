@@ -17,7 +17,7 @@ std::vector<console_cmd> default_cmds = { COMMAND_LIST };
 // Default console command definitions
 //
 ConsoleCommand(clear) {
-	system.console->clear_buffer();
+	system.console->clear();
 }
 
 ConsoleCommand(add) {

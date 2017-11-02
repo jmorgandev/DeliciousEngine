@@ -15,5 +15,4 @@ extern std::vector<console_cmd> default_cmds;
 	CMD(add)\
 	CMD(quit)\
 	CMD(toggleconsole)
-
 #endif

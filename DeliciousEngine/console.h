@@ -9,7 +9,7 @@
 #include "system_ref.h"
 #include "input_types.h"
 
-#define CON_BUFFER_SIZE 2048
+#define CON_BUFFER_SIZE 1024
 //#define CON_BUFFER_SIZE 16384
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
@@ -41,7 +41,7 @@ public:
 	void set_font(Font* fnt);
 	void set_gui_properties(GLuint vao, Shader* shader);
 
-	void clear_buffer();
+	void clear();
 
 	bool is_open();
 	void display(bool d);

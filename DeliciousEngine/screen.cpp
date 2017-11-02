@@ -52,8 +52,8 @@ bool Screen::create_window() {
 		}
 		else {
 			*system.console << "Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.\n";
-			vid_fullscreen.as_bool = false;
-			vid_borderless.as_bool = false;
+			vid_fullscreen = false;
+			vid_borderless = false;
 		}
 	}
 	else if (vid_fullscreen.as_bool == true) {
@@ -121,4 +121,10 @@ int Screen::get_width() {
 }
 int Screen::get_height() {
 	return vid_height.as_int;
+}
+
+void Screen::resize(int width, int height) {
+	vid_width = width;
+	vid_height = height;
+	reload_window();
 }

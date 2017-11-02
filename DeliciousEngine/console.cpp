@@ -33,6 +33,8 @@ bool Console::init(System_Ref sys) {
 		register_command(cmd);
 	}
 
+	clear();
+
 	return true;
 }
 
@@ -137,7 +139,6 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 			while (*str != '\0') {
 				if (*str == '\n') {
 					terminate_current_line();
-					str++;
 				}
 				else {
 					write_char(*str++);
@@ -166,7 +167,7 @@ void Console::write_char(uchar c) {
 void Console::buffer_alloc() {
 	if (write_index == read_index && text_buffer[read_index] != '\0') {
 		read_index = (read_index + line_size) % buffer_extent;
-		dcf::str_fill(text_buffer + write_index, '\0', line_size);
+		std::memset(text_buffer + write_index, '\0', line_size);
 	}
 }
 
@@ -351,12 +352,8 @@ how many characters can fit in one line (line_size), how many lines can be rende
 before scrolling (visible_lines), and the aligned extent of the text buffer.
 */
 void Console::set_font(Font* fnt) {
-	Screen* scr = system.screen;
 	text_renderer.set_font(fnt);
-
-	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
-	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
-	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
+	display_reformat();
 }
 
 //OPERATOR OVERLOADS
@@ -579,8 +576,8 @@ void Console::set_gui_properties(GLuint vao, Shader* shader) {
 Wipe the message box by filling it with null characters. Also reset the readwrite indexes and the
 scroll offset.
 */
-void Console::clear_buffer() {
-	std::memset(text_buffer, '\0', CON_BUFFER_SIZE);
+void Console::clear() {
+	std::memset(text_buffer, ' ', CON_BUFFER_SIZE);
 	read_index = 0;
 	write_index = 0;
 	scroll_offset = 0;
@@ -683,19 +680,10 @@ void Console::display_toggle() {
 }
 
 void Console::display_reformat() {
-	char old_buffer[CON_BUFFER_SIZE];
-	std::memcpy(old_buffer, text_buffer, buffer_extent);
-	std::memset(text_buffer, '\0', buffer_extent);
-
-	uint16 old_line_size = line_size;
-	uint16 old_visible_lines = visible_lines;
-	uint16 old_buffer_extent = buffer_extent;
+	clear();
 
 	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
-	
-	read_index = 0;
-	write_index = 0;
 
 	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
