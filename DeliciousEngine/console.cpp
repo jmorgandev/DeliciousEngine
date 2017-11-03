@@ -88,6 +88,9 @@ void Console::render() {
 		if (dcf::is_glyph(c)) {
 			text_renderer.draw_char(c, (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
 		}
+		else if (c == '\0') {
+			break;
+		}
 	}
 
 	text_renderer.end();
@@ -431,7 +434,8 @@ void Console::key_input(SDL_KeyboardEvent ev) {
 			input_scroll = 0;
 			break;
 		case SDLK_UP:
-			//Cycle back through previously entered commands
+			//Cycle back through previously entered commands#
+			write_to_input("odaijn;odna;odwdioa;dowoinda;o");
 			break;
 		case SDLK_DOWN:
 			//Cycle forward through previously entered commands
@@ -459,8 +463,6 @@ void Console::key_input(SDL_KeyboardEvent ev) {
 		case SDLK_INSERT:
 			//Toggle insertion mode
 			input_insert = !input_insert;
-			break;
-		default:
 			break;
 		}
 	}

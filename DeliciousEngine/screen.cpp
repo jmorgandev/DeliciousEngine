@@ -84,7 +84,7 @@ bool Screen::create_window() {
 			return false;
 		}
 		else {
-			
+			glViewport(0, 0, vid_width.as_int, vid_height.as_int);
 		}
 	}
 	else {
@@ -138,4 +138,5 @@ void Screen::resize(int width, int height) {
 	vid_width = width;
 	vid_height = height;
 	reload_window();
+	system.console->display_reformat();
 }

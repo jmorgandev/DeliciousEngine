@@ -30,8 +30,8 @@ private:
 	GLuint gui_vertex_buffers[2];
 
 	system_var vid_init = false;
-	system_var vid_width = 800;
-	system_var vid_height = 600;
+	system_var vid_width = 640;
+	system_var vid_height = 480;
 	system_var vid_fullscreen = false;
 	system_var vid_borderless = false;
 };
