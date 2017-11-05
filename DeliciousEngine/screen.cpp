@@ -6,6 +6,9 @@
 #include "console.h"
 #include "build_info.h"
 
+//@TEMP
+GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 Screen::Screen() {
 	window = nullptr;
 	gl_context = nullptr;
@@ -13,9 +16,10 @@ Screen::Screen() {
 
 bool Screen::init(System_Ref sys) {
 	system = sys;
+	Console& console = *system.console;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		*system.console << "SDL could not be initialised: " << SDL_GetError() << "\n";
+		console << "SDL could not be initialised: " << SDL_GetError() << "\n";
 		return false;
 	}
 
@@ -23,20 +27,21 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, ENGINE_GL_MAJOR);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, ENGINE_GL_MINOR);
 
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,     8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,   8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,    8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,   8);
+	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	glEnable(GL_DEPTH_TEST);
+	glClearBufferfv(GL_COLOR, 0, bg_color);
 
-	system.console->register_variable("vid_init", &vid_init, CVAR_BOOL, CVAR_SYSTEM);
-	system.console->register_variable("vid_width", &vid_width, CVAR_INT, CVAR_CONFIG);
-	system.console->register_variable("vid_height", &vid_height, CVAR_INT, CVAR_CONFIG);
-	system.console->register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL, CVAR_CONFIG);
-	system.console->register_variable("vid_borderless", &vid_borderless, CVAR_BOOL, CVAR_CONFIG);
+	console.register_variable("vid_init",       &vid_init,       CVAR_BOOL, CVAR_SYSTEM);
+	console.register_variable("vid_width",      &vid_width,      CVAR_INT,  CVAR_CONFIG);
+	console.register_variable("vid_height",     &vid_height,     CVAR_INT,  CVAR_CONFIG);
+	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL, CVAR_CONFIG);
+	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL, CVAR_CONFIG);
 
 	return true;
 }
@@ -90,7 +95,7 @@ bool Screen::create_window() {
 	else {
 		gl_context = SDL_GL_CreateContext(window);
 		if (gl_context == nullptr) {
-			*system.console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
+			console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
 			return false;
 		}
 	}
@@ -100,12 +105,12 @@ bool Screen::create_window() {
 		glewExperimental = true;
 	}
 	else {
-		*system.console << "GLEW failed to init: " << glewGetErrorString(status) << "\n";
+		console << "GLEW could not be initialised: " << glewGetErrorString(status) << "\n";
 		return false;
 	}
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	vid_init.as_bool = true;
+	vid_init = true;
 
 	return true;
 }
@@ -118,7 +123,6 @@ bool Screen::reload_window() {
 	return create_window();
 }
 
-GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 void Screen::update() {
 
 	

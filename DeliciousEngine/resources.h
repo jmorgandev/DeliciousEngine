@@ -35,9 +35,9 @@ private:
 	System_Ref system;
 
 	std::unordered_map<std::string, Texture> texture_catalog;
-	std::unordered_map<std::string, Shader> shader_catalog;
-	std::unordered_map<std::string, Font> font_catalog;
-	std::unordered_map<std::string, Mesh> mesh_catalog;
+	std::unordered_map<std::string, Shader>  shader_catalog;
+	std::unordered_map<std::string, Font>    font_catalog;
+	std::unordered_map<std::string, Mesh>    mesh_catalog;
 
 	void load_gui_resources();
 	void unload_gui_resources();

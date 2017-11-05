@@ -8,8 +8,8 @@
 
 bool Engine::init(char** argv, int argc) {
 	System_Ref systems;
-	systems.console	= &console;
-	systems.screen = &screen;
+	systems.console	  = &console;
+	systems.screen    = &screen;
 	systems.resources = &resources;
 
 	if (console.init(systems) == false) return false;
@@ -22,25 +22,19 @@ bool Engine::init(char** argv, int argc) {
 	if (resources.load_default_resources() == false) return false;
 
 	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
+	console.register_variable("eng_strict",  &eng_strict,  CVAR_BOOL, CVAR_USER);
 
 	return true;
 }
 
 void Engine::run() {
-	eng_running.as_bool = true;
+	eng_running = true;
 	
 	while (eng_running.as_bool == true) {
-		//glClearBufferfv(GL_COLOR, 0, bg_color);
-		
-
-		flush_events();
+		input.process_events();
 		console.render();
 		screen.update();
 	}
-}
-
-void Engine::flush_events() {
-	input.process_events();
 }
 
 void Engine::clean() {

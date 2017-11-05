@@ -14,13 +14,12 @@ public:
 	void clean();
 private:
 	system_var eng_running = false;
+	system_var eng_strict = false;
 
 	Console		console;
 	Resources	resources;
 	Screen		screen;
 	Input		input;
-
-	void flush_events();
 };
 
 #endif

@@ -10,6 +10,7 @@ bool Input::init(System_Ref sys) {
 
 	key_records.reserve(10);
 
+	//@TEMP
 	bind(SDLK_BACKQUOTE, "toggleconsole");
 
 	return true;
@@ -37,6 +38,7 @@ void Input::unbind(SDL_Keycode keycode) {
 }
 
 void Input::process_events() {
+
 	update_records();
 
 	SDL_Event event;
@@ -77,30 +79,30 @@ void Input::process_events() {
 }
 
 key_bind* Input::find_bind(SDL_Keycode key) {
-	for (auto itr = key_binds.begin(); itr != key_binds.end(); itr++) {
-		if (itr->keycode == key) {
-			return &(*itr);
+	for (auto it = key_binds.begin(); it != key_binds.end(); it++) {
+		if (it->keycode == key) {
+			return &(*it);
 		}
 	}
 	return nullptr;
 }
 
 key_record* Input::find_record(SDL_Keycode key) {
-	for (auto itr = key_records.begin(); itr != key_records.end(); itr++) {
-		if (itr->keycode == key) {
-			return &(*itr);
+	for (auto it = key_records.begin(); it != key_records.end(); it++) {
+		if (it->keycode == key) {
+			return &(*it);
 		}
 	}
 	return nullptr;
 }
 
 void Input::update_records() {
-	for (auto itr = key_records.begin(); itr != key_records.end();) {
-		if (itr->state == KEY_RELEASED) {
-			itr = key_records.erase(itr);
+	for (auto it = key_records.begin(); it != key_records.end();) {
+		if (it->state == KEY_RELEASED) {
+			it = key_records.erase(it);
 		}
 		else {
-			itr++;
+			it++;
 		}
 	}
 }
