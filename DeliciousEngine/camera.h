@@ -5,7 +5,7 @@
 
 class Camera {
 public:
-	//Camera();
+	Camera();
 
 	void calculate_projection(float fov, float aspect_ratio);
 

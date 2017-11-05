@@ -35,11 +35,6 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	glEnable(GL_DEPTH_TEST);
-	glClearBufferfv(GL_COLOR, 0, bg_color);
-
-	vid_init = false;
-
-	bool a = vid_init.as_bool;
 
 	console.register_variable("vid_init",         &vid_init,         CVAR_BOOL,  CVAR_SYSTEM);
 	console.register_variable("vid_width",        &vid_width,        CVAR_INT,   CVAR_CONFIG);
