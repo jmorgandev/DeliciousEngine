@@ -17,7 +17,7 @@ bool Engine::init(char** argv, int argc) {
 	if (resources.init(systems) == false) return false;
 	if (input.init(systems) == false) return false;
 
-	//console load config
+	//@TODO - Load config file with console
 	if (screen.create_window() == false) return false;
 	if (resources.load_default_resources() == false) return false;
 
@@ -37,8 +37,9 @@ void Engine::run() {
 	}
 }
 
-void Engine::clean() {
-	//
-	// @Todo cleanup operations
-	//
+void Engine::shutdown() {
+	input.stop();
+	resources.stop();
+	screen.stop();
+	console.stop();
 }

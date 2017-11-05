@@ -17,8 +17,9 @@
 class Resources {
 public:
 	bool init(System_Ref sys);
+	void stop();
+
 	bool load_default_resources();
-	void cleanup();
 
 	Texture* load_texture(std::string filepath);
 	Shader* load_shader(std::string filepath);

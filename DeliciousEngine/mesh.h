@@ -9,11 +9,11 @@ enum MeshAttributes {
 	NORMALS,
 	TEXCOORDS,
 	COLORS,
-	NUM_BUFFERS
+	ATTRIBUTE_COUNT
 };
 struct Mesh {
 	GLuint vao;
-	GLuint vbo[NUM_BUFFERS];
+	GLuint vbo[ATTRIBUTE_COUNT];
 	uint32 vertex_count;
 	uint32 triangle_count;
 };

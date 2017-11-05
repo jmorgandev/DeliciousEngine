@@ -20,6 +20,8 @@
 class Console {
 public:
 	bool init(System_Ref sys);
+	void stop();
+
 	void load_config();
 	void render();
 

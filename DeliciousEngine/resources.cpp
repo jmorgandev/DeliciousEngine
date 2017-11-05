@@ -20,8 +20,27 @@ bool Resources::init(System_Ref sys) {
 	return true;
 }
 
-void Resources::cleanup() {
+void Resources::stop() {
+	font_catalog.clear();
+
+	for (auto& item : mesh_catalog) {
+		glDeleteBuffers(ATTRIBUTE_COUNT, item.second.vbo);
+		glDeleteVertexArrays(1, &item.second.vao);
+	}
+	mesh_catalog.clear();
+
+	for (auto& item : shader_catalog) {
+		glDeleteShader(item.second.id);
+	}
+	shader_catalog.clear();
+
+	for (auto& item : texture_catalog) {
+		glDeleteTextures(1, &item.second.id);
+	}
+	texture_catalog.clear();
+
 	unload_gui_resources();
+	IMG_Quit();
 }
 
 Texture* Resources::load_texture(std::string filepath) {
@@ -146,7 +165,7 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	glBindVertexArray(new_mesh.vao);
 
 	//Create VBOs
-	glGenBuffers(NUM_BUFFERS, new_mesh.vbo);
+	glGenBuffers(ATTRIBUTE_COUNT, new_mesh.vbo);
 
 	// VERTICES
 	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[VERTICES]);

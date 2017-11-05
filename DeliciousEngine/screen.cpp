@@ -37,13 +37,28 @@ bool Screen::init(System_Ref sys) {
 	glEnable(GL_DEPTH_TEST);
 	glClearBufferfv(GL_COLOR, 0, bg_color);
 
-	console.register_variable("vid_init",       &vid_init,       CVAR_BOOL, CVAR_SYSTEM);
-	console.register_variable("vid_width",      &vid_width,      CVAR_INT,  CVAR_CONFIG);
-	console.register_variable("vid_height",     &vid_height,     CVAR_INT,  CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL, CVAR_CONFIG);
-	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL, CVAR_CONFIG);
+	vid_init = false;
+
+	bool a = vid_init.as_bool;
+
+	console.register_variable("vid_init",         &vid_init,         CVAR_BOOL,  CVAR_SYSTEM);
+	console.register_variable("vid_width",        &vid_width,        CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_height",       &vid_height,       CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_fullscreen",   &vid_fullscreen,   CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_borderless",   &vid_borderless,   CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_fov",		  &vid_fov,		     CVAR_FLOAT, CVAR_USER  );
 
 	return true;
+}
+
+void Screen::stop() {
+	if (gl_context != nullptr) {
+		SDL_GL_DeleteContext(gl_context);
+	}
+	if (window != nullptr) {
+		SDL_DestroyWindow(window);
+	}
+	SDL_Quit();
 }
 
 bool Screen::create_window() {
@@ -112,6 +127,8 @@ bool Screen::create_window() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	vid_init = true;
 
+	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
+
 	return true;
 }
 
@@ -124,11 +141,9 @@ bool Screen::reload_window() {
 }
 
 void Screen::update() {
-
-	
-
 	SDL_GL_SwapWindow(window);
 	glClearBufferfv(GL_COLOR, 0, bg_color);
+	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 }
 
 int Screen::get_width() {

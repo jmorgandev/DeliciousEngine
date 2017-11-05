@@ -4,6 +4,7 @@
 #include <math.h>
 #include <fstream>
 #include <string>
+#include <typeinfo>
 #include "dcf.h"
 #include "dff.h"
 #include "dcm.h"
@@ -36,6 +37,13 @@ bool Console::init(System_Ref sys) {
 	clear();
 
 	return true;
+}
+
+void Console::stop() {
+	//@TODO - Write CVars to config file
+
+	variables.clear();
+	commands.clear();
 }
 
 /*
@@ -110,6 +118,10 @@ circular buffer allocations to print the passed in string.
 "new_line" is used to end this printing call with a new line.
 */
 void Console::write_str(cstring str, uint32 size, bool new_line) {
+	if (text_renderer.get_font() == nullptr) {
+		//@TODO - Handle non graphical printing
+		return;
+	}
 	while (*str != '\0') {	//keep printing the string until no more string is left
 		buffer_alloc();
 		int remaining_line = line_size - (write_index % line_size);
@@ -269,11 +281,11 @@ void Console::write_variable(cstring name, system_var value, cvar_type type) {
 			*cvar->value = value;
 		}
 		else {
-			self << "write_variable: '" << name << "' type mismatch!\n";
+			self << "write_variable: \"" << name << "\" type mismatch!\n";
 		}
-	}
+	} 
 	else {
-		self << "write_variable: '" << name << "' does not exist!\n";
+		self << "write_variable: \"" << name << "\" does not exist!\n";
 	}
 }
 

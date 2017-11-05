@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="box_renderer.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="cmds.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
@@ -140,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="box_renderer.h" />
     <ClInclude Include="build_info.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />

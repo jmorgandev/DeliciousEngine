@@ -16,6 +16,10 @@ bool Input::init(System_Ref sys) {
 	return true;
 }
 
+void Input::stop() {
+	//@TODO - Dump keybinds to config files
+}
+
 void Input::bind(SDL_Keycode keycode, cstring command) {
 	for (auto bind : key_binds) {
 		if (bind.keycode == keycode) {

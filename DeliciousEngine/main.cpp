@@ -9,10 +9,7 @@ int main(char** argv, int argc) {
 	if (delicious_engine.init(argv, argc)) {
 		delicious_engine.run();
 	}
-	delicious_engine.clean();
-
-	//std::cout << "\n\nPress ENTER to exit...";
-	//std::cin.get();
+	delicious_engine.shutdown();
 
 	return 0;
 }

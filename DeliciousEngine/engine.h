@@ -10,8 +10,7 @@ class Engine {
 public:
 	bool init(char** argv, int argc);
 	void run();
-
-	void clean();
+	void shutdown();
 private:
 	system_var eng_running = false;
 	system_var eng_strict = false;
