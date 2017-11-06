@@ -93,6 +93,9 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="mesh_renderer.cpp">
+      <Filter>Source Files\components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -174,6 +177,9 @@
       <Filter>Header Files\system_types</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_renderer.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>

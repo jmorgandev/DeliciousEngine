@@ -10,7 +10,7 @@ public:
 
 	void draw();
 
-	void set(Mesh* mesh, Shader* shader);
+	void set(Mesh* mesh, Shader* shader, bool visible = true);
 
 	void set_shader(Shader* shader);
 	Shader* get_shader();
@@ -18,8 +18,8 @@ public:
 	void set_mesh(Mesh* mesh);
 	Mesh* get_mesh();
 
-	void set_visible(bool v);
-	void is_visible();
+	void set_visible(bool visible);
+	bool is_visible();
 private:
 	Mesh*   mesh;
 	Shader* shader;
