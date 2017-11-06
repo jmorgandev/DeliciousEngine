@@ -35,10 +35,4 @@ namespace math {
 		if (value < min) return min;
 		return value;
 	}
-
-	float wrapf(float v, float min, float max) {
-		if (v < min) return max;
-		if (v > max) return min;
-		return v;
-	}
 }

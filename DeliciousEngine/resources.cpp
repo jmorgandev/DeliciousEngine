@@ -244,6 +244,7 @@ void Resources::unload_gui_resources() {
 
 bool Resources::load_default_resources() {
 	load_gui_resources();
+	load_mesh_primitives();
 
 	Shader* font_shader = load_shader("res/bmp_font.glsl");
 	if (font_shader == nullptr)	return false;
@@ -260,4 +261,8 @@ bool Resources::load_default_resources() {
 	system.console->set_gui_properties(gui_vertex_array, box_shader);
 
 	return true;
+}
+
+void Resources::load_mesh_primitives() {
+	make_mesh("cube", primitive_cube);
 }

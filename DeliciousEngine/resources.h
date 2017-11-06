@@ -42,6 +42,9 @@ private:
 
 	void load_gui_resources();
 	void unload_gui_resources();
+	void load_mesh_primitives();
+
+	//@TODO - Move GUI related objects to Screen
 	GLuint gui_vertex_array;
 	GLuint gui_vertex_buffers[2];
 };
