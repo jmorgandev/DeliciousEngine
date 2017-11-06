@@ -36,12 +36,12 @@ private:
 	GLuint gui_vertex_array;
 	GLuint gui_vertex_buffers[2];
 
-	system_var vid_init = false;
-	system_var vid_width = 800;
-	system_var vid_height = 600;
-	system_var vid_fullscreen = false;
-	system_var vid_borderless = false;
-	system_var vid_fov = 75.0f;
+	system_var vid_init;
+	system_var vid_width;
+	system_var vid_height;
+	system_var vid_fullscreen;
+	system_var vid_borderless;
+	system_var vid_fov;
 	
 	float near_plane;
 	float far_plane;

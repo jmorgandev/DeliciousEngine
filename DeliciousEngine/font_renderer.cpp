@@ -13,8 +13,11 @@ FontRenderer::FontRenderer() {
 void FontRenderer::set_font(Font* font_in) {
 	font = font_in;
 
+	//@TODO - Store position & scale in vec4
 	uniform_translation = glGetUniformLocation(font->shader->id, "translation");
 	uniform_scale = glGetUniformLocation(font->shader->id, "scale");
+
+	//@TODO - Store offset & scale in vec4
 	uniform_tex_offset = glGetUniformLocation(font->shader->id, "tex_offset");
 	uniform_tex_scale = glGetUniformLocation(font->shader->id, "tex_scale");
 

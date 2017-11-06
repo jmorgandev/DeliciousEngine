@@ -7,6 +7,6 @@
 struct Texture {
 	GLuint id;
 	uint16 width, height;
-	uint8 bytes_per_pixel;
+	uint8  bytes_per_pixel;
 };
 #endif

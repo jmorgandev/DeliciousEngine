@@ -24,7 +24,6 @@ typedef void(*cmd_callback)(System_Ref, char*, int);
 struct console_cmd {
 	char name[CON_MAX_NAME];
 	cmd_callback callback;
-	bool lua_call;
 };
 
 #endif

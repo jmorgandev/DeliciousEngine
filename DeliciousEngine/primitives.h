@@ -88,4 +88,8 @@ const float std_quad_2d[] = {
 };
 const int std_quad_vcount = 6;
 
+//const float primitive_cube[] = {
+//
+//};
+
 #endif

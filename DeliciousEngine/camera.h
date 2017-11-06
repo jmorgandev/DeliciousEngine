@@ -14,9 +14,11 @@ public:
 	glm::mat4& get_projection_matrix() { return matrix_projection; }
 
 private:
-	glm::mat4 matrix_transform;
 	glm::mat4 matrix_view;
 	glm::mat4 matrix_projection;
+
+	//@TODO - Store pointer to entity rather than own transform matrix
+	glm::mat4 matrix_transform;
 };
 
 #endif

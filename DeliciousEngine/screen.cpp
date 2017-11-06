@@ -12,6 +12,13 @@ GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 Screen::Screen() {
 	window = nullptr;
 	gl_context = nullptr;
+
+	vid_init       = false;
+	vid_width      = 800;
+	vid_height     = 600;
+	vid_fullscreen = false;
+	vid_borderless = false;
+	vid_fov        = 75.0f;
 }
 
 bool Screen::init(System_Ref sys) {
@@ -35,6 +42,9 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 
 	console.register_variable("vid_init",         &vid_init,         CVAR_BOOL,  CVAR_SYSTEM);
 	console.register_variable("vid_width",        &vid_width,        CVAR_INT,   CVAR_CONFIG);

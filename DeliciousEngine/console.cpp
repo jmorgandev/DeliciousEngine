@@ -54,6 +54,7 @@ void Console::render() {
 	if (display_console == false) {
 		return;
 	}
+
 	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 

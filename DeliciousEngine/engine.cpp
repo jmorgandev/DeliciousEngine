@@ -2,9 +2,14 @@
 
 #include <SDL/SDL_events.h>
 #include <fstream>
-#include "font_renderer.h"
+#include "box_renderer.h"
 #include "dmath.h"
 #include "system_ref.h"
+
+Engine::Engine() {
+	eng_running = false;
+	eng_strict  = false;
+}
 
 bool Engine::init(char** argv, int argc) {
 	System_Ref systems;
@@ -16,6 +21,13 @@ bool Engine::init(char** argv, int argc) {
 	if (screen.init(systems) == false) return false;
 	if (resources.init(systems) == false) return false;
 	if (input.init(systems) == false) return false;
+
+	//@TODO - Parse command line arguments
+	//	--strict   = Start the engine in strict mode
+	//  --gl <num> = Override the OpenGL context version
+	//  --fast     = Forces all graphics settings to their lowest/fastest
+	//  --pretty   = Forces all graphics settings to their highest
+	//  --dev	   = Load a blank world and open the console on startup
 
 	//@TODO - Load config file with console
 	if (screen.create_window() == false) return false;
@@ -29,7 +41,7 @@ bool Engine::init(char** argv, int argc) {
 
 void Engine::run() {
 	eng_running = true;
-	
+
 	while (eng_running.as_bool == true) {
 		input.process_events();
 		console.render();

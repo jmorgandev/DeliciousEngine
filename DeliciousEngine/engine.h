@@ -8,12 +8,13 @@
 
 class Engine {
 public:
+	Engine();
 	bool init(char** argv, int argc);
 	void run();
 	void shutdown();
 private:
-	system_var eng_running = false;
-	system_var eng_strict = false;
+	system_var eng_running;
+	system_var eng_strict;
 
 	Console		console;
 	Resources	resources;

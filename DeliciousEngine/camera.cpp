@@ -6,5 +6,7 @@ Camera::Camera() {
 }
 
 void Camera::calculate_projection(float fov, float aspect_ratio) {
+
+	//@TODO - Don't hardcode near and far plane values
 	matrix_projection = glm::perspective(fov, aspect_ratio, 0.1f, 1000.0f);
 }

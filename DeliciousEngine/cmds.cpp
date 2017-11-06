@@ -9,7 +9,7 @@
 COMMAND_LIST
 #undef CMD
 
-#define CMD(a) {#a, cmd_##a, false},
+#define CMD(a) {#a, cmd_##a},
 std::vector<console_cmd> default_cmds = { COMMAND_LIST };
 #undef CMD
 
