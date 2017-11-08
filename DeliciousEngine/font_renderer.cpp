@@ -21,7 +21,7 @@ void FontRenderer::set_font(Font* font_in) {
 	uniform_tex_offset = glGetUniformLocation(font->shader->id, "tex_offset");
 	uniform_tex_scale = glGetUniformLocation(font->shader->id, "tex_scale");
 
-	texcell_width = (float)font->cell_width / font->texture->width;
+	texcell_width  = (float)font->cell_width / font->texture->width;
 	texcell_height = (float)font->cell_height / font->texture->height;
 }
 Font* FontRenderer::get_font() {

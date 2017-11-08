@@ -2,9 +2,11 @@
 
 #include <SDL/SDL_events.h>
 #include <fstream>
-#include "box_renderer.h"
+#include "mesh_renderer.h"
 #include "dmath.h"
 #include "system_ref.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 
 Engine::Engine() {
 	eng_running = false;
@@ -42,8 +44,25 @@ bool Engine::init(char** argv, int argc) {
 void Engine::run() {
 	eng_running = true;
 
+	//@TEMP
+	glm::mat4 transform_matrix = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, -5.0f });
+	glm::mat4 projection_matrix = glm::perspective(75.0f, 640.0f / 480.0f, 1.0f, 1000.0f);
+	glm::mat4 view_matrix = glm::inverse(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
+
+	glm::vec3 rotation_axis = glm::normalize(glm::vec3(1.0f, 1.7f, 1.42f));
+
+	MeshRenderer renderer;
+
+	Shader* shader = resources.load_shader("res/default.glsl");
+	Mesh*   mesh = resources.fetch_mesh("primitive.cube");
+
+	renderer.set(mesh, shader);
+
 	while (eng_running.as_bool == true) {
 		input.process_events();
+		//@TEMP
+		transform_matrix = glm::rotate(transform_matrix, 0.0001f, rotation_axis);
+		renderer.draw(transform_matrix, view_matrix, projection_matrix);
 		console.render();
 		screen.update();
 	}

@@ -42,16 +42,16 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 
-	console.register_variable("vid_init",         &vid_init,         CVAR_BOOL,  CVAR_SYSTEM);
-	console.register_variable("vid_width",        &vid_width,        CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",       &vid_height,       CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen",   &vid_fullscreen,   CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless",   &vid_borderless,   CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		  &vid_fov,		     CVAR_FLOAT, CVAR_USER  );
+	console.register_variable("vid_init",       &vid_init,       CVAR_BOOL,  CVAR_SYSTEM);
+	console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
 
 	return true;
 }

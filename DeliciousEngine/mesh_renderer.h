@@ -3,19 +3,20 @@
 
 #include "mesh.h"
 #include "shader.h"
+#include <glm/mat4x4.hpp>
 
 class MeshRenderer {
 public:
 	MeshRenderer();
 
-	void draw();
+	void draw(glm::mat4 transform, glm::mat4 view, glm::mat4 projection);
 
 	void set(Mesh* mesh, Shader* shader, bool visible = true);
 
-	void set_shader(Shader* shader);
+	void    set_shader(Shader* shader);
 	Shader* get_shader();
 
-	void set_mesh(Mesh* mesh);
+	void  set_mesh(Mesh* mesh);
 	Mesh* get_mesh();
 
 	void set_visible(bool visible);

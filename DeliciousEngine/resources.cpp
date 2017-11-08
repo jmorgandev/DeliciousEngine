@@ -264,5 +264,6 @@ bool Resources::load_default_resources() {
 }
 
 void Resources::load_mesh_primitives() {
-	make_mesh("cube", primitive_cube);
+	make_mesh("primitive.quad", primitive_quad);
+	make_mesh("primitive.cube", primitive_cube);
 }

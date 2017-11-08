@@ -28,7 +28,7 @@ bool Console::init(System_Ref sys) {
 	scroll_offset = 0;
 	read_index = 0;
 	input_scroll = 0;
-	display_console = true;
+	display_console = false;
 
 	for (const auto& cmd : default_cmds) {
 		register_command(cmd);

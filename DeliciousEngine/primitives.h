@@ -144,4 +144,19 @@ const MeshData primitive_cube = {
 	}
 };
 
+const MeshData primitive_quad = {
+	/*Vertices*/ {
+		{-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},	{ 0.5f,  0.5f, 0.0f},
+		{-0.5f, -0.5f, 0.0f}, { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f}
+	},
+	/*Normals*/ {
+		{ 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },	{ 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },	{ 0.0f, 0.0f, 1.0f }
+	},
+	/*Texcoords*/ {
+		{ 0.0f, 0.0f },	{ 1.0f, 0.0f },	{ 1.0f, 1.0f },
+		{ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }
+	}
+};
+
 #endif

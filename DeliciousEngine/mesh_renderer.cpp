@@ -5,9 +5,18 @@ MeshRenderer::MeshRenderer() {
 	shader = nullptr;
 }
 
-void MeshRenderer::draw() {
+void MeshRenderer::draw(glm::mat4 transform, glm::mat4 view, glm::mat4 projection) {
 	if (mesh != nullptr && shader != nullptr && visible == true) {
-		//@TODO - Add render code here
+		int transform_uniform = glGetUniformLocation(shader->id, "transform");
+		int view_uniform = glGetUniformLocation(shader->id, "view");
+		int projection_uniform = glGetUniformLocation(shader->id, "projection");
+
+		glUseProgram(shader->id);
+		glBindVertexArray(mesh->vao);
+		glUniformMatrix4fv(transform_uniform, 1, false, &transform[0][0]);
+		glUniformMatrix4fv(view_uniform, 1, false, &view[0][0]);
+		glUniformMatrix4fv(projection_uniform, 1, false, &projection[0][0]);
+		glDrawArrays(GL_TRIANGLES, 0, mesh->vertex_count);
 	}
 }
 
