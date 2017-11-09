@@ -19,7 +19,7 @@ Screen::Screen() {
 	fullscreen    = false;
 	borderless    = false;
 	field_of_view = 75.0f;
-	aspect_ratio  = 16.0f / 9.0f;
+	aspect_ratio  = 4.0f / 3.0f;
 }
 
 bool Screen::init(System_Ref sys) {
@@ -126,12 +126,11 @@ bool Screen::create_window() {
 		console << "GLEW could not be initialised: " << glewGetErrorString(status) << "\n";
 		return init_success.as_bool;
 	}
-
-	glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
 	init_success = true;
 
+	aspect_ratio = (float)width.as_int / (float)height.as_int;
+	glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
 
-	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
