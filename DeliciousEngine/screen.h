@@ -16,7 +16,7 @@ class Screen {
 public:
 	Screen();
 	bool init(System_Ref sys);
-	void destroy();
+	void clean_exit();
 
 	void update();
 	bool create_window();

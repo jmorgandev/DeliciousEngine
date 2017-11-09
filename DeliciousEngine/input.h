@@ -10,7 +10,7 @@
 class Input {
 public:
 	bool init(System_Ref sys);
-	void stop();
+	void clean_exit();
 
 	void process_events();
 

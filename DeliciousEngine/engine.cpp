@@ -18,6 +18,7 @@ bool Engine::init(char** argv, int argc) {
 	systems.console	  = &console;
 	systems.screen    = &screen;
 	systems.resources = &resources;
+	systems.world     = &world;
 
 	//@TODO: Parse command line arguments.
 	//	--strict   = Start the engine in strict mode
@@ -30,6 +31,7 @@ bool Engine::init(char** argv, int argc) {
 	if (screen.init(systems) == false) return false;
 	if (resources.init(systems) == false) return false;
 	if (input.init(systems) == false) return false;
+	if (world.init(systems) == false) return false;
 
 	//@TODO: Load config file with console
 	if (screen.create_window() == false) return false;
@@ -74,8 +76,9 @@ void Engine::run() {
 }
 
 void Engine::shutdown() {
-	input.stop();
-	resources.close();
-	screen.destroy();
-	console.terminate();
+	world.clean_exit();
+	input.clean_exit();
+	resources.clean_exit();
+	screen.clean_exit();
+	console.clean_exit();
 }

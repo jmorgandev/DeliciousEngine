@@ -16,7 +16,7 @@ bool Input::init(System_Ref sys) {
 	return true;
 }
 
-void Input::stop() {
+void Input::clean_exit() {
 	//@TODO: Dump keybinds to config files.
 }
 

@@ -17,7 +17,7 @@
 class Resources {
 public:
 	bool init(System_Ref sys);
-	void close();
+	void clean_exit();
 
 	bool load_default_resources();
 

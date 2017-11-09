@@ -5,12 +5,14 @@ class Console;
 class Resources;
 class Screen;
 class Input;
+class World;
 
 struct System_Ref {
-	Console* console;
+	Console*   console;
 	Resources* resources;
-	Screen* screen;
-	Input* input;
+	Screen*    screen;
+	Input*     input;
+	World*     world;
 };
 
 #endif
