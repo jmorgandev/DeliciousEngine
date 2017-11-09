@@ -26,26 +26,26 @@ public:
 	int get_height();
 
 	void resize(int width, int height);
-	float get_aspect_ratio() { return (float)vid_width.as_int / (float)vid_height.as_int; }
+	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }
 private:
 	System_Ref system;
 
-	SDL_Window* window;
+	SDL_Window*   window;
 	SDL_GLContext gl_context;
 
 	GLuint gui_vertex_array;
 	GLuint gui_vertex_buffers[2];
 
-	system_var vid_init;
-	system_var vid_width;
-	system_var vid_height;
-	system_var vid_fullscreen;
-	system_var vid_borderless;
-	system_var vid_fov;
+	system_var init_success;
+	system_var width;
+	system_var height;
+	system_var fullscreen;
+	system_var borderless;
+	system_var field_of_view;
+	system_var aspect_ratio;
 	
 	float near_plane;
 	float far_plane;
-	float aspect_ratio;
 
 	Camera current_camera;
 };

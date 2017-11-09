@@ -35,7 +35,7 @@ namespace dgl {
 				return 0;	//Should be the only failure case, we always need vertex positions.
 			}
 			// If there are no indices, auto generate them so that glDrawElements can be used.
-			// @TODO make something that isn't as wasteful
+			// @TODO: make something that isn't as wasteful
 			for (uint32 i = 0; i < data.vertices.size(); i++) {
 				data.indices.push_back(i);
 			}

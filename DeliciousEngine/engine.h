@@ -13,8 +13,8 @@ public:
 	void run();
 	void shutdown();
 private:
-	system_var eng_running;
-	system_var eng_strict;
+	system_var running;
+	system_var strict_mode;
 
 	Console		console;
 	Resources	resources;

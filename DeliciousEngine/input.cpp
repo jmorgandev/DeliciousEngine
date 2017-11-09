@@ -17,7 +17,7 @@ bool Input::init(System_Ref sys) {
 }
 
 void Input::stop() {
-	//@TODO - Dump keybinds to config files
+	//@TODO: Dump keybinds to config files.
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {

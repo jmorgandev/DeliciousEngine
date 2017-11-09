@@ -40,7 +40,7 @@ bool Console::init(System_Ref sys) {
 }
 
 void Console::stop() {
-	//@TODO - Write CVars to config file
+	//@TODO: Write CVars to config file.
 
 	variables.clear();
 	commands.clear();
@@ -120,7 +120,7 @@ circular buffer allocations to print the passed in string.
 */
 void Console::write_str(cstring str, uint32 size, bool new_line) {
 	if (text_renderer.get_font() == nullptr) {
-		//@TODO - Handle non graphical printing
+		//@TODO: Handle non graphical printing.
 		return;
 	}
 	while (*str != '\0') {	//keep printing the string until no more string is left

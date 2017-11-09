@@ -7,18 +7,19 @@
 #include "build_info.h"
 
 //@TEMP
-GLfloat bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
 Screen::Screen() {
 	window = nullptr;
 	gl_context = nullptr;
 
-	vid_init       = false;
-	vid_width      = 800;
-	vid_height     = 600;
-	vid_fullscreen = false;
-	vid_borderless = false;
-	vid_fov        = 75.0f;
+	init_success  = false;
+	width         = 800;
+	height        = 600;
+	fullscreen    = false;
+	borderless    = false;
+	field_of_view = 75.0f;
+	aspect_ratio  = 16.0f / 9.0f;
 }
 
 bool Screen::init(System_Ref sys) {
@@ -41,17 +42,13 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	//glFrontFace(GL_CCW);
-
-	console.register_variable("vid_init",       &vid_init,       CVAR_BOOL,  CVAR_SYSTEM);
-	console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
+	console.register_variable("vid_init",       &init_success,  CVAR_BOOL,  CVAR_SYSTEM);
+	console.register_variable("vid_width",      &width,         CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_height",     &height,        CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_fullscreen", &fullscreen,    CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_fov",		&field_of_view, CVAR_FLOAT, CVAR_USER  );
+	console.register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
 
 	return true;
 }
@@ -67,26 +64,27 @@ void Screen::stop() {
 }
 
 bool Screen::create_window() {
+	init_success = false;
 	Console& console = *system.console;
 
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
-	if (vid_fullscreen.as_bool == true && vid_borderless.as_bool == true) {
+	if (fullscreen.as_bool == true && borderless.as_bool == true) {
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
-			vid_width.as_int = dm.w;
-			vid_height.as_int = dm.h;
+			width.as_int  = dm.w;
+			height.as_int = dm.h;
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
 			console << "Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.\n";
-			vid_fullscreen = false;
-			vid_borderless = false;
+			fullscreen = false;
+			borderless = false;
 		}
 	}
-	else if (vid_fullscreen.as_bool == true) {
+	else if (fullscreen.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_FULLSCREEN;
 	}
-	else if (vid_borderless.as_bool == true) {
+	else if (borderless.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
 
@@ -94,29 +92,29 @@ bool Screen::create_window() {
 		"Delicious Engine " ENGINE_VERSION_STRING,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		vid_width.as_int,
-		vid_height.as_int,
+		width.as_int,
+		height.as_int,
 		sdl_flags
 	);
 	if (window == nullptr) {
 		console << "SDL window could not be created: " << SDL_GetError() << "\n";
-		return false;
+		return init_success.as_bool;
 	}
 
 	if (gl_context != nullptr) {
 		if (SDL_GL_MakeCurrent(window, gl_context) != 0) {
 			console << "Could not attach existing GL context to SDL window: " << SDL_GetError() << "\n";
-			return false;
+			return init_success.as_bool;
 		}
 		else {
-			glViewport(0, 0, vid_width.as_int, vid_height.as_int);
+			glViewport(0, 0, width.as_int, height.as_int);
 		}
 	}
 	else {
 		gl_context = SDL_GL_CreateContext(window);
 		if (gl_context == nullptr) {
 			console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
-			return false;
+			return init_success.as_bool;
 		}
 	}
 
@@ -126,15 +124,20 @@ bool Screen::create_window() {
 	}
 	else {
 		console << "GLEW could not be initialised: " << glewGetErrorString(status) << "\n";
-		return false;
+		return init_success.as_bool;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	vid_init = true;
+	glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
+	init_success = true;
 
+
+	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 
-	return true;
+	return init_success.as_bool;
 }
 
 bool Screen::reload_window() {
@@ -147,20 +150,20 @@ bool Screen::reload_window() {
 
 void Screen::update() {
 	SDL_GL_SwapWindow(window);
-	glClearBufferfv(GL_COLOR, 0, bg_color);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 }
 
 int Screen::get_width() {
-	return vid_width.as_int;
+	return width.as_int;
 }
 int Screen::get_height() {
-	return vid_height.as_int;
+	return height.as_int;
 }
 
-void Screen::resize(int width, int height) {
-	vid_width = width;
-	vid_height = height;
+void Screen::resize(int new_width, int new_height) {
+	width = new_width;
+	height = new_height;
 	reload_window();
 	system.console->display_reformat();
 }

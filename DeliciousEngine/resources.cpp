@@ -63,7 +63,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	//@TODO - Have some way of specifying the texture parameters outside this function
+	//@TODO: Have some way of specifying the texture parameters outside this function
 
 	new_texture.id = texture_object;
 	new_texture.width = temp_surface->w;

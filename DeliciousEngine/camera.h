@@ -1,24 +1,29 @@
 #ifndef DELICIOUS_CAMERA_H
 #define DELICIOUS_CAMERA_H
 
+#include "system_var.h"
 #include <glm/glm.hpp>
 
 class Camera {
 public:
 	Camera();
+	void init(system_var* fov_var, system_var* aspect_var);
+	void update();
 
-	void calculate_projection(float fov, float aspect_ratio);
-
-	glm::mat4& get_transform()		   { return matrix_transform;  }
-	glm::mat4& get_view_matrix()	   { return matrix_view;       }
-	glm::mat4& get_projection_matrix() { return matrix_projection; }
+	//@TODO: Pre-multiply the view and projection matrices.
+	glm::mat4& transform_matrix()  { return transform;  }
+	glm::mat4& view_matrix()	   { return view;       }
+	glm::mat4& projection_matrix() { return projection; }
 
 private:
-	glm::mat4 matrix_view;
-	glm::mat4 matrix_projection;
+	glm::mat4 view;
+	glm::mat4 projection;
 
-	//@TODO - Store pointer to entity rather than own transform matrix
-	glm::mat4 matrix_transform;
+	//@TODO: Reference an entity transform rather than having a separate transform.
+	glm::mat4 transform;
+
+	system_var* field_of_view;
+	system_var* aspect_ratio;
 };
 
 #endif
