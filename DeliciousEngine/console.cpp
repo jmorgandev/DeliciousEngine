@@ -39,7 +39,7 @@ bool Console::init(System_Ref sys) {
 	return true;
 }
 
-void Console::stop() {
+void Console::terminate() {
 	//@TODO: Write CVars to config file.
 
 	variables.clear();

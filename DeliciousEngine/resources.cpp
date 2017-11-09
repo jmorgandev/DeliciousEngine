@@ -20,7 +20,7 @@ bool Resources::init(System_Ref sys) {
 	return true;
 }
 
-void Resources::stop() {
+void Resources::close() {
 	font_catalog.clear();
 
 	for (auto& item : mesh_catalog) {

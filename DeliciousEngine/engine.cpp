@@ -75,7 +75,7 @@ void Engine::run() {
 
 void Engine::shutdown() {
 	input.stop();
-	resources.stop();
-	screen.stop();
-	console.stop();
+	resources.close();
+	screen.destroy();
+	console.terminate();
 }

@@ -53,7 +53,7 @@ bool Screen::init(System_Ref sys) {
 	return true;
 }
 
-void Screen::stop() {
+void Screen::destroy() {
 	if (gl_context != nullptr) {
 		SDL_GL_DeleteContext(gl_context);
 	}
