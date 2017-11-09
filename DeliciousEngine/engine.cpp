@@ -47,9 +47,8 @@ void Engine::run() {
 	running = true;
 
 	//@TEMP
-	Camera test_camera;
-	test_camera.init(console.read_variable("vid_fov"), console.read_variable("vid_aspect"));
-	test_camera.transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
+	Camera* cam = screen.get_camera();
+	cam->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 
 	glm::mat4 transform_matrix = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 0.0f });
 
@@ -65,13 +64,15 @@ void Engine::run() {
 	renderer.set_texture(texture);
 
 	while (running.as_bool == true) {
-		test_camera.update();
+		//test_camera.update();
 		input.process_events();
 		//@TEMP
 		transform_matrix = glm::rotate(transform_matrix, 0.0005f, rotation_axis);
-		renderer.draw(transform_matrix, test_camera.view_matrix(), test_camera.projection_matrix());
-		console.render();
-		screen.update();
+		renderer.draw(transform_matrix, cam->view_matrix(), cam->projection_matrix());
+
+		world.update();
+
+		screen.render_frame();
 	}
 }
 

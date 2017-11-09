@@ -50,7 +50,7 @@ void Console::clean_exit() {
 Render the console with a bitmap font and a gui box renderer. The amount of lines
 that are rendered is precalculated based upon the font that the console uses.
 */
-void Console::render() {
+void Console::draw() {
 	if (display_console == false) {
 		return;
 	}

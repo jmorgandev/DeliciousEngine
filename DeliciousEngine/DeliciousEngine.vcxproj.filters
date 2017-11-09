@@ -96,6 +96,9 @@
     <ClCompile Include="mesh_renderer.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -181,6 +184,15 @@
     </ClInclude>
     <ClInclude Include="mesh_renderer.h">
       <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

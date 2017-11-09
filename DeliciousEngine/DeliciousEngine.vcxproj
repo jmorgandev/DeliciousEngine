@@ -138,6 +138,7 @@
     <ClCompile Include="mesh_renderer.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box_renderer.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="dmath.h" />
     <ClInclude Include="dtypes.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="entity.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="font_renderer.h" />
     <ClInclude Include="input.h" />
@@ -168,6 +170,8 @@
     <ClInclude Include="system_ref.h" />
     <ClInclude Include="system_var.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="transform.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

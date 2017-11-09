@@ -18,7 +18,9 @@ public:
 	bool init(System_Ref sys);
 	void clean_exit();
 
-	void update();
+	void clear_frame();
+	void render_frame();
+	
 	bool create_window();
 	bool reload_window();
 
@@ -27,6 +29,8 @@ public:
 
 	void resize(int width, int height);
 	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }
+
+	Camera* get_camera();
 private:
 	System_Ref system;
 
@@ -47,7 +51,7 @@ private:
 	float near_plane;
 	float far_plane;
 
-	Camera current_camera;
+	Camera camera;
 };
 
 #endif

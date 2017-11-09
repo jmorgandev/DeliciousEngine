@@ -23,7 +23,7 @@ public:
 	void clean_exit();
 
 	void load_config();
-	void render();
+	void draw();
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(const console_cmd& cmd);

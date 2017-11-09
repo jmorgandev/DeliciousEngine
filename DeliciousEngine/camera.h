@@ -10,7 +10,7 @@ public:
 	void init(system_var* fov_var, system_var* aspect_var);
 	void update();
 
-	//@TODO: Pre-multiply the view and projection matrices.
+	//@TODO: Pre-multiply the view and projection matrices. (Maybe)
 	glm::mat4& transform_matrix()  { return transform;  }
 	glm::mat4& view_matrix()	   { return view;       }
 	glm::mat4& projection_matrix() { return projection; }

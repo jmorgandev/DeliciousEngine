@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 #include <iostream>
 #include "console.h"
+#include "world.h"
 #include "build_info.h"
 
 //@TEMP
@@ -49,6 +50,8 @@ bool Screen::init(System_Ref sys) {
 	console.register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
 	console.register_variable("vid_fov",		&field_of_view, CVAR_FLOAT, CVAR_USER  );
 	console.register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
+
+	camera.init(&field_of_view, &aspect_ratio);
 
 	return true;
 }
@@ -147,10 +150,14 @@ bool Screen::reload_window() {
 	return create_window();
 }
 
-void Screen::update() {
+void Screen::render_frame() {
+	camera.update();
+	
+	system.world->draw();
+	system.console->draw();
+
 	SDL_GL_SwapWindow(window);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 }
 
 int Screen::get_width() {
@@ -165,4 +172,8 @@ void Screen::resize(int new_width, int new_height) {
 	height = new_height;
 	reload_window();
 	system.console->display_reformat();
+}
+
+Camera* Screen::get_camera() {
+	return &camera;
 }
