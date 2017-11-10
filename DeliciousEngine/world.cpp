@@ -26,6 +26,7 @@ void World::clean_exit() {
 }
 
 void World::update() {
+	//@TEMP
 	glm::vec3 axis = glm::normalize(glm::vec3(0.5f, 2.0f, 1.0f));
 	test_entity.get_transform()->rotate(0.005f, axis);
 
@@ -34,7 +35,7 @@ void World::update() {
 
 	glm::vec3 cam_direction = { 0.0f, 0.0f, 0.0f };
 
-	if (input->get_key(SDLK_w)) {
+	if (system.input->get_key(SDLK_w)) {
 		cam_direction.z = -1.0f;
 	}
 	if (input->get_key(SDLK_a)) {

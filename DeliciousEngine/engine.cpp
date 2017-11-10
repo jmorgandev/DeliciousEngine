@@ -19,6 +19,7 @@ bool Engine::init(char** argv, int argc) {
 	systems.console	  = &console;
 	systems.screen    = &screen;
 	systems.resources = &resources;
+	systems.input     = &input;
 	systems.world     = &world;
 
 	//@TODO: Parse command line arguments.
@@ -51,7 +52,6 @@ void Engine::run() {
 
 	while (running.as_bool == true) {
 		input.process_events();
-		//@TEMP
 
 		world.update();
 

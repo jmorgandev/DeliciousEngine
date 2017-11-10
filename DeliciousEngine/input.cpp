@@ -113,10 +113,5 @@ void Input::update_records() {
 }
 
 bool Input::get_key(SDL_Keycode keycode) {
-	//@BUG: This fails when called in World class for some reason...
-	//return (find_record(keycode) != nullptr);
-
-	key_record* r = find_record(keycode);
-
-	return false;
+	return (find_record(keycode) != nullptr);
 }
