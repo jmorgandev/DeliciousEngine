@@ -14,6 +14,8 @@ public:
 
 	void process_events();
 
+	bool get_key(SDL_Keycode keycode);
+
 	void bind(SDL_Keycode keycode, cstring command);
 	void unbind(SDL_Keycode keycode);
 private:

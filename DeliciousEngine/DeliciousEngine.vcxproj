@@ -138,6 +138,7 @@
     <ClCompile Include="mesh_renderer.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="transform.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>

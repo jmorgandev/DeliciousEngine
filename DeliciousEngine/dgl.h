@@ -9,7 +9,6 @@ namespace dgl {
 
 	bool compile(const GLuint& object, const std::string& source);
 	bool compile(const GLuint& object, const GLchar* source);
-
 }
 
 #endif

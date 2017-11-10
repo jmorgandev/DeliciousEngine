@@ -33,9 +33,9 @@ void Input::bind(SDL_Keycode keycode, cstring command) {
 }
 
 void Input::unbind(SDL_Keycode keycode) {
-	for (auto itr = key_binds.begin(); itr != key_binds.end(); itr++) {
-		if (itr->keycode == keycode) {
-			key_binds.erase(itr);
+	for (auto it = key_binds.begin(); it != key_binds.end(); it++) {
+		if (it->keycode == keycode) {
+			key_binds.erase(it);
 			break;
 		}
 	}
@@ -92,6 +92,7 @@ key_bind* Input::find_bind(SDL_Keycode key) {
 }
 
 key_record* Input::find_record(SDL_Keycode key) {
+	auto it = key_records.begin();
 	for (auto it = key_records.begin(); it != key_records.end(); it++) {
 		if (it->keycode == key) {
 			return &(*it);
@@ -109,4 +110,13 @@ void Input::update_records() {
 			it++;
 		}
 	}
+}
+
+bool Input::get_key(SDL_Keycode keycode) {
+	//@BUG: This fails when called in World class for some reason...
+	//return (find_record(keycode) != nullptr);
+
+	key_record* r = find_record(keycode);
+
+	return false;
 }

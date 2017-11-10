@@ -7,6 +7,7 @@
 #include "system_ref.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 Engine::Engine() {
 	running = false;
@@ -36,6 +37,8 @@ bool Engine::init(char** argv, int argc) {
 	//@TODO: Load config file with console
 	if (screen.create_window() == false) return false;
 	if (resources.load_default_resources() == false) return false;
+	
+	world.load_test();
 
 	console.register_variable("eng_running", &running,     CVAR_BOOL, CVAR_SYSTEM);
 	console.register_variable("eng_strict",  &strict_mode, CVAR_BOOL, CVAR_USER);
@@ -46,29 +49,9 @@ bool Engine::init(char** argv, int argc) {
 void Engine::run() {
 	running = true;
 
-	//@TEMP
-	Camera* cam = screen.get_camera();
-	cam->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
-
-	glm::mat4 transform_matrix = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 0.0f });
-
-	glm::vec3 rotation_axis = glm::normalize(glm::vec3(1.0f, 1.7f, 1.42f));
-
-	MeshRenderer renderer;
-
-	Shader* shader = resources.load_shader("res/default.glsl");
-	Mesh*   mesh = resources.fetch_mesh("primitive.cube");
-	Texture* texture = resources.load_texture("res/tile.tga");
-
-	renderer.set(mesh, shader);
-	renderer.set_texture(texture);
-
 	while (running.as_bool == true) {
-		//test_camera.update();
 		input.process_events();
 		//@TEMP
-		transform_matrix = glm::rotate(transform_matrix, 0.0005f, rotation_axis);
-		renderer.draw(transform_matrix, cam->view_matrix(), cam->projection_matrix());
 
 		world.update();
 
