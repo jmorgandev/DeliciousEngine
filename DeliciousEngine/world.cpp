@@ -34,6 +34,8 @@ void World::update() {
 	Input* input = system.input;
 
 	glm::vec3 cam_direction = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 cam_axis = { 0.0f, 1.0f, 0.0f };
+	float cam_angle = 0.0f;
 
 	if (system.input->get_key(SDLK_w)) {
 		cam_direction.z = -1.0f;
@@ -47,14 +49,22 @@ void World::update() {
 	if (input->get_key(SDLK_s)) {
 		cam_direction.z = 1.0f;
 	}
+	if (input->get_key(SDLK_RIGHT)) {
+		cam_angle += 0.1f;
+	}
+	if (input->get_key(SDLK_LEFT)) {
+		cam_angle -= 0.1f;
+	}
 	if (glm::length(cam_direction) > 0.0f) {
 		cam_direction = glm::normalize(cam_direction);
 	}
 	
 	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.005f);
+	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }
 
 void World::draw() {
+	//@TEMP
 	Camera* cam = system.screen->get_camera();
 	glm::mat4 transform = test_entity.get_transform()->get_matrix();
 	glm::mat4 view = cam->view_matrix();
