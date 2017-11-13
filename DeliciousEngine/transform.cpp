@@ -25,7 +25,6 @@ glm::vec3 Transform::get_scale() {
 }
 glm::mat4 Transform::get_matrix() {
 	if (rebuild_matrix == true) {
-		//@TODO: recalculate the matrix from member variables
 		glm::mat4 t_matrix = glm::translate(glm::mat4(1.0f), position);
 		glm::mat4 r_matrix = glm::mat4_cast(rotation);
 		glm::mat4 s_matrix = glm::scale(glm::mat4(1.0f), scale);
@@ -87,5 +86,6 @@ void Transform::rotate(const float& angle, const glm::vec3& axis) {
 }
 
 void Transform::rotate(const float& x, const float& y, const float& z) {
+	//@TODO: shortcut for now...
 	rotate({ x,y,z });
 }

@@ -9,6 +9,7 @@ public:
 	Camera();
 	void init(system_var* fov_var, system_var* aspect_var);
 	void update();
+	void look_at(glm::vec3 pos);
 
 	//@TODO: Pre-multiply the view and projection matrices. (Maybe)
 	glm::mat4& transform_matrix()  { return transform;  }
@@ -20,6 +21,7 @@ private:
 	glm::mat4 projection;
 
 	//@TODO: Reference an entity transform rather than having a separate transform.
+	// Or have both a way to attach to entity, and a camera transform? Maybe.
 	glm::mat4 transform;
 
 	system_var* field_of_view;

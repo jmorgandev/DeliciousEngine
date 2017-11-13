@@ -17,7 +17,8 @@ public:
 private:
 	System_Ref system;
 
-	Entity test_entity;
+	Entity entity_a;
+	Entity entity_b;
 };
 
 #endif
