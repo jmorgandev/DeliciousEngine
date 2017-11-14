@@ -1,7 +1,5 @@
 #include "dmath.h"
 
-//unsigned abs(int value) { return value < 0 ? 0 - unsigned(value) : unsigned(value); }
-
 namespace math {
 
 	uint8 delta(uint8 a, uint8 b) {

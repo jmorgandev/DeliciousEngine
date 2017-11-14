@@ -1,11 +1,10 @@
 #include "transform.h"
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <math.h>
 
 Transform::Transform() {
 	position = { 0.0f, 0.0f, 0.0f };
-	rotation = glm::quat();
+	rotation = glm::quat({ 0.0f, 0.0f, 0.0f });
 	scale = { 1.0f, 1.0f, 1.0f };
 	rebuild_matrix = true;
 }
@@ -17,8 +16,7 @@ glm::quat Transform::get_rotation() {
 	return rotation;
 }
 glm::vec3 Transform::get_euler_angles() {
-	//@TODO: Implement
-	return glm::vec3(1.0f);
+	return glm::eulerAngles(rotation);
 }
 glm::vec3 Transform::get_scale() {
 	return scale;
@@ -50,7 +48,9 @@ void Transform::set_rotation(const glm::quat& new_rotation) {
 	rebuild_matrix = true;
 }
 void Transform::set_euler_angles(const glm::vec3& angles) {
-	//@TODO: Implement.
+	glm::vec3 radians = glm::radians(angles);
+	rotation = glm::quat(radians);
+	rebuild_matrix = true;
 }
 void Transform::set_scale(const glm::vec3& new_scale) {
 	scale = new_scale;
@@ -69,14 +69,13 @@ void Transform::translate(const float& x, const float& y, const float& z) {
 }
 
 void Transform::rotate(const glm::quat& quaternion) {
-	rotation += quaternion;
+	rotation = rotation * quaternion;
 	rebuild_matrix = true;
 }
 
 void Transform::rotate(const glm::vec3& euler_angles) {
-	// IS THIS CORRECT?
 	glm::vec3 euler_radians = glm::radians(euler_angles);
-	rotation = glm::rotate(rotation, glm::length(euler_radians), euler_radians);
+	rotation = rotation * glm::quat(euler_radians);
 	rebuild_matrix = true;
 }
 
@@ -86,6 +85,7 @@ void Transform::rotate(const float& angle, const glm::vec3& axis) {
 }
 
 void Transform::rotate(const float& x, const float& y, const float& z) {
-	//@TODO: shortcut for now...
-	rotate({ x,y,z });
+	glm::vec3 euler_radians = glm::radians(glm::vec3(x,y,z));
+	rotation = rotation * glm::quat(euler_radians);
+	rebuild_matrix = true;
 }

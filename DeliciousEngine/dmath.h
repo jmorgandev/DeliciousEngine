@@ -3,6 +3,10 @@
 
 #include "dtypes.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 namespace math {
 	uint8 delta(uint8 a, uint8 b);
 	uint16 delta(uint16 a, uint16 b);

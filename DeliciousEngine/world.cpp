@@ -4,7 +4,7 @@
 #include "screen.h"
 #include "input.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include "dmath.h"
 
 bool World::init(System_Ref sys) {
 	system = sys;
@@ -35,6 +35,9 @@ void World::update() {
 	entity_a.get_transform()->rotate(0.01f, glm::normalize(angles));
 	entity_b.get_transform()->rotate(angles);
 
+	glm::vec3 angles_a = entity_a.get_transform()->get_euler_angles();
+	glm::vec3 angles_b = entity_b.get_transform()->get_euler_angles();
+
 	Camera* cam = system.screen->get_camera();
 	Input* input = system.input;
 
@@ -58,7 +61,7 @@ void World::update() {
 		cam_direction = glm::normalize(cam_direction);
 	}
 
-	cam->look_at(entity_a.get_transform()->get_position());
+	//cam->look_at(entity_a.get_transform()->get_position());
 	
 	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.005f);
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
