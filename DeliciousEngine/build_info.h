@@ -10,4 +10,6 @@
 #define ENGINE_GL_MAJOR 4
 #define ENGINE_GL_MINOR 3
 
+#define EXPOSE_GLOBAL_SYSTEM true
+
 #endif

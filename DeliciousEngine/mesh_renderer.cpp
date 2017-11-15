@@ -18,10 +18,11 @@ void MeshRenderer::draw(glm::mat4 transform, glm::mat4 view, glm::mat4 projectio
 		if (texture != nullptr) {
 			glBindTexture(GL_TEXTURE_2D, texture->id);
 		}
-		glBindVertexArray(mesh->vao);
-		glUniformMatrix4fv(transform_uniform, 1, false, &transform[0][0]);
-		glUniformMatrix4fv(view_uniform, 1, false, &view[0][0]);
+		glUniformMatrix4fv(transform_uniform,  1, false, &transform[0][0]);
+		glUniformMatrix4fv(view_uniform,	   1, false, &view[0][0]);
 		glUniformMatrix4fv(projection_uniform, 1, false, &projection[0][0]);
+
+		glBindVertexArray(mesh->vao);
 		glDrawArrays(GL_TRIANGLES, 0, mesh->vertex_count);
 	}
 }

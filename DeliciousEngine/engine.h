@@ -1,11 +1,17 @@
 #ifndef DELICIOUS_ENGINE_H
 #define DELICIOUS_ENGINE_H
 
+#include "build_info.h"
+
 #include "console.h"
 #include "screen.h"
 #include "resources.h"
 #include "input.h"
 #include "world.h"
+
+#if EXPOSE_GLOBAL_SYSTEM
+extern System_Ref global_system;
+#endif
 
 class Engine {
 public:

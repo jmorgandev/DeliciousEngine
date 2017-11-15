@@ -185,7 +185,7 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(2);
 
-	new_mesh.vertex_count = data.vertices.size();
+	new_mesh.vertex_count = (uint32)data.vertices.size();
 	new_mesh.triangle_count = new_mesh.vertex_count / 3;
 	
 	mesh_catalog[name] = new_mesh;

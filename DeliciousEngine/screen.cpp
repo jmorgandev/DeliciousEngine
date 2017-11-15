@@ -11,7 +11,7 @@
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
 Screen::Screen() {
-	window = nullptr;
+	window     = nullptr;
 	gl_context = nullptr;
 
 	init_success  = false;
@@ -20,7 +20,7 @@ Screen::Screen() {
 	fullscreen    = false;
 	borderless    = false;
 	field_of_view = 75.0f;
-	aspect_ratio  = 4.0f / 3.0f;
+	aspect_ratio  = width.as_float / height.as_float;
 }
 
 bool Screen::init(System_Ref sys) {

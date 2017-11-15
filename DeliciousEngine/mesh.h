@@ -4,7 +4,7 @@
 #include "dtypes.h"
 #include <GL/glew.h>
 
-enum MeshAttributes {
+enum MeshAttribute {
 	VERTICES,
 	NORMALS,
 	TEXCOORDS,

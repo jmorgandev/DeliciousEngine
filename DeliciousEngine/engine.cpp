@@ -39,11 +39,14 @@ bool Engine::init(char** argv, int argc) {
 	if (screen.create_window() == false) return false;
 	if (resources.load_default_resources() == false) return false;
 	
-	world.load_test();
+	if (world.load_test() == false) return false;
 
 	console.register_variable("eng_running", &running,     CVAR_BOOL, CVAR_SYSTEM);
 	console.register_variable("eng_strict",  &strict_mode, CVAR_BOOL, CVAR_USER);
 
+#if EXPOSE_GLOBAL_SYSTEM
+	global_system = systems;
+#endif
 	return true;
 }
 
@@ -66,3 +69,7 @@ void Engine::shutdown() {
 	screen.clean_exit();
 	console.clean_exit();
 }
+
+#if EXPOSE_GLOBAL_SYSTEM
+System_Ref global_system;
+#endif

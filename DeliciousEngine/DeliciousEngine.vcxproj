@@ -159,6 +159,7 @@
     <ClInclude Include="font_renderer.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="input_types.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_data.h" />
     <ClInclude Include="mesh_renderer.h" />

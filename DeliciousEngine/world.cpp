@@ -12,7 +12,13 @@ bool World::init(System_Ref sys) {
 	return true;
 }
 
-void World::load_test() {
+//@TEMP
+bool World::load_test() {
+	Shader* default_shader = system.resources->load_shader("res/default.glsl");
+	if (default_shader == nullptr) {
+		return false;
+	}
+
 	entity_a.get_renderer()->set_mesh(system.resources->fetch_mesh("primitive.cube"));
 	entity_a.get_renderer()->set_shader(system.resources->load_shader("res/default.glsl"));
 	entity_a.get_renderer()->set_texture(system.resources->load_texture("res/tile.tga"));
@@ -22,6 +28,8 @@ void World::load_test() {
 	entity_b.get_transform()->set_position(1.0f, 0.0f, 0.0f);
 
 	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
+
+	return true;
 }
 
 void World::clean_exit() {
@@ -31,8 +39,8 @@ void World::clean_exit() {
 void World::update() {
 	//@TEMP
 	glm::vec3 axis = glm::normalize(glm::vec3(0.0f, 2.0f, 0.0f));
-	glm::vec3 angles = axis * 0.01f;
-	entity_a.get_transform()->rotate(0.01f, glm::normalize(angles));
+	glm::vec3 angles = axis * 1.0f;
+	entity_a.get_transform()->rotate(1.0f, glm::normalize(angles));
 	entity_b.get_transform()->rotate(angles);
 
 	glm::vec3 angles_a = entity_a.get_transform()->get_euler_angles();
@@ -63,7 +71,7 @@ void World::update() {
 
 	//cam->look_at(entity_a.get_transform()->get_position());
 	
-	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.005f);
+	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }
 

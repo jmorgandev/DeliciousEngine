@@ -10,7 +10,7 @@ public:
 	bool init(System_Ref sys);
 	void clean_exit();
 
-	void load_test();
+	bool load_test();
 
 	void update();
 	void draw();

@@ -197,5 +197,8 @@
     <ClInclude Include="entity.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

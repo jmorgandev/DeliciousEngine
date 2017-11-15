@@ -18,7 +18,6 @@ public:
 	bool init(System_Ref sys);
 	void clean_exit();
 
-	void clear_frame();
 	void render_frame();
 	
 	bool create_window();
@@ -36,9 +35,6 @@ private:
 
 	SDL_Window*   window;
 	SDL_GLContext gl_context;
-
-	GLuint gui_vertex_array;
-	GLuint gui_vertex_buffers[2];
 
 	system_var init_success;
 	system_var width;
