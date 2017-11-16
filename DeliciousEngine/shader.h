@@ -13,7 +13,6 @@ struct Shader {
 
 	GLint attribute_count;
 	GLint uniform_count;
-
 };
 
 #endif

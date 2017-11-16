@@ -10,6 +10,9 @@
 #define ENGINE_GL_MAJOR 4
 #define ENGINE_GL_MINOR 3
 
+#define ENGINE_GLSL_VERSION 430
+#define ENGINE_GLSL_VERSION_STRING "#version 430 core"
+
 #define EXPOSE_GLOBAL_SYSTEM true
 
 #endif

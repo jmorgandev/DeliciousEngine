@@ -12,6 +12,8 @@ uniform mat4 projection;
 out vec2 uv;
 
 void main(void) {
+	//@TODO: Don't multiply matrices per vertex you mad-man
+	//Precompute this on the CPU and store as MVP_matrix
 	gl_Position = projection * view * transform * vec4(position, 1.0);
 	uv = texcoord;
 }
