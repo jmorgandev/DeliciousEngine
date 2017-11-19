@@ -14,14 +14,15 @@ bool World::init(System_Ref sys) {
 
 //@TEMP
 bool World::load_test() {
-	Shader* default_shader = system.resources->load_shader("res/default.glsl");
-	if (default_shader == nullptr) {
+	Texture* default_texture = system.resources->load_texture("res/tile.tga");
+	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
+	if (default_texture == nullptr || default_shader == nullptr) {
 		return false;
 	}
+	Material* default_material = system.resources->make_material("default", default_texture, default_shader);
+	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
 
-	entity_a.get_renderer()->set_mesh(system.resources->fetch_mesh("primitive.cube"));
-	entity_a.get_renderer()->set_shader(system.resources->load_shader("res/default.glsl"));
-	entity_a.get_renderer()->set_texture(system.resources->load_texture("res/tile.tga"));
+	entity_a.get_renderer()->set(cube, default_material);
 	entity_b = entity_a;
 
 	entity_a.get_transform()->set_position(-1.0f, 0.0f, 0.0f);

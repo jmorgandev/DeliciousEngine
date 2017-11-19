@@ -3,6 +3,7 @@
 
 //Manages the attributes & uniforms of a shader.
 #include "shader.h"
+#include "texture.h"
 #include "dtypes.h"
 #include "mesh.h"
 
@@ -14,11 +15,9 @@
 // - camera frustrum?
 // - global lights? etc...
 
-class Material {
-public:
-
-private:
-	Shader* shader;
+struct Material {
+	Texture* texture;
+	Shader*  shader;
 };
 
 #endif

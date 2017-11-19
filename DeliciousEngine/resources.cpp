@@ -220,6 +220,22 @@ Font* Resources::fetch_font(std::string name) {
 	}
 }
 
+Material* Resources::make_material(std::string name, Texture* t, Shader* s) {
+	Material new_material = { t, s };
+	material_catalog[name] = new_material;
+	return &material_catalog[name];
+}
+
+Material* Resources::fetch_material(std::string filename) {
+	auto it = material_catalog.find(filename);
+	if (it == material_catalog.end()) {
+		return nullptr;
+	}
+	else {
+		return &it->second;
+	}
+}
+
 void Resources::load_gui_resources() {
 	glGenVertexArrays(1, &gui_vertex_array);
 	glBindVertexArray(gui_vertex_array);
