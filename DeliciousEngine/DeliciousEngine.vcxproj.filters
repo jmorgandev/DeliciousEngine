@@ -102,6 +102,9 @@
     <ClCompile Include="transform.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="physics.cpp">
+      <Filter>Source Files\systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -199,6 +202,12 @@
     </ClInclude>
     <ClInclude Include="material.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="physics.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_volume.h">
+      <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

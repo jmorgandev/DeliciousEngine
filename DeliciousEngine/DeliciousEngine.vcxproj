@@ -136,6 +136,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh_renderer.cpp" />
+    <ClCompile Include="physics.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
     <ClCompile Include="transform.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="box_renderer.h" />
     <ClInclude Include="build_info.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="collision_volume.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="console_types.h" />
     <ClInclude Include="dcf.h" />
@@ -163,6 +165,7 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="mesh_data.h" />
     <ClInclude Include="mesh_renderer.h" />
+    <ClInclude Include="physics.h" />
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="screen_types.h" />
