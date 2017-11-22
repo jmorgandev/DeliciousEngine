@@ -49,23 +49,4 @@ private:
 	type* raw_pointer;
 };
 
-template <class type, size_t limit> class fixed_stack {
-public:
-	size_t count() { return array_count };
-	size_t size() { return array_size; }
-
-	bool push(type element) {
-		if (array_count == array_size) return false;
-		fixed_array[array_count++] = element;
-		return true;
-	}
-	void pop() {
-
-	}
-private:
-	std::array<type, limit> fixed_array;
-	size_t array_count = 0;
-	size_t array_size = 0;
-};
-
 #endif

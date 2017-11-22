@@ -2,6 +2,8 @@
 #define DELICIOUS_WORLD_H
 
 #include "system_ref.h"
+#include <vector>
+
 #include "system_var.h"
 #include "entity.h"
 
@@ -19,6 +21,10 @@ private:
 
 	Entity entity_a;
 	Entity entity_b;
+
+	//@TEMP
+	void do_camera();
+	Material* default_material;
 };
 
 #endif

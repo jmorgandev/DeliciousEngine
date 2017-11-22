@@ -3,11 +3,10 @@
 
 #include <glm/glm.hpp>
 
-class CollisionVolume {
-public:
-	
-private:
-
+//@TODO: For now just have every collision volume as a bounding sphere.
+struct CollisionVolume {
+	class Entity* entity;
+	float radius;
 };
 
 #endif

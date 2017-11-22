@@ -20,10 +20,13 @@ void main(void) {
 
 #scope fragment
 in vec2 uv;
+
 uniform sampler2D textureSampler;
+uniform float highlight;
+
 out vec4 color;
 
 void main(void) {
-	color = texture(textureSampler, uv);
+	color = mix(texture(textureSampler, uv), vec4(1.0), highlight);
 }
 

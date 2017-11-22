@@ -132,6 +132,7 @@
     <ClCompile Include="dgl.cpp" />
     <ClCompile Include="dmath.cpp" />
     <ClCompile Include="engine.cpp" />
+    <ClCompile Include="entity.cpp" />
     <ClCompile Include="font_renderer.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />

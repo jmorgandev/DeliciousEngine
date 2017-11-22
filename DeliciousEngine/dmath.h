@@ -3,6 +3,7 @@
 
 #include "dtypes.h"
 
+#include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -18,9 +19,11 @@ namespace math {
 
 	int32 min(int32 value, int32 min);
 
-	float wrapf(float v, float min, float max);
+	float sine(float magnitude, float time);
+	float sine(float magnitude, float frequency, float time);
 
-	int mem_diff(cstring first, cstring second);
+	float cosine(float magnitude, float time);
+	float cosine(float magnitude, float frequency, float time);
 }
 
 #endif

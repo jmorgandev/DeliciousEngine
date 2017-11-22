@@ -19,7 +19,7 @@ bool World::load_test() {
 	if (default_texture == nullptr || default_shader == nullptr) {
 		return false;
 	}
-	Material* default_material = system.resources->make_material("default", default_texture, default_shader);
+	default_material = system.resources->make_material("default", default_texture, default_shader);
 	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
 
 	entity_a.get_renderer()->set(cube, default_material);
@@ -38,42 +38,29 @@ void World::clean_exit() {
 }
 
 void World::update() {
-	//@TEMP
+	//@TEMP: Should just be iterating through entities and calling scripts, this is just test logic for now...
+	do_camera();
+
 	glm::vec3 axis = glm::normalize(glm::vec3(0.0f, 2.0f, 0.0f));
-	glm::vec3 angles = axis * 1.0f;
-	entity_a.get_transform()->rotate(1.0f, glm::normalize(angles));
-	entity_b.get_transform()->rotate(angles);
+	entity_a.get_transform()->rotate(0.1f, axis);
+	entity_b.get_transform()->rotate(1.0f, axis);
 
 	glm::vec3 angles_a = entity_a.get_transform()->get_euler_angles();
 	glm::vec3 angles_b = entity_b.get_transform()->get_euler_angles();
-
-	Camera* cam = system.screen->get_camera();
-	Input* input = system.input;
-
-	glm::vec3 cam_direction = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 cam_axis = { 0.0f, 1.0f, 0.0f };
-	float cam_angle = 0.0f;
-
-	if (system.input->get_key(SDLK_w)) {
-		cam_direction.z = -1.0f;
-	}
-	if (input->get_key(SDLK_a)) {
-		cam_direction.x = -1.0f;
-	}
-	if (input->get_key(SDLK_d)) {
-		cam_direction.x = 1.0f;
-	}
-	if (input->get_key(SDLK_s)) {
-		cam_direction.z = 1.0f;
-	}
-	if (glm::length(cam_direction) > 0.0f) {
-		cam_direction = glm::normalize(cam_direction);
-	}
-
-	//cam->look_at(entity_a.get_transform()->get_position());
 	
-	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
-	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
+	static float t = 0;
+	t += 0.05f;
+	float off = -0.7f;
+	entity_a.get_transform()->set_position(math::sine(1.0f, t) + off, math::cosine(0.6f, t), 0.0f);
+	
+	glUseProgram(default_material->shader->id);
+	GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
+	if (entity_a.colliding_with(&entity_b)) {
+		glUniform1f(uniform_highlight, 0.2f);
+	}
+	else {
+		glUniform1f(uniform_highlight, 0.0f);
+	}
 }
 
 void World::draw() {
@@ -87,4 +74,27 @@ void World::draw() {
 
 	entity_a.get_renderer()->draw(transform_a, view, projection);
 	entity_b.get_renderer()->draw(transform_b, view, projection);
+}
+
+void World::do_camera() {
+	//@TEMP: Until scripting
+
+	Camera* cam = system.screen->get_camera();
+	Input* input = system.input;
+
+	glm::vec3 cam_direction = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 cam_axis = { 0.0f, 1.0f, 0.0f };
+	float cam_angle = 0.0f;
+
+	if (input->get_key(SDLK_w)) cam_direction.z = -1.0f;
+	if (input->get_key(SDLK_a)) cam_direction.x = -1.0f;
+	if (input->get_key(SDLK_d)) cam_direction.x = 1.0f;
+	if (input->get_key(SDLK_s)) cam_direction.z = 1.0f;
+
+	if (glm::length(cam_direction) > 0.0f) {
+		cam_direction = glm::normalize(cam_direction);
+	}
+
+	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
+	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }

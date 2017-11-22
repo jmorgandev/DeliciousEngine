@@ -2,6 +2,10 @@
 #define DELICIOUS_PHYSICS_H
 
 #include "system_ref.h"
+#include <vector>
+
+#include "collision_volume.h"
+
 
 class Physics {
 public:

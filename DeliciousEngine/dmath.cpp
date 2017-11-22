@@ -33,4 +33,20 @@ namespace math {
 		if (value < min) return min;
 		return value;
 	}
+
+	float sine(float magnitude, float time) {
+		return sinf(time) * magnitude;
+	}
+
+	float sine(float magnitude, float frequency, float time) {
+		return sinf(time * frequency) * magnitude;
+	}
+
+	float cosine(float magnitude, float time) {
+		return cosf(time) * magnitude;
+	}
+
+	float cosine(float magnitude, float frequency, float time) {
+		return cosf(time * frequency) * magnitude;
+	}
 }
