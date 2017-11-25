@@ -29,6 +29,8 @@ public:
 	void resize(int width, int height);
 	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }
 
+	void begin_gui();
+
 	Camera* get_camera();
 private:
 	System_Ref system;

@@ -19,7 +19,7 @@ Screen::Screen() {
 	height        = 600;
 	fullscreen    = false;
 	borderless    = false;
-	field_of_view = 75.0f;
+	field_of_view = 60.0f;
 	aspect_ratio  = width.as_float / height.as_float;
 }
 
@@ -154,6 +154,8 @@ void Screen::render_frame() {
 	camera.update();
 	
 	system.world->draw();
+	
+	//@TODO: Setup GUI Rendering generically rather than per renderer
 	system.console->draw();
 
 	SDL_GL_SwapWindow(window);
@@ -176,4 +178,8 @@ void Screen::resize(int new_width, int new_height) {
 
 Camera* Screen::get_camera() {
 	return &camera;
+}
+
+void Screen::begin_gui() {
+
 }

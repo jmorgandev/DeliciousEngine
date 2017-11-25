@@ -15,12 +15,13 @@ public:
 
 	Transform* get_transform();
 	MeshRenderer* get_renderer();
-	CollisionVolume* get_collider();
+	SphereCollider* get_collider();
 
+	//@TEMP
 	bool colliding_with(Entity* ent);
 private:
 	Transform transform;
-	CollisionVolume collider;
+	SphereCollider collider;
 
 	MeshRenderer renderer;
 };

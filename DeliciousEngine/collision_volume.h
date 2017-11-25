@@ -9,4 +9,6 @@ struct CollisionVolume {
 	float radius;
 };
 
+typedef CollisionVolume SphereCollider;
+
 #endif

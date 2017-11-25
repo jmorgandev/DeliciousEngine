@@ -12,7 +12,7 @@ MeshRenderer* Entity::get_renderer() {
 	return &renderer;
 }
 
-CollisionVolume* Entity::get_collider() {
+SphereCollider* Entity::get_collider() {
 	return &collider;
 }
 
