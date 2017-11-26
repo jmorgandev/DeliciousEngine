@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClCompile Include="box_renderer.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="cmds.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="dcf.cpp" />
     <ClCompile Include="dff.cpp" />

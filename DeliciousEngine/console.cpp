@@ -12,12 +12,6 @@
 #include "engine.h"
 #include "cmds.h"
 
-/*
-Console initialization:										
-1. Initialize member variables											
-2. Register default console commands							
-3. Open a new logging file to echo console messages to.
-*/
 bool Console::init(System_Ref sys) {
 	system = sys;
 
@@ -30,9 +24,10 @@ bool Console::init(System_Ref sys) {
 	input_scroll = 0;
 	display_console = false;
 
-	for (const auto& cmd : default_cmds) {
-		register_command(cmd);
-	}
+	register_command(CommandRef(clear));
+	register_command(CommandRef(quit));
+	register_command(CommandRef(toggleconsole));
+	register_command(CommandRef(resize));
 
 	clear();
 
@@ -318,46 +313,41 @@ void Console::execute_keybind(key_bind* kb) {
 void Console::execute_string(cstring cmd_str) {
 	if (dcf::is_glyph(*cmd_str) == false) {
 		cmd_str = dcf::str_next_glyph(cmd_str);
-		if (cmd_str == nullptr) {
-			return;
-		}
+		if (cmd_str == nullptr) return;
 	}
+
 	char buffer[CON_INPUT_SIZE];
 	dcf::str_cpy(cmd_str, buffer);
 	dcf::str_trim_spaces(buffer);
 
-	char* label = nullptr;
-	if (dcf::is_glyph(buffer[0])) {
-		label = buffer;
-	}
-	else {
-		label = dcf::str_next_glyph(buffer);
-		if (label == nullptr) {
-			return;
-		}
-	}
+	char* label = &buffer[0];
+	std::vector<cstring> args;
 
-	uint argc = 0;
-	char* argv = dcf::str_next_word(label);
-	if (argv != nullptr) {
-		*dcf::str_find(label, ' ') = '\0';
-		char* sp = argv;
-		while (sp != nullptr && *sp != '\0') {
-			argc++;
-			sp = dcf::str_next_word(sp);
-		}
+	char* arg_str = dcf::str_next_word(label);
+	if (arg_str != nullptr) {
+		*(arg_str - 1) = '\0';
+		dcf::str_split_vector(arg_str, args, ' ');
 	}
 
 	if (console_var* cvar = find_variable(label)) {
-		if (argc == 1) {
-			//set_variable(cvar, argv);
+		if (args.empty()) {
+			self << label << " is ";
+			switch (cvar->type) {
+			case CVAR_INT: self << cvar->value->as_int; break;
+			case CVAR_FLOAT: self << cvar->value->as_float; break;
+			case CVAR_BOOL: self << cvar->value->as_bool; break;
+			}
+			self << '\n';
+		}
+		else if (args.size() == 1) {
+			set_variable(cvar, args[0]);
 		}
 		else {
 			self << "Set variable usage: <var> <value>\n";
 		}
 	}
 	else if (console_cmd* cmd = find_command(label)) {
-		cmd->callback(system, argv, argc);
+		cmd->callback(system, args);
 	}
 	else {
 		self << "Unknown command/variable: '" << label << "'\n";
@@ -488,7 +478,7 @@ characters in the middle of the buffer, and whether the typed character
 can be printed to the screen or not.
 */
 void Console::text_input(SDL_TextInputEvent ev) {
-	if (last_input != toggle_key && dcf::printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
+	if (last_input != toggle_key && dcf::is_printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
 		if (input_insert == false && input_buffer[input_index] != '\0') {
 			uint input_size = dcf::str_len(input_buffer);
 			if (input_size != CON_INPUT_LENGTH) {
@@ -681,10 +671,15 @@ void Console::set_variable(cstring name, cstring value) {
 }
 
 void Console::set_variable(console_var* cvar, cstring value) {
-	switch (cvar->type) {
-	case CVAR_INT: cvar->value->as_int = std::atoi(value); break;
-	case CVAR_FLOAT: cvar->value->as_float = std::atof(value); break;
-	case CVAR_BOOL: cvar->value->as_bool = (value[0] == '1') ? true : false; break;
+	if (cvar->flags & CVAR_MUTABLE) {
+		switch (cvar->type) {
+		case CVAR_INT: cvar->value->as_int = std::atoi(value); break;
+		case CVAR_FLOAT: cvar->value->as_float = std::atof(value); break;
+		case CVAR_BOOL: cvar->value->as_bool = (value[0] == '1' || value[0] == 't') ? true : false; break;
+		}
+	}
+	else {
+		self << cvar->name << " cannot be edited at runtime.\n";
 	}
 }
 
@@ -705,6 +700,34 @@ void Console::display_reformat() {
 	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
+}
 
-	
+ConsoleCommand(clear) {
+	system.console->clear();
+}
+
+ConsoleCommand(quit) {
+	system.console->write_variable("eng_running", false);
+}
+
+ConsoleCommand(toggleconsole) {
+	system.console->display_toggle();
+}
+
+ConsoleCommand(resize) {
+	Console& out = *system.console;
+	if (args.size() == 2) {
+		int w = atoi(args[0]);
+		int h = atoi(args[1]);
+
+		if (w < 640 || w > 1920 || h < 480 || h > 1080) {
+			out << "resize: invalid resolution\n";
+		}
+		else {
+			system.screen->resize(w, h);
+		}
+	}
+	else {
+		out << "Usage: resize <width> <height>\n";
+	}
 }

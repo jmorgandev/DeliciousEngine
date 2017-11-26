@@ -2,6 +2,7 @@
 #define DELICIOUS_DCF_H
 
 #include "dtypes.h"
+#include <vector>
 
 namespace dcf {
 	cstring str_find(cstring str, char c);
@@ -16,6 +17,10 @@ namespace dcf {
 	char*	str_next_word(char* str);
 	cstring str_next_glyph(cstring str);
 	char*	str_next_glyph(char* str);
+	cstring str_first_glyph(cstring str);
+	char*   str_first_glyph(char* str);
+	cstring str_end(cstring str);
+	char*   str_end(char* str);
 
 	uint32 str_len(cstring str);
 	uint32 str_count(cstring str, char c);
@@ -26,7 +31,7 @@ namespace dcf {
 	bool str_cmp(cstring lhs, cstring rhs);
 	bool str_cmp_exact(cstring lhs, cstring rhs);
 	bool str_contains(cstring str, char c);
-	bool printable(const char c);
+	bool is_printable(const char c);
 
 	void str_cpy(cstring src, char* dst);
 	void str_fill(char* src, char c, int amount);
@@ -34,6 +39,11 @@ namespace dcf {
 	void str_shift_left(char* str, uint index);
 	void str_shift_right(char* str, uint index);
 	void str_split(char* str, char seperator);
+
+	char** str_split(char* start, char* end, char seperator);
+
+	std::vector<cstring> str_split_vector(char* str, char seperator);
+	void str_split_vector(char* src, std::vector<cstring>& dest, char seperator);
 }
 
 #endif

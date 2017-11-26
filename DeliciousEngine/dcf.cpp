@@ -78,6 +78,20 @@ namespace dcf {
 		}
 		return NULL;
 	}
+	cstring str_first_glyph(cstring str) {
+		while (*str != NULL) {
+			if (is_glyph(*str)) return str;
+			else str++;
+		}
+		return NULL;
+	}
+	char* str_first_glyph(char* str) {
+		while (*str != NULL) {
+			if (is_glyph(*str)) return str;
+			else str++;
+		}
+		return NULL;
+	}
 	uint32 str_len(cstring str) {
 		uint32 len = 0;
 		while (*str++) len++;
@@ -119,7 +133,7 @@ namespace dcf {
 		}
 		return false;
 	}
-	bool printable(const char c) {
+	bool is_printable(const char c) {
 		if (c >= ' ' && c <= '~') {
 			return true;
 		}
@@ -168,9 +182,54 @@ namespace dcf {
 	void str_split(char* str, char seperator) {
 		while (*str != NULL) {
 			if (*str == seperator) {
-				*str == '\0';
+				*str = '\0';
 			}
 			str++;
 		}
+	}
+
+	cstring str_end(cstring str) {
+		for (; *str != NULL; str++) {}
+		return str;
+	}
+	char* str_end(char* str) {
+		for (; *str != NULL; str++) {}
+		return str;
+	}
+	
+
+	char** str_split(char* start, char* end, char seperator) {
+		char** result = &start;
+		int i = 1;
+		char* sp = start;
+		while (sp != end) {
+			if (*sp == seperator) {
+				*sp = '\0';
+				if (sp + 1 != end) {
+					result[i++] = sp + 1;
+				}
+			}
+			sp++;
+		}
+		return result;
+	}
+
+	std::vector<cstring> str_split_vector(char* str, char seperator) {
+		std::vector<cstring> result;
+		str_split_vector(str, result, seperator);
+		return result;
+	}
+
+	void str_split_vector(char* src, std::vector<cstring>& dest, char seperator) {
+		char* prev = src;
+		while (*src != NULL) {
+			if (*src == seperator) {
+				*src = '\0';
+				dest.push_back(prev);
+				prev = src + 1;
+			}
+			src++;
+		}
+		dest.push_back(prev);
 	}
 }

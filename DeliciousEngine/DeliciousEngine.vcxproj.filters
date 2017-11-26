@@ -87,9 +87,6 @@
     <ClCompile Include="box_renderer.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
-    <ClCompile Include="cmds.cpp">
-      <Filter>Source Files\system_defaults</Filter>
-    </ClCompile>
     <ClCompile Include="input.cpp">
       <Filter>Source Files\systems</Filter>
     </ClCompile>

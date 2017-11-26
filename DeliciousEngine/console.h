@@ -8,6 +8,7 @@
 #include "box_renderer.h"
 #include "system_ref.h"
 #include "input_types.h"
+#include "cmds.h"
 
 #define CON_BUFFER_SIZE 2048
 //#define CON_BUFFER_SIZE 16384
@@ -124,5 +125,10 @@ private:
 	bool scroll_left();
 	bool scroll_right();
 };
+
+ConsoleCommand(clear);
+ConsoleCommand(quit);
+ConsoleCommand(toggleconsole);
+ConsoleCommand(resize);
 
 #endif

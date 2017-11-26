@@ -4,6 +4,7 @@
 #include "dtypes.h"
 #include "system_ref.h"
 #include "system_var.h"
+#include <vector>
 
 #define CON_MAX_NAME	32
 
@@ -20,7 +21,7 @@ struct console_var {
 	uint16		flags;
 };
 
-typedef void(*cmd_callback)(System_Ref, char*, int);
+typedef void(*cmd_callback)(System_Ref, std::vector<cstring>);
 struct console_cmd {
 	char name[CON_MAX_NAME];
 	cmd_callback callback;

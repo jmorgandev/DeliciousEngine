@@ -5,16 +5,7 @@
 #include <vector>
 #include <array>
 
-extern std::vector<console_cmd> default_cmds;
+#define ConsoleCommand(a) static inline void cmd_##a(System_Ref system, std::vector<cstring> args)
+#define CommandRef(a) {#a, cmd_##a}
 
-//
-// Default console command declarations
-// @TODO - Store these somewhere else, and stop using X macro
-//
-#define COMMAND_LIST\
-	CMD(clear)\
-	CMD(add)\
-	CMD(quit)\
-	CMD(toggleconsole)\
-	CMD(resize)
 #endif
