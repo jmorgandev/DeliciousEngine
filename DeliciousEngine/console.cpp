@@ -124,7 +124,7 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 		int remaining_string = dcf::str_len(str);
 		if (remaining_string > remaining_line) {
 			//initially try to wrap from the character that causes the overflow
-			cstring wrap_point = str + line_size;
+			cstring wrap_point = str + remaining_line;
 			if (dcf::is_wspace(*wrap_point) == false) {
 				//check if we can wrap from a newline or space character
 				cstring newline_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
@@ -700,6 +700,8 @@ void Console::display_reformat() {
 	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
 	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
+
+	//@TODO: Reformat buffer to retain previous messages from last window resolution.
 }
 
 ConsoleCommand(clear) {
