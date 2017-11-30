@@ -28,6 +28,7 @@ bool Console::init(System_Ref sys) {
 	register_command(CommandRef(quit));
 	register_command(CommandRef(toggleconsole));
 	register_command(CommandRef(resize));
+	register_command(CommandRef(cmds));
 
 	clear();
 
@@ -140,12 +141,10 @@ void Console::write_str(cstring str, uint32 size) {
 			cstring wrap_point = str + remaining_line;
 			if (dcf::is_wspace(*wrap_point) == false) {
 				//check if we can wrap from a newline or space character
-				cstring newline_wrap = dcf::str_prev_instance(wrap_point, str, '\n');
-				cstring space_wrap = dcf::str_prev_instance(wrap_point, str, ' ');
-				if (newline_wrap) {
+				if (cstring newline_wrap = dcf::str_prev_instance(wrap_point, str, '\n')) {
 					wrap_point = newline_wrap;
 				}
-				else if (space_wrap) {
+				else if (cstring space_wrap = dcf::str_prev_instance(wrap_point, str, ' ')) {
 					wrap_point = space_wrap;
 				}
 			}
@@ -723,6 +722,7 @@ ConsoleCommand(resize) {
 		int w = atoi(args[0]);
 		int h = atoi(args[1]);
 
+		//@TODO: Be more flexible with resolution
 		if (w < 640 || w > 1920 || h < 480 || h > 1080) {
 			con.print("resize: invalid resolution.");
 		}
@@ -731,6 +731,6 @@ ConsoleCommand(resize) {
 		}
 	}
 	else {
-		con.print("Usage: resize <width> <height>");
+		con.print("Usage: \"resize <width> <height>\"");
 	}
 }
