@@ -4,7 +4,7 @@
 #include <math.h>
 #include <fstream>
 #include <string>
-#include <typeinfo>
+#include <cstdarg>
 #include "dcf.h"
 #include "dff.h"
 #include "dcm.h"
@@ -49,14 +49,37 @@ void Console::draw() {
 	if (display_console == false) {
 		return;
 	}
+	draw_background();
+	draw_textbox();
+	draw_userinput();
+}
 
-	Screen* scr = system.screen;
+void Console::draw_background() {
 	Font* fnt = text_renderer.get_font();
-
+	Screen* scr = system.screen;
 	box_renderer.begin(scr->get_width(), scr->get_height());
 	box_renderer.draw(0, 0, scr->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
 	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
+	box_renderer.end();
+}
 
+void Console::draw_userinput() {
+	Screen* scr = system.screen;
+	Font* fnt = text_renderer.get_font();
+
+	text_renderer.begin(scr->get_width(), scr->get_height());
+	for (int i = 0; i < line_size && i < CON_INPUT_LENGTH; i++) {
+		char c = input_buffer[i + input_scroll];
+		if (dcf::is_glyph(c)) {
+			text_renderer.draw_char(c, (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
+		}
+		else if (c == '\0') {
+			break;
+		}
+	}
+	text_renderer.end();
+	//Draw cursor
+	box_renderer.begin(scr->get_width(), scr->get_height());
 	box_renderer.draw(
 		((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width,
 		(fnt->cell_height * visible_lines) + 2,
@@ -64,12 +87,14 @@ void Console::draw() {
 		((fnt->cell_height * visible_lines) + fnt->cell_height) - 2,
 		glm::vec4(1.0f, 1.0f, 1.0f, 0.8f)
 	);
-
 	box_renderer.end();
+}
+
+void Console::draw_textbox() {
+	Screen* scr = system.screen;
+	Font* fnt = text_renderer.get_font();
 
 	text_renderer.begin(scr->get_width(), scr->get_height());
-
-	//Draw message box
 	int x_cursor = 0, y_cursor = 0;
 	int render_start = (read_index + scroll_offset) % buffer_extent;
 	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
@@ -85,18 +110,6 @@ void Console::draw() {
 			y_cursor++;
 		}
 	}
-
-	//Draw Input Box
-	for (int i = 0; i < line_size && i < CON_INPUT_LENGTH; i++) {
-		char c = input_buffer[i + input_scroll];
-		if (dcf::is_glyph(c)) {
-			text_renderer.draw_char(c, (i + border_x) * fnt->cell_width, fnt->cell_height * visible_lines);
-		}
-		else if (c == '\0') {
-			break;
-		}
-	}
-
 	text_renderer.end();
 }
 
@@ -160,10 +173,27 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 		}
 	}
 	//if we need to move to the next line...
+	//@TODO: Take out, no longer needed if using print formatting.
+	//       since the print(...) function automatically adds the
+	//       newline character to the end of the string.;
 	if (new_line && write_index % line_size != 0) {
 		terminate_current_line();
 		buffer_alloc();
 	}
+}
+
+#define FORMAT_STR_BUFFER 4096
+void Console::print(cstring format, ...) {
+	va_list args;
+	char buffer[FORMAT_STR_BUFFER];
+
+	va_start(args, format);
+	uint length = vsprintf_s(buffer, format, args);
+	va_end(args);
+	buffer[length++] = '\n';
+	buffer[length]   = '\0';
+
+	write_str(buffer, length);
 }
 
 /*
@@ -207,7 +237,7 @@ exists with the same name, print an error to the console.
 */
 void Console::register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags) {
 	if (find_variable(name)) {
-		self << "register_variable: '" << name << "' already exists!\n";
+		print("register_variable: \"%s\" already exists!", name);
 	}
 	else {
 		assert(dcf::str_len(name) <= CON_MAX_NAME);
@@ -223,7 +253,7 @@ with the same name, print an error to the console.
 */
 void Console::register_command(const console_cmd& cmd) {
 	if (find_command(cmd.name)) {
-		self << "register_command: '" << cmd.name << "' already exists!\n";
+		print("register_command: \"%s\" already exists!", cmd.name);
 	}
 	else commands.push_back(cmd);
 }
@@ -258,7 +288,7 @@ system_var* Console::read_variable(cstring name) {
 	if (console_var* cvar = find_variable(name)) {
 		return cvar->value;
 	}
-	self << "read_variable: '" << name << "' does not exist!\n";
+	print("read_variable: \"%\" does not exist!", name);
 	return nullptr;
 }
 
@@ -277,11 +307,11 @@ void Console::write_variable(cstring name, system_var value, cvar_type type) {
 			*cvar->value = value;
 		}
 		else {
-			self << "write_variable: \"" << name << "\" type mismatch!\n";
+			print("write_variable: \"%s\" type mismatch!", name);
 		}
 	} 
 	else {
-		self << "write_variable: \"" << name << "\" does not exist!\n";
+		print("write_variable: \"%s\" does not exist!", name);
 	}
 }
 
@@ -331,26 +361,30 @@ void Console::execute_string(cstring cmd_str) {
 
 	if (console_var* cvar = find_variable(label)) {
 		if (args.empty()) {
-			self << label << " is ";
 			switch (cvar->type) {
-			case CVAR_INT: self << cvar->value->as_int; break;
-			case CVAR_FLOAT: self << cvar->value->as_float; break;
-			case CVAR_BOOL: self << cvar->value->as_bool; break;
+			case CVAR_INT:
+				print("%s is %i", cvar->name, cvar->value->as_int);
+				break;
+			case CVAR_FLOAT:
+				print("%s is %f", cvar->name, cvar->value->as_float);
+				break;
+			case CVAR_BOOL:
+				print("%s is %i", cvar->name, cvar->value->as_bool);
+				break;
 			}
-			self << '\n';
 		}
 		else if (args.size() == 1) {
 			set_variable(cvar, args[0]);
 		}
 		else {
-			self << "Set variable usage: <var> <value>\n";
+			print("Set variable usage: <var> <value>");
 		}
 	}
 	else if (console_cmd* cmd = find_command(label)) {
 		cmd->callback(system, args);
 	}
 	else {
-		self << "Unknown command/variable: '" << label << "'\n";
+		print("Unknown command/variable: \"%s\"", label);
 	}
 }
 
@@ -362,41 +396,6 @@ before scrolling (visible_lines), and the aligned extent of the text buffer.
 void Console::set_font(Font* fnt) {
 	text_renderer.set_font(fnt);
 	display_reformat();
-}
-
-//OPERATOR OVERLOADS
-Console& Console::operator<<(const bool& rhs) {
-	if (rhs == true) write_str("true");
-	else write_str("false");
-	return *this;
-}
-Console& Console::operator<<(const char& rhs) {
-	char temp_str[2] = {rhs, '\0'};
-	write_str(temp_str);
-	return *this;
-}
-Console& Console::operator<<(const int& rhs) {
-	std::string str = std::to_string(rhs);
-	write_str(str.c_str());
-	return *this;
-}
-Console& Console::operator<<(const float& rhs) {
-	std::string str = std::to_string(rhs);
-	write_str(str.c_str());
-	return *this;
-}
-Console& Console::operator<<(const double& rhs) {
-	std::string str = std::to_string(rhs);
-	write_str(str.c_str());
-	return *this;
-}
-Console & Console::operator<<(cstring rhs) {
-	write_str(rhs);
-	return *this;
-}
-Console & Console::operator<<(const std::string & rhs) {
-	write_str(rhs.c_str());
-	return *this;
 }
 
 /*
@@ -666,7 +665,7 @@ void Console::set_variable(cstring name, cstring value) {
 		set_variable(cvar, value);
 	}
 	else {
-		self << "set_variable: '" << name << "' does not exist!\n";
+		print("set_variable: \"%s\" does not exist!", name);
 	}
 }
 
@@ -679,7 +678,7 @@ void Console::set_variable(console_var* cvar, cstring value) {
 		}
 	}
 	else {
-		self << cvar->name << " cannot be edited at runtime.\n";
+		print("%s is read-only.", cvar->name);
 	}
 }
 
@@ -717,19 +716,19 @@ ConsoleCommand(toggleconsole) {
 }
 
 ConsoleCommand(resize) {
-	Console& out = *system.console;
+	Console& con = *system.console;
 	if (args.size() == 2) {
 		int w = atoi(args[0]);
 		int h = atoi(args[1]);
 
 		if (w < 640 || w > 1920 || h < 480 || h > 1080) {
-			out << "resize: invalid resolution\n";
+			con.print("resize: invalid resolution.");
 		}
 		else {
 			system.screen->resize(w, h);
 		}
 	}
 	else {
-		out << "Usage: resize <width> <height>\n";
+		con.print("Usage: resize <width> <height>");
 	}
 }

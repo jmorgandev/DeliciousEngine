@@ -10,13 +10,11 @@
 #include "input_types.h"
 #include "cmds.h"
 
-#define CON_BUFFER_SIZE 2048
-//#define CON_BUFFER_SIZE 16384
+#define CON_BUFFER_SIZE 16384
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
-#define CON_INPUT_SCROLL_MULTIPLE	4
-
-#define CON_HISTORY_SIZE 10
+#define CON_INPUT_SCROLL_MULTIPLE 4
+#define CON_HISTORY_SIZE 32
 
 class Console {
 public:
@@ -25,6 +23,8 @@ public:
 
 	void load_config();
 	void draw();
+
+	void print(cstring format, ...);
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(const console_cmd& cmd);
@@ -50,21 +50,16 @@ public:
 	void display(bool d);
 	void display_toggle();
 	void display_reformat();
-
-	//Operator overloads
-	Console& operator<<(const bool& rhs);
-	Console& operator<<(const char& rhs);
-	Console& operator<<(const int& rhs);
-	Console& operator<<(const float& rhs);
-	Console& operator<<(const double& rhs);
-	Console& operator<<(cstring rhs);
-	Console& operator<<(const std::string& rhs);
 private:
 	System_Ref system;
 
 	//GUI Renderers
 	BoxRenderer	box_renderer;
 	FontRenderer text_renderer;
+
+	void draw_background();
+	void draw_textbox();
+	void draw_userinput();
 
 	//Main text buffer variables
 	char	text_buffer[CON_BUFFER_SIZE];

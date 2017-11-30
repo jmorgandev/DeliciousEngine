@@ -28,7 +28,7 @@ bool Screen::init(System_Ref sys) {
 	Console& console = *system.console;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		console << "SDL could not be initialised: " << SDL_GetError() << "\n";
+		console.print("SDL could not be initialised: %s", SDL_GetError());
 		return false;
 	}
 
@@ -79,7 +79,7 @@ bool Screen::create_window() {
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
-			console << "Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.\n";
+			console.print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
 			fullscreen = false;
 			borderless = false;
 		}
@@ -100,13 +100,13 @@ bool Screen::create_window() {
 		sdl_flags
 	);
 	if (window == nullptr) {
-		console << "SDL window could not be created: " << SDL_GetError() << "\n";
+		console.print("SDL window could not be created: %s", SDL_GetError());
 		return init_success.as_bool;
 	}
 
 	if (gl_context != nullptr) {
 		if (SDL_GL_MakeCurrent(window, gl_context) != 0) {
-			console << "Could not attach existing GL context to SDL window: " << SDL_GetError() << "\n";
+			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return init_success.as_bool;
 		}
 		else {
@@ -116,7 +116,7 @@ bool Screen::create_window() {
 	else {
 		gl_context = SDL_GL_CreateContext(window);
 		if (gl_context == nullptr) {
-			console << "SDL_GL context could not be created: " << SDL_GetError() << "\n";
+			console.print("SDL_GL context could not be created: %s", SDL_GetError());
 			return init_success.as_bool;
 		}
 	}
@@ -126,7 +126,7 @@ bool Screen::create_window() {
 		glewExperimental = true;
 	}
 	else {
-		console << "GLEW could not be initialised: " << glewGetErrorString(status) << "\n";
+		console.print("GLEW could not be initialised: %s", glewGetErrorString(status));
 		return init_success.as_bool;
 	}
 	init_success = true;
