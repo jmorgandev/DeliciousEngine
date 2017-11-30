@@ -28,7 +28,6 @@ bool Console::init(System_Ref sys) {
 	register_command(CommandRef(quit));
 	register_command(CommandRef(toggleconsole));
 	register_command(CommandRef(resize));
-	register_command(CommandRef(cmds));
 
 	clear();
 
