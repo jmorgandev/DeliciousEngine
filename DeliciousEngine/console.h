@@ -93,8 +93,8 @@ private:
 	std::vector<console_cmd> commands;
 	
 	//Printing Functions
-	void write_str(cstring str, bool new_line = false);
-	void write_str(cstring str, uint32 size, bool new_line = false);
+	void write_str(cstring str);
+	void write_str(cstring str, uint32 size);
 	void write_char(uchar c);
 	void buffer_alloc();
 	void terminate_current_line();

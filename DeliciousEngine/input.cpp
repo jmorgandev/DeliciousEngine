@@ -12,6 +12,7 @@ bool Input::init(System_Ref sys) {
 
 	//@TEMP
 	bind(SDLK_BACKQUOTE, "toggleconsole");
+	bind(SDLK_F1, "toggleconsole");
 
 	return true;
 }

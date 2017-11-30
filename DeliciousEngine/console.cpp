@@ -117,8 +117,8 @@ void Console::draw_textbox() {
 Checks the size of the string to write before passing it to the
 overloaded function.
 */
-void Console::write_str(cstring str, bool new_line) { 
-	write_str(str, dcf::str_len(str), new_line);
+void Console::write_str(cstring str) { 
+	write_str(str, dcf::str_len(str));
 }
 
 /*
@@ -126,7 +126,7 @@ Main string printing function, makes necessary word wrapping and
 circular buffer allocations to print the passed in string.
 "new_line" is used to end this printing call with a new line.
 */
-void Console::write_str(cstring str, uint32 size, bool new_line) {
+void Console::write_str(cstring str, uint32 size) {
 	if (text_renderer.get_font() == nullptr) {
 		//@TODO: Handle non graphical printing.
 		return;
@@ -172,14 +172,6 @@ void Console::write_str(cstring str, uint32 size, bool new_line) {
 			break;
 		}
 	}
-	//if we need to move to the next line...
-	//@TODO: Take out, no longer needed if using print formatting.
-	//       since the print(...) function automatically adds the
-	//       newline character to the end of the string.;
-	if (new_line && write_index % line_size != 0) {
-		terminate_current_line();
-		buffer_alloc();
-	}
 }
 
 #define FORMAT_STR_BUFFER 4096
@@ -190,6 +182,7 @@ void Console::print(cstring format, ...) {
 	va_start(args, format);
 	uint length = vsprintf_s(buffer, format, args);
 	va_end(args);
+
 	buffer[length++] = '\n';
 	buffer[length]   = '\0';
 
@@ -322,7 +315,7 @@ by the user (With the return key).
 */
 void Console::execute_input(bool user_input) {
 	if (user_input) {
-		write_str(input_buffer, true);
+		print(input_buffer);
 	}
 	execute_string(input_buffer);
 	clear_input();
@@ -672,9 +665,18 @@ void Console::set_variable(cstring name, cstring value) {
 void Console::set_variable(console_var* cvar, cstring value) {
 	if (cvar->flags & CVAR_MUTABLE) {
 		switch (cvar->type) {
-		case CVAR_INT: cvar->value->as_int = std::atoi(value); break;
-		case CVAR_FLOAT: cvar->value->as_float = std::atof(value); break;
-		case CVAR_BOOL: cvar->value->as_bool = (value[0] == '1' || value[0] == 't') ? true : false; break;
+		case CVAR_INT:
+			cvar->value->as_int = std::atoi(value);
+			break;
+		case CVAR_FLOAT: 
+			cvar->value->as_float = (float)std::atof(value);
+			break;
+		case CVAR_BOOL:
+			cvar->value->as_bool = false;
+			if (value[0] == 't' || value[0] == 'T' || std::atoi(value) > 0) {
+				cvar->value->as_bool = true;
+			}
+			break;
 		}
 	}
 	else {

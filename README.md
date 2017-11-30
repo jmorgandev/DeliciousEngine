@@ -26,15 +26,13 @@ The same way that the engine can be scripted with lua/angelscript, it can also b
 
 ## Development Information
 
-### Current Version (0.0.5)
-- Displays an unlit rotating cube primitive
-- Basic developer console (Can be toggled with `)
+### Current Version (0.0.6)
+- Displays two cubes performing hit testing
+- Basic developer console (Can be toggled with F1)
 - Basic console commands
 - Simple GUI rendering
 - Input key binding
-- Generalised mesh rendering
-- Projection and view matrix setup
-- Resource loading and default mesh primitives
+- World subsystem with Entities
 
 ### Next Version (0.1.0)
 - Embedded scripting
@@ -42,4 +40,4 @@ The same way that the engine can be scripted with lua/angelscript, it can also b
 - Scripting entry point
 - Moving camera test
 
-Last updated: 08/11/2017
+Last updated: 30/11/2017
