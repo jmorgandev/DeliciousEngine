@@ -139,6 +139,7 @@
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="time.cpp" />
     <ClCompile Include="transform.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="system_ref.h" />
     <ClInclude Include="system_var.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="time.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>

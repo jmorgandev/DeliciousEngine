@@ -6,6 +6,7 @@ class Resources;
 class Screen;
 class Input;
 class World;
+class Time;
 //@TODO: Add physics?
 
 struct System_Ref {
@@ -14,6 +15,7 @@ struct System_Ref {
 	Screen*    screen;
 	Input*     input;
 	World*     world;
+	Time*      time;
 };
 
 #endif

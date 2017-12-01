@@ -8,6 +8,7 @@
 #include "resources.h"
 #include "input.h"
 #include "world.h"
+#include "time.h"
 
 #if EXPOSE_GLOBAL_SYSTEM
 extern System_Ref global_system;
@@ -28,6 +29,7 @@ private:
 	Screen	  screen;
 	Input	  input;
 	World	  world;
+	Time      time;
 };
 
 #endif
