@@ -1,11 +1,11 @@
 #include "entity.h"
 
-Entity::Entity() {
+Entity::Entity(uint new_id) {
 	collider = { this, 0.6f };
-}
-
-Entity::Entity(uint new_id) : Entity() {
 	id = new_id;
+}
+Entity::Entity(glm::vec3 new_pos, uint new_id) : Entity(new_id) {
+	transform.set_position(new_pos);
 }
 
 Transform* Entity::get_transform() {

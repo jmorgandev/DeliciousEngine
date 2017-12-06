@@ -20,13 +20,9 @@ public:
 	Entity* GetEntityByIndex(uint i);
 	Entity* GetEntityByID(uint id);
 
-	Entity* CreateEntity();
 	Entity* AddEntity(Entity ent);
 private:
 	System_Ref system;
-
-	Entity entity_a;
-	Entity entity_b;
 
 	std::vector<Entity> entities;
 

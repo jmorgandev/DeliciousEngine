@@ -11,8 +11,8 @@
 
 class Entity {
 public:
-	Entity();
-	Entity(uint new_id);
+	Entity(uint new_id = 0);
+	Entity(glm::vec3 new_pos, uint new_id = 0);
 
 	Transform* get_transform();
 	MeshRenderer* get_renderer();
