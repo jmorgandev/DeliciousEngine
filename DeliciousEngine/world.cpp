@@ -98,3 +98,24 @@ void World::do_camera() {
 	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }
+
+Entity* World::GetEntityByIndex(uint i) {
+	return (i < entities.size()) ? &entities[i] : nullptr;
+}
+
+Entity* World::GetEntityByID(uint id) {
+	for (auto& ent : entities) {
+		if (ent.get_id() == id) return &ent;
+	}
+	return nullptr;
+}
+
+Entity* World::CreateEntity() {
+	entities.push_back(Entity());
+	return &entities.back();
+}
+
+Entity* World::AddEntity(Entity ent) {
+	entities.push_back(ent);
+	return &entities.back();
+}

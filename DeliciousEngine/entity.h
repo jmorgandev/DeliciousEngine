@@ -12,6 +12,7 @@
 class Entity {
 public:
 	Entity();
+	Entity(uint new_id);
 
 	Transform* get_transform();
 	MeshRenderer* get_renderer();
@@ -19,11 +20,16 @@ public:
 
 	//@TEMP
 	bool colliding_with(Entity* ent);
+
+	uint get_id();
+	void set_id(uint new_id);
 private:
 	Transform transform;
 	SphereCollider collider;
 
 	MeshRenderer renderer;
+
+	uint id;
 };
 
 #endif

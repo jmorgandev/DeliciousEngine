@@ -4,6 +4,10 @@ Entity::Entity() {
 	collider = { this, 0.6f };
 }
 
+Entity::Entity(uint new_id) : Entity() {
+	id = new_id;
+}
+
 Transform* Entity::get_transform() {
 	return &transform;
 }
@@ -29,4 +33,12 @@ bool Entity::colliding_with(Entity* ent) {
 	else {
 		return false;
 	}
+}
+
+uint Entity::get_id() {
+	return id;
+}
+
+void Entity::set_id(uint new_id) {
+	id = new_id;
 }
