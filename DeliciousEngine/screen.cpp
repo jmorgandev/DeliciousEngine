@@ -27,7 +27,7 @@ bool Screen::init(System_Ref sys) {
 	system = sys;
 	Console& console = *system.console;
 
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		console.print("SDL could not be initialised: %s", SDL_GetError());
 		return false;
 	}

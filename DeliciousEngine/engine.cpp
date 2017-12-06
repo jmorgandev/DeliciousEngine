@@ -9,9 +9,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+//@TEMP Move time logic into time subsystem
+#include <chrono>
+#include <ratio>
+using namespace std::chrono;
+
 Engine::Engine() {
 	running = false;
-	strict_mode  = false;
+	strict_mode = false;
 }
 
 bool Engine::init(char** argv, int argc) {
@@ -44,24 +49,42 @@ bool Engine::init(char** argv, int argc) {
 	
 	if (world.load_test() == false) return false;
 
-	console.register_variable("eng_running", &running,     CVAR_BOOL, CVAR_SYSTEM);
-	console.register_variable("eng_strict",  &strict_mode, CVAR_BOOL, CVAR_USER);
+	console.register_variable("eng_running",    &running,     CVAR_BOOL, CVAR_SYSTEM);
+	console.register_variable("eng_strict",     &strict_mode, CVAR_BOOL, CVAR_USER);
 
 #if EXPOSE_GLOBAL_SYSTEM
 	global_system = systems;
 #endif
+
 	return true;
 }
+
+//@TEMP Move time logic into time subsystem
+using hrc = high_resolution_clock;
 
 void Engine::run() {
 	running = true;
 
 	time.start();
 
+	//@TODO decouple world simulation and rendering, current this is just a framerate limiter
+	//      that locks simulation AND rendering at a maximum of 60hz.
+	const float max_timestep = 1.0f / 60.0f;
+	float acc = 0.0f;
+	auto last_time = hrc::now();
+
 	while (running.as_bool == true) {
+		const auto current_time = hrc::now();
+		const duration<float> frame_time = current_time - last_time;
+		last_time = current_time;
+		acc += frame_time.count();
+
 		input.process_events();
-		world.update();
-		screen.render_frame();
+		while (acc >= max_timestep) {
+			world.update();
+			screen.render_frame();
+			acc -= max_timestep;
+		}
 	}
 }
 

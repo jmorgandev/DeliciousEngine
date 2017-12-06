@@ -1,8 +1,11 @@
 #include "time.h"
-#include <SDL/SDL.h>
+#include "console.h"
 
 bool Time::init(System_Ref sys) {
 	system = sys;
+
+	//system.console->register_variable("time_timestep")
+
 	return true;
 }
 

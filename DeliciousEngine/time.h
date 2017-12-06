@@ -2,6 +2,7 @@
 #define DELICIOUS_TIME_H
 
 #include "system_ref.h"
+#include "system_var.h"
 #include "dtypes.h"
 
 class Time {
@@ -14,8 +15,6 @@ public:
 	void clean_exit();
 private:
 	System_Ref system;
-
-	
 };
 
 #endif
