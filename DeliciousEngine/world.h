@@ -3,6 +3,7 @@
 
 #include "system_ref.h"
 #include <vector>
+#include <list>
 
 #include "system_var.h"
 #include "entity.h"
@@ -17,14 +18,20 @@ public:
 	void update();
 	void draw();
 
-	Entity* GetEntityByIndex(uint i);
-	Entity* GetEntityByID(uint id);
+	Entity* get_entity(uint id);
 
-	Entity* AddEntity(Entity ent);
+	Entity* create_entity(uint id = 0);
+	Entity* clone_entity(Entity& src);
+	Entity* clone_entity(Entity& src, uint id);
+	void destroy_entity(uint id);
+	void destroy_entity(Entity* ent);
+
+	bool collision(Entity* a, Entity* b);
 private:
 	System_Ref system;
 
-	std::vector<Entity> entities;
+	//std::vector<Entity> entities;
+	std::list<Entity> entities;
 
 	//@TEMP
 	void do_camera();

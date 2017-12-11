@@ -3,12 +3,13 @@
 #include "resources.h"
 #include "screen.h"
 #include "input.h"
-
+#include "physics.h"
 #include "dmath.h"
+
+#include <algorithm>
 
 bool World::init(System_Ref sys) {
 	system = sys;
-
 	return true;
 }
 
@@ -22,19 +23,15 @@ bool World::load_test() {
 	default_material = system.resources->make_material("default", default_texture, default_shader);
 	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
 
-	Entity first, second;
+	//Entity first, second;
+	Entity* first = create_entity(0);
+	first->get_renderer()->set(cube, default_material);
+	first->get_transform()->set_position(-1.0f, 0.0f, 0.0f);
 
-	first.get_renderer()->set(cube, default_material);
-	second.get_renderer()->set(cube, default_material);
-
-	first.get_transform()->set_position(-1.0f, 0.0f, 0.0f);
-	second.get_transform()->set_position(1.0f, 0.0f, 0.0f);
-
-	AddEntity(first);
-	AddEntity(second);
+	Entity* second = clone_entity(*first, 1);
+	second->get_transform()->set_position(1.0f, 0.0f, 0.0f);
 
 	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
-
 	return true;
 }
 
@@ -46,15 +43,12 @@ void World::update() {
 	//@TEMP: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
-	Entity* first = GetEntityByIndex(0);
-	Entity* second = GetEntityByIndex(1);
+	Entity* first = get_entity(0);
+	Entity* second = get_entity(1);
 
 	glm::vec3 axis = glm::normalize(glm::vec3(0.0f, 2.0f, 0.0f));
 	first->get_transform()->rotate(0.1f, axis);
 	second->get_transform()->rotate(1.0f, axis);
-
-	//glm::vec3 angles_a = first->get_transform()->get_euler_angles();
-	//glm::vec3 angles_b = second->get_transform()->get_euler_angles();
 	
 	static float t = 0;
 	t += 0.05f;
@@ -63,7 +57,7 @@ void World::update() {
 	
 	glUseProgram(default_material->shader->id);
 	GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
-	if (first->colliding_with(second)) {
+	if (collision(first, second)) {
 		glUniform1f(uniform_highlight, 0.2f);
 	}
 	else {
@@ -73,8 +67,8 @@ void World::update() {
 
 void World::draw() {
 	//@TEMP
-	Entity* first = GetEntityByIndex(0);
-	Entity* second = GetEntityByIndex(1);
+	Entity* first = get_entity(0);
+	Entity* second = get_entity(1);
 
 	Camera* cam = system.screen->get_camera();
 	glm::mat4 transform_a = first->get_transform()->get_matrix();
@@ -110,18 +104,44 @@ void World::do_camera() {
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }
 
-Entity* World::GetEntityByIndex(uint i) {
-	return (i < entities.size()) ? &entities[i] : nullptr;
-}
-
-Entity* World::GetEntityByID(uint id) {
+Entity* World::get_entity(uint id) {
 	for (auto& ent : entities) {
 		if (ent.get_id() == id) return &ent;
 	}
 	return nullptr;
 }
 
-Entity* World::AddEntity(Entity ent) {
-	entities.push_back(ent);
+Entity* World::create_entity(uint id) {
+	entities.emplace_back(id);
 	return &entities.back();
+}
+
+Entity* World::clone_entity(Entity& ent) {
+	return clone_entity(ent, ent.get_id());
+}
+
+Entity* World::clone_entity(Entity& src, uint id) {
+	entities.emplace_back(src);
+	entities.back().set_id(id);
+	return &entities.back();
+}
+
+void World::destroy_entity(uint id) {
+	Entity* e = get_entity(id);
+	if (e != nullptr) {
+		destroy_entity(e);
+	}
+}
+void World::destroy_entity(Entity* ent) {
+	for (auto it = entities.begin(); it != entities.end(); ++it) {
+		if (ent == &(*it)) {
+			std::iter_swap(it, entities.end());
+			entities.pop_back();
+			break;
+		}
+	}
+}
+
+bool World::collision(Entity* a, Entity* b) {
+	return a->get_collider()->intersect(b->get_collider());
 }

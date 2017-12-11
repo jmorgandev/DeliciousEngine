@@ -12,24 +12,20 @@
 class Entity {
 public:
 	Entity(uint new_id = 0);
-	Entity(glm::vec3 new_pos, uint new_id = 0);
+	virtual ~Entity() {}
 
 	Transform* get_transform();
 	MeshRenderer* get_renderer();
 	SphereCollider* get_collider();
 
-	//@TEMP
-	bool colliding_with(Entity* ent);
-
 	uint get_id();
-	void set_id(uint new_id);
+	void set_id(uint value);
 private:
+	uint id;
+
 	Transform transform;
 	SphereCollider collider;
-
 	MeshRenderer renderer;
-
-	uint id;
 };
 
 #endif

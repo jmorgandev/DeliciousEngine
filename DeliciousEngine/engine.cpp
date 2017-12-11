@@ -20,13 +20,13 @@ Engine::Engine() {
 }
 
 bool Engine::init(char** argv, int argc) {
-	//@TODO: Add physics?
 	System_Ref systems;
 	systems.console	  = &console;
 	systems.screen    = &screen;
 	systems.resources = &resources;
 	systems.input     = &input;
 	systems.world     = &world;
+	systems.physics   = &physics;
 	systems.time	  = &time;
 
 	//@TODO: Parse command line arguments.
