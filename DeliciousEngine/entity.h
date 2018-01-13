@@ -11,18 +11,18 @@
 
 class Entity {
 public:
-	Entity(uint new_id = 0);
+	Entity(std::string ent_name);
+	Entity(const Entity& e);
 	virtual ~Entity() {}
 
+	std::string name;
+
+	void set_transform(Transform* value);
 	Transform* get_transform();
+
 	MeshRenderer* get_renderer();
 	SphereCollider* get_collider();
-
-	uint get_id();
-	void set_id(uint value);
-private:
-	uint id;
-
+protected:
 	Transform transform;
 	SphereCollider collider;
 	MeshRenderer renderer;

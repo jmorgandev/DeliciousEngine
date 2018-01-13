@@ -39,4 +39,7 @@ void SphereCollider::set_offset(glm::vec3 value) {
 Entity* SphereCollider::get_entity() {
 	return entity;
 }
+void SphereCollider::set_entity(Entity* ref) {
+	entity = ref;
+}
 

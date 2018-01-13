@@ -1,10 +1,20 @@
 #include "entity.h"
 
-Entity::Entity(uint new_id) {
+Entity::Entity(std::string name) {
+	this->name = name;
 	collider = { this, 0.6f };
-	id = new_id;
+}
+Entity::Entity(const Entity& e) {
+	name = e.name;
+	transform = e.transform;
+	renderer = e.renderer;
+	collider = e.collider;
+	collider.set_entity(this);
 }
 
+void Entity::set_transform(Transform* value) {
+	transform = *value;
+}
 Transform* Entity::get_transform() {
 	return &transform;
 }
@@ -15,12 +25,4 @@ MeshRenderer* Entity::get_renderer() {
 
 SphereCollider* Entity::get_collider() {
 	return &collider;
-}
-
-uint Entity::get_id() {
-	return id;
-}
-
-void Entity::set_id(uint new_id) {
-	id = new_id;
 }

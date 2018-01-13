@@ -20,6 +20,7 @@ public:
 	void set_offset(glm::vec3 value);
 
 	Entity* get_entity();
+	void    set_entity(Entity* ref);
 private:
 	Entity* entity;
 	glm::vec3 offset;

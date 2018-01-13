@@ -24,12 +24,12 @@ bool World::load_test() {
 	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
 
 	//Entity first, second;
-	Entity* first = create_entity(0);
+	Entity* first = create_entity("first");
 	first->get_renderer()->set(cube, default_material);
 	first->get_transform()->set_position(-1.0f, 0.0f, 0.0f);
 
-	Entity* second = clone_entity(*first, 1);
-	second->get_transform()->set_position(1.0f, 0.0f, 0.0f);
+	Entity* second = clone_entity(first, { 1.0f, 0.0f, 0.0f });
+	second->name = "second";
 
 	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 	return true;
@@ -104,41 +104,65 @@ void World::do_camera() {
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }
 
-Entity* World::get_entity(uint id) {
-	for (auto& ent : entities) {
-		if (ent.get_id() == id) return &ent;
+Entity* World::get_entity(uint index) {
+	if (index < entities.size()) {
+		auto it = entities.begin();
+		std::advance(it, index);
+		return &(*it);
 	}
 	return nullptr;
 }
 
-Entity* World::create_entity(uint id) {
-	entities.emplace_back(id);
+Entity* World::create_entity(std::string name) {
+	entities.emplace_back(name);
 	return &entities.back();
 }
 
-Entity* World::clone_entity(Entity& ent) {
-	return clone_entity(ent, ent.get_id());
-}
-
-Entity* World::clone_entity(Entity& src, uint id) {
-	entities.emplace_back(src);
-	entities.back().set_id(id);
+Entity* World::copy_entity(Entity* ent) {
+	entities.emplace_back(*ent);
 	return &entities.back();
 }
 
-void World::destroy_entity(uint id) {
-	Entity* e = get_entity(id);
-	if (e != nullptr) {
-		destroy_entity(e);
-	}
+Entity* World::clone_entity(Entity* ent, glm::vec3 pos) {
+	entities.emplace_back(*ent);
+	entities.back().get_transform()->set_position(pos);
+	return &entities.back();
 }
+Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot) {
+	entities.emplace_back(*ent);
+	Transform* t = entities.back().get_transform();
+	t->set_position(pos);
+	t->set_rotation(rot);
+	return &entities.back();
+}
+Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::vec3 scale) {
+	entities.emplace_back(*ent);
+	Transform* t = entities.back().get_transform();
+	t->set_position(pos);
+	t->set_scale(scale);
+	return &entities.back();
+}
+Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot, glm::vec3 scale) {
+	entities.emplace_back(*ent);
+	Transform* t = entities.back().get_transform();
+	t->set_position(pos);
+	t->set_rotation(rot);
+	t->set_scale(scale);
+	return &entities.back();
+}
+Entity* World::clone_entity(Entity* ent, Transform* tfm) {
+	entities.emplace_back(*ent);
+	entities.back().set_transform(tfm);
+	return &entities.back();
+}
+
 void World::destroy_entity(Entity* ent) {
-	for (auto it = entities.begin(); it != entities.end(); ++it) {
+	for (auto it = entities.begin(); it != entities.end();) {
 		if (ent == &(*it)) {
-			std::iter_swap(it, entities.end());
-			entities.pop_back();
-			break;
+			entities.erase(it);
+			return;
 		}
+		else ++it;
 	}
 }
 
