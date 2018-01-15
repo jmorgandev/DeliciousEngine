@@ -21,15 +21,24 @@ bool World::load_test() {
 	assert(test_shader != nullptr);
 
 	test_mat.set_shader(test_shader);
+	other_mat.set_shader(test_shader);
 	//GLfloat col[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	//test_mat.set_floatv("innerColor", col, 4);
 	test_mat.set_vector4("outerColor", { 0.0f, 0.0f, 0.0f, 0.0f});
 	test_mat.set_vector4("innerColor", { 1.0f, 1.0f, 0.75f, 1.0f });
 	test_mat.set_float("radiusInner", 0.25f);
 	test_mat.set_float("radiusOuter", 0.45f);
+	test_mat.set_vector3("pos_offset", { -0.5f, 0.0f, 0.0f });
+
+	other_mat.set_vector4("outerColor", { 0.0f, 0.0f, 0.0f, 0.0f });
+	other_mat.set_vector4("innerColor", { 1.0f, 0.0f, 0.75f, 1.0f });
+	other_mat.set_float("radiusInner", 0.15f);
+	other_mat.set_float("radiusOuter", 0.75f);
+	other_mat.set_vector3("pos_offset", { 0.5f, 0.0f, 0.0f });
 
 	Mesh* quad = system.resources->fetch_mesh("primitive.quad");
 	test_rend.set(quad, &test_mat);	
+	other_rend.set(quad, &other_mat);
 
 	Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
@@ -97,6 +106,7 @@ void World::draw() {
 	second->get_renderer()->draw(transform_b, view, projection);
 
 	test_rend.draw();
+	other_rend.draw();
 }
 
 void World::do_camera() {

@@ -5,6 +5,7 @@ MaterialX::MaterialX() {
 	shader = nullptr;
 	std::memset(textures, 0, sizeof(Texture*) * MATERIAL_MAX_TEX);
 	mblock_buffer = nullptr;
+	update_buffer = false;
 }
 
 MaterialX::~MaterialX() {
@@ -67,13 +68,14 @@ void MaterialX::set_matrix(std::string name, glm::mat4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		uniform_meta meta = it->second;
-		assert(meta.size == sizeof(glm::mat4));
-		std::memcpy(mblock_buffer + meta.offset, glm::value_ptr(value), meta.size);
+		//assert(meta.size == sizeof(glm::mat4));
+		std::memcpy(mblock_buffer + meta.offset, glm::value_ptr(value), sizeof(glm::mat4));
 	}
 	else {
 		GLint index = glGetUniformLocation(shader->id, name.c_str());
 		glUniformMatrix4fv(index, 1, false, glm::value_ptr(value));
 	}
+	update_buffer = true;
 }
 
 void MaterialX::set_vector4(std::string name, glm::vec4 value) {
@@ -88,6 +90,22 @@ void MaterialX::set_vector4(std::string name, glm::vec4 value) {
 		GLint index = glGetUniformLocation(shader->id, name.c_str());
 		glUniform4fv(index, 1, glm::value_ptr(value));
 	}
+	update_buffer = true;
+}
+
+void MaterialX::set_vector3(std::string name, glm::vec3 value) {
+	auto it = uniform_list.find(name);
+	if (it != uniform_list.end()) {
+		uniform_meta meta = it->second;
+		//assert(meta.size == sizeof(glm::vec4));
+		std::memcpy(mblock_buffer + meta.offset, glm::value_ptr(value), sizeof(glm::vec3));
+	}
+	else {
+		glUseProgram(shader->id);
+		GLint index = glGetUniformLocation(shader->id, name.c_str());
+		glUniform3fv(index, 1, glm::value_ptr(value));
+	}
+	update_buffer = true;
 }
 
 void MaterialX::set_float(std::string name, GLfloat value) {
@@ -101,6 +119,7 @@ void MaterialX::set_float(std::string name, GLfloat value) {
 		GLint index = glGetUniformLocation(shader->id, name.c_str());
 		glUniform1f(index, value);
 	}
+	update_buffer = true;
 }
 
 void MaterialX::set_floatv(std::string name, GLfloat* values, GLuint size) {
@@ -114,6 +133,7 @@ void MaterialX::set_floatv(std::string name, GLfloat* values, GLuint size) {
 		GLint index = glGetUniformLocation(shader->id, name.c_str());
 		glUniform1fv(index, size, values);
 	}
+	update_buffer = true;
 }
 
 void MaterialX::bind() {
@@ -128,8 +148,12 @@ void MaterialX::bind() {
 	//@SPEED send important matrices through attributes rather than shaders?
 	if (shader != nullptr) {
 		glUseProgram(shader->id);
-		glBindBuffer(GL_UNIFORM_BLOCK, mblock_ubo);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, mblock_size, mblock_buffer);
+		glBindBufferBase(GL_UNIFORM_BUFFER, mblock_index, mblock_ubo);
+		if (update_buffer) {
+			glBindBuffer(GL_UNIFORM_BLOCK, mblock_ubo);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, mblock_size, mblock_buffer);
+			update_buffer = false;
+		}
 	}
 }
 

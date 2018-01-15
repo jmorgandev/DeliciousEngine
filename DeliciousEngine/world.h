@@ -45,8 +45,8 @@ private:
 	//@TEMP
 	void do_camera();
 	Material* default_material;
-	MaterialX test_mat;
-	MeshRendererX test_rend;
+	MaterialX test_mat, other_mat;
+	MeshRendererX test_rend, other_rend;
 };
 
 #endif

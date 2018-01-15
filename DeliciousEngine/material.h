@@ -39,6 +39,7 @@ public:
 
 	void set_matrix(std::string name, glm::mat4 value);
 	void set_vector4(std::string name, glm::vec4 value);
+	void set_vector3(std::string name, glm::vec3 value);
 	void set_floatv(std::string name, GLfloat* values, GLuint size);
 	void set_float(std::string name, GLfloat value);
 private:
@@ -57,6 +58,7 @@ private:
 		GLint size;
 	};
 	std::map<std::string, uniform_meta> uniform_list;
+	bool update_buffer;
 };
 
 #endif
