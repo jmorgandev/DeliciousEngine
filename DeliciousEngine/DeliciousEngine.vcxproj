@@ -144,6 +144,7 @@
     <ClCompile Include="time.cpp" />
     <ClCompile Include="transform.cpp" />
     <ClCompile Include="world.cpp" />
+    <ClCompile Include="x_renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="box_renderer.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="time.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="world.h" />
+    <ClInclude Include="x_renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

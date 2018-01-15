@@ -6,6 +6,6 @@
 #include <array>
 
 #define ConsoleCommand(a) static inline void cmd_##a(System_Ref system, std::vector<cstring> args)
-#define CommandRef(a) {#a, cmd_##a}
+#define CommandObj(a) {#a, cmd_##a}
 
 #endif

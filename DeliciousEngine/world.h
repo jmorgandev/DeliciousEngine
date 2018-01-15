@@ -7,6 +7,7 @@
 
 #include "system_var.h"
 #include "entity.h"
+#include "x_renderer.h"
 
 class World {
 public:
@@ -44,6 +45,8 @@ private:
 	//@TEMP
 	void do_camera();
 	Material* default_material;
+	MaterialX test_mat;
+	MeshRendererX test_rend;
 };
 
 #endif

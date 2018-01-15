@@ -17,12 +17,19 @@ bool World::init(System_Ref sys) {
 
 //@TEMP
 bool World::load_test() {
-	Shader* test_shader = system.resources->load_shader("res/ubo_test.glsl");
+	Shader* test_shader = system.resources->load_shader("res/circle.glsl");
 	assert(test_shader != nullptr);
 
-	MaterialX test_mat;
 	test_mat.set_shader(test_shader);
-	
+	//GLfloat col[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//test_mat.set_floatv("innerColor", col, 4);
+	test_mat.set_vector4("outerColor", { 0.0f, 0.0f, 0.0f, 0.0f});
+	test_mat.set_vector4("innerColor", { 1.0f, 1.0f, 0.75f, 1.0f });
+	test_mat.set_float("radiusInner", 0.25f);
+	test_mat.set_float("radiusOuter", 0.45f);
+
+	Mesh* quad = system.resources->fetch_mesh("primitive.quad");
+	test_rend.set(quad, &test_mat);	
 
 	Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
@@ -64,14 +71,14 @@ void World::update() {
 	float off = -0.7f;
 	first->get_transform()->set_position(math::sine(1.0f, t) + off, math::cosine(0.6f, t), 0.0f);
 	
-	glUseProgram(default_material->shader->id);
-	GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
-	if (collision(first, second)) {
-		glUniform1f(uniform_highlight, 0.2f);
-	}
-	else {
-		glUniform1f(uniform_highlight, 0.0f);
-	}
+	//glUseProgram(default_material->shader->id);
+	//GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
+	//if (collision(first, second)) {
+	//	glUniform1f(uniform_highlight, 0.2f);
+	//}
+	//else {
+	//	glUniform1f(uniform_highlight, 0.0f);
+	//}
 }
 
 void World::draw() {
@@ -88,6 +95,8 @@ void World::draw() {
 
 	first->get_renderer()->draw(transform_a, view, projection);
 	second->get_renderer()->draw(transform_b, view, projection);
+
+	test_rend.draw();
 }
 
 void World::do_camera() {

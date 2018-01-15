@@ -32,24 +32,29 @@ public:
 	MaterialX();
 	~MaterialX();
 
+	void bind();
+
 	void    set_shader(Shader* value);
 	Shader* get_shader();
 
 	void set_matrix(std::string name, glm::mat4 value);
+	void set_vector4(std::string name, glm::vec4 value);
+	void set_floatv(std::string name, GLfloat* values, GLuint size);
+	void set_float(std::string name, GLfloat value);
 private:
 	Shader* shader;
 	Texture* textures[MATERIAL_MAX_TEX];
 
-	GLuint  mblock_index;
-	GLuint  mblock_ubo;
-	GLint   mblock_size;
-	GLvoid* mblock_buffer;
+	GLuint   mblock_index;
+	GLuint   mblock_ubo;
+	GLint    mblock_size;
+	GLubyte* mblock_buffer;
 
 	struct uniform_meta {
 		GLuint index;
-		GLint  size;
-		GLint  offset;
-		GLenum type;
+		GLint offset;
+		GLint type;
+		GLint size;
 	};
 	std::map<std::string, uniform_meta> uniform_list;
 };

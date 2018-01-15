@@ -24,10 +24,10 @@ bool Console::init(System_Ref sys) {
 	input_scroll = 0;
 	display_console = false;
 
-	register_command(CommandRef(clear));
-	register_command(CommandRef(quit));
-	register_command(CommandRef(toggleconsole));
-	register_command(CommandRef(resize));
+	register_command(CommandObj(clear));
+	register_command(CommandObj(quit));
+	register_command(CommandObj(toggleconsole));
+	register_command(CommandObj(resize));
 
 	clear();
 
