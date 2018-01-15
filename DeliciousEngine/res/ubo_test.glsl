@@ -11,6 +11,8 @@ uniform matrices {
 	mat4 projection
 }
 
+uniform float bab;
+
 out vec2 uv;
 
 void main(void) {
