@@ -7,6 +7,8 @@
 #include "dtypes.h"
 #include "mesh.h"
 
+#include <vector>
+
 //@TODO: Auto-generate global uniform block for standard engine assigned uniforms e.g:
 // - matrix_mvp (Computed before sending to GPU)
 // - matrix_view
@@ -15,9 +17,28 @@
 // - camera frustrum?
 // - global lights? etc...
 
+const uint MATERIAL_MAX_TEX = 8;
+
 struct Material {
 	Texture* texture;
 	Shader*  shader;
+};
+
+class MaterialX {
+public:
+	MaterialX();
+	~MaterialX() {}
+
+	void    set_shader(Shader* value);
+	Shader* get_shader();
+private:
+	Shader* shader;
+	Texture* textures[MATERIAL_MAX_TEX];
+
+	GLuint  mblock_index;
+	GLuint  mblock_ubo;
+	GLint   mblock_size;
+	GLvoid* mblock_buffer;
 };
 
 #endif

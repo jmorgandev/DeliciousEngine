@@ -136,6 +136,7 @@
     <ClCompile Include="font_renderer.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="material.cpp" />
     <ClCompile Include="mesh_renderer.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="resources.cpp" />

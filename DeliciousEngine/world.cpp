@@ -8,6 +8,8 @@
 
 #include <algorithm>
 
+#include "material.h"
+
 bool World::init(System_Ref sys) {
 	system = sys;
 	return true;
@@ -15,6 +17,13 @@ bool World::init(System_Ref sys) {
 
 //@TEMP
 bool World::load_test() {
+	Shader* test_shader = system.resources->load_shader("res/ubo_test.glsl");
+	assert(test_shader != nullptr);
+
+	MaterialX test_mat;
+	test_mat.set_shader(test_shader);
+	
+
 	Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
 	if (default_texture == nullptr || default_shader == nullptr) {
