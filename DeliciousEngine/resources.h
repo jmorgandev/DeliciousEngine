@@ -38,7 +38,7 @@ public:
 
 	Material* fetch_material(std::string filename);
 	//@TEMP
-	Material* make_material(std::string name, Texture* t, Shader* s);
+	Material* make_material(std::string name, Shader* shader);
 private:
 	System_Ref system;
 

@@ -14,7 +14,8 @@ namespace dff {
 	std::string file_str(std::string filepath);
 	std::string file_str(cstring filepath);
 
-	std::string get_glsl_region(std::string src, std::string key, std::string label);
+	std::string get_glsl_region(std::string src, std::string label);
+	std::string get_glsl_header(std::string src);
 }
 
 #endif

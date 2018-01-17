@@ -117,9 +117,6 @@
     <ClCompile Include="material.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
-    <ClCompile Include="x_renderer.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.h">
@@ -226,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="time.h">
       <Filter>Header Files\systems</Filter>
-    </ClInclude>
-    <ClInclude Include="x_renderer.h">
-      <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

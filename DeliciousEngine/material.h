@@ -20,36 +20,36 @@
 // - camera frustrum?
 // - global lights? etc...
 
-const uint MATERIAL_MAX_TEX = 8;
-
-struct Material {
-	Texture* texture;
-	Shader*  shader;
-};
-
-class MaterialX {
+class Material {
 public:
-	MaterialX();
-	~MaterialX();
+	Material(Shader* shader_program = nullptr, std::string user_block = "material");
+	~Material();
 
 	void bind();
 
-	void    set_shader(Shader* value);
 	Shader* get_shader();
 
 	void set_matrix(std::string name, glm::mat4 value);
-	void set_vector4(std::string name, glm::vec4 value);
-	void set_vector3(std::string name, glm::vec3 value);
-	void set_floatv(std::string name, GLfloat* values, GLuint size);
+
+	void set_vec4(std::string name, glm::vec4 value);
+	void set_vec4(std::string name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+
+	void set_vec3(std::string name, glm::vec3 value);
+	void set_vec3(std::string name, GLfloat x, GLfloat y, GLfloat z);
+
 	void set_float(std::string name, GLfloat value);
+	void set_floatv(std::string name, GLfloat* values, GLuint size);
 private:
 	Shader* shader;
-	Texture* textures[MATERIAL_MAX_TEX];
 
-	GLuint   mblock_index;
-	GLuint   mblock_ubo;
-	GLint    mblock_size;
-	GLubyte* mblock_buffer;
+	static const uint MAX_TEXTURES = 16;	//Support GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS ?
+	GLenum sampler2d[MAX_TEXTURES];
+	uint sampler2d_count;
+
+	GLuint   block_index;
+	GLuint   block_ubo;
+	GLint    block_size;
+	GLubyte* block_buffer;
 
 	struct uniform_meta {
 		GLuint index;
@@ -57,8 +57,15 @@ private:
 		GLint type;
 		GLint size;
 	};
-	std::map<std::string, uniform_meta> uniform_list;
+	std::map<std::string, uniform_meta> block_uniforms;
 	bool update_buffer;
+
+	std::map<std::string, GLuint> uniforms;
+
+	void get_user_block(std::string name);
+	void get_default_block();
+
+	void get_block(std::string name);
 };
 
 #endif

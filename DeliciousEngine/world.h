@@ -1,13 +1,13 @@
 #ifndef DELICIOUS_WORLD_H
 #define DELICIOUS_WORLD_H
 
+#include "dtypes.h"
 #include "system_ref.h"
 #include <vector>
 #include <list>
 
 #include "system_var.h"
 #include "entity.h"
-#include "x_renderer.h"
 
 class World {
 public:
@@ -45,8 +45,6 @@ private:
 	//@TEMP
 	void do_camera();
 	Material* default_material;
-	MaterialX test_mat, other_mat;
-	MeshRendererX test_rend, other_rend;
 };
 
 #endif

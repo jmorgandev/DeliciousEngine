@@ -17,35 +17,13 @@ bool World::init(System_Ref sys) {
 
 //@TEMP
 bool World::load_test() {
-	Shader* test_shader = system.resources->load_shader("res/circle.glsl");
-	assert(test_shader != nullptr);
-
-	test_mat.set_shader(test_shader);
-	other_mat.set_shader(test_shader);
-	//GLfloat col[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//test_mat.set_floatv("innerColor", col, 4);
-	test_mat.set_vector4("outerColor", { 0.0f, 0.0f, 0.0f, 0.0f});
-	test_mat.set_vector4("innerColor", { 1.0f, 1.0f, 0.75f, 1.0f });
-	test_mat.set_float("radiusInner", 0.25f);
-	test_mat.set_float("radiusOuter", 0.45f);
-	test_mat.set_vector3("pos_offset", { -0.5f, 0.0f, 0.0f });
-
-	other_mat.set_vector4("outerColor", { 0.0f, 0.0f, 0.0f, 0.0f });
-	other_mat.set_vector4("innerColor", { 1.0f, 0.0f, 0.75f, 1.0f });
-	other_mat.set_float("radiusInner", 0.15f);
-	other_mat.set_float("radiusOuter", 0.75f);
-	other_mat.set_vector3("pos_offset", { 0.5f, 0.0f, 0.0f });
-
-	Mesh* quad = system.resources->fetch_mesh("primitive.quad");
-	test_rend.set(quad, &test_mat);	
-	other_rend.set(quad, &other_mat);
-
 	Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
 	if (default_texture == nullptr || default_shader == nullptr) {
 		return false;
 	}
-	default_material = system.resources->make_material("default", default_texture, default_shader);
+	default_material = system.resources->make_material("default", default_shader);
+	default_material->set_vec4("tint", 0.5f, 1.0f, 1.0f, 1.0f);
 	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
 
 	//Entity first, second;
@@ -102,11 +80,8 @@ void World::draw() {
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
 
-	first->get_renderer()->draw(transform_a, view, projection);
-	second->get_renderer()->draw(transform_b, view, projection);
-
-	test_rend.draw();
-	other_rend.draw();
+	first->get_renderer()->draw();
+	second->get_renderer()->draw();
 }
 
 void World::do_camera() {

@@ -31,11 +31,18 @@ namespace dff {
 		return result;
 	}
 
-	std::string get_glsl_region(std::string src, std::string key, std::string label) {
-		size_t pos = src.find(key + label);
+	std::string get_glsl_region(std::string src, std::string label) {
+		std::string search_term = "#scope " + label;
+		size_t pos = src.find(search_term);
 		if (pos == std::string::npos) return "";
-		size_t region_start = pos + (key.size() + label.size());
-		size_t region_end = src.find(key, region_start);
+		size_t region_start = pos + (search_term.size());
+		size_t region_end = src.find("#scope ", region_start);
 		return src.substr(region_start, region_end - region_start);
+	}
+
+	std::string get_glsl_header(std::string src) {
+		size_t pos = src.find("#scope");
+		if (pos == std::string::npos) return "";
+		return src.substr(0, pos);
 	}
 }

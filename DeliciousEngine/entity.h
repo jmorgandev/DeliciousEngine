@@ -1,6 +1,8 @@
 #ifndef DELICIOUS_ENTITY_H
 #define DELICIOUS_ENTITY_H
 
+#include <string>
+
 #include "transform.h"
 #include "mesh_renderer.h"
 #include "collision_volume.h"

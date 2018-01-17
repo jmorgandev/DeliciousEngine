@@ -88,33 +88,29 @@ Texture* Resources::fetch_texture(std::string filename) {
 Shader* Resources::load_shader(std::string filepath) {
 	Shader new_shader = {};
 
-	std::string shader_source = dff::file_str(filepath);
-	if (shader_source.empty()) {
+	std::string shader_src = dff::file_str(filepath);
+	if (shader_src.empty()) {
 		return nullptr;
 	}
-	std::string vertex_source = dff::get_glsl_region(shader_source, "#scope ", "vertex");
-	std::string fragment_source = dff::get_glsl_region(shader_source, "#scope ", "fragment");
-	if (vertex_source.empty() || fragment_source.empty()) {
+	std::string vertex_src = dff::get_glsl_region(shader_src, "vertex");
+	std::string fragment_src = dff::get_glsl_region(shader_src, "fragment");
+	if (vertex_src.empty() || fragment_src.empty()) {
 		return nullptr;
 	}
-	size_t version_index = shader_source.find("#version");
-	std::string version_string = "";
-	if (version_index != std::string::npos) {
-		size_t size = shader_source.find('\n', version_index) - version_index;
-		version_string = shader_source.substr(version_index, size);
-	}
+	std::string header_src = dff::get_glsl_header(shader_src);
+
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	if (!vertex_shader || !fragment_shader) {
 		return nullptr;
 	}
-	if (!dgl::compile(vertex_shader, version_string + vertex_source)) {
+	if (!dgl::compile(vertex_shader, header_src + vertex_src)) {
 		GLchar buffer[1024];
 		glGetShaderInfoLog(vertex_shader, 1024, NULL, buffer);
 		std::cout << buffer << "\n";
 		return nullptr;
 	}
-	if (!dgl::compile(fragment_shader, version_string + fragment_source)) {
+	if (!dgl::compile(fragment_shader, header_src + fragment_src)) {
 		GLchar buffer[1024];
 		glGetShaderInfoLog(fragment_shader, 1024, NULL, buffer);
 		std::cout << buffer << "\n";
@@ -220,9 +216,8 @@ Font* Resources::fetch_font(std::string name) {
 	}
 }
 
-Material* Resources::make_material(std::string name, Texture* t, Shader* s) {
-	Material new_material = { t, s };
-	material_catalog[name] = new_material;
+Material* Resources::make_material(std::string name, Shader* shader) {
+	material_catalog.emplace(name, shader);
 	return &material_catalog[name];
 }
 
