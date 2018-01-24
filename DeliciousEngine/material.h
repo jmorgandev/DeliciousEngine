@@ -43,8 +43,6 @@ private:
 	Shader* shader;
 
 	static const uint MAX_TEXTURES = 16;	//Support GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS ?
-	GLenum sampler2d[MAX_TEXTURES];
-	uint sampler2d_count;
 
 	GLuint   block_index;
 	GLuint   block_ubo;
@@ -52,20 +50,30 @@ private:
 	GLubyte* block_buffer;
 
 	struct uniform_meta {
-		GLuint index;
+		GLint location;
 		GLint offset;
 		GLint type;
-		GLint size;
+		GLint block;
 	};
-	std::map<std::string, uniform_meta> block_uniforms;
+	struct sampler_meta {
+		GLint location;
+		GLint type;
+		GLint binding;
+	};
+
+	std::map<std::string, uniform_meta> global_uniforms;
+	std::map<std::string, uniform_meta> userblock_uniforms;
+
+	std::map<std::string, uniform_meta> uniform_list;
+	sampler_meta sampler_list[MAX_TEXTURES];
+	uint sampler_count;
+
 	bool update_buffer;
 
-	std::map<std::string, GLuint> uniforms;
+	void identify_uniforms();
+	void identify_userblock(std::string blockname);
 
-	void get_user_block(std::string name);
-	void get_default_block();
-
-	void get_block(std::string name);
+	void get_user_block(std::string user_block);
 };
 
 #endif

@@ -6,7 +6,7 @@ uniform material {
 	mat4 projection;
 	vec4 diffuse_tint;
 	vec4 other_tint;
-}
+};
 
 #scope vertex
 layout (location = 0) in vec3 position;

@@ -9,6 +9,8 @@ namespace dgl {
 
 	bool compile(const GLuint& object, const std::string& source);
 	bool compile(const GLuint& object, const GLchar* source);
+
+	bool is_sampler(const GLuint& uniform_type);
 }
 
 #endif
