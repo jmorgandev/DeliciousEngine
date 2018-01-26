@@ -26,18 +26,16 @@ The same way that the engine can be scripted with lua/angelscript, it can also b
 
 ## Development Information
 
-### Current Version (0.0.6)
-- Displays two cubes performing hit testing
-- Basic developer console (Can be toggled with F1)
-- Basic console commands
-- Simple GUI rendering
-- Input key binding
-- World subsystem with Entities
+### Current Version (0.0.7)
+- Added basic World-Entity management (Adding, Fetching, Removing entities)
+- Added Material class allowing "instances" of uniform sets amongst entities
+- Added "header" scope for GLSL files
+- Locked framerate and simulation rate at 60hz (For now)
 
-### Next Version (0.1.0)
+### Next Milestone (0.1.0)
 - Embedded scripting
 - Game-object management
 - Scripting entry point
 - Moving camera test
 
-Last updated: 30/11/2017
+Last updated: 26/01/2018
