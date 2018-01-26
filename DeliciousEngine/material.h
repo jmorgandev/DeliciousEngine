@@ -44,10 +44,10 @@ private:
 
 	static const uint MAX_TEXTURES = 16;	//Support GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS ?
 
-	GLuint   block_index;
-	GLuint   block_ubo;
-	GLint    block_size;
-	GLubyte* block_buffer;
+	GLuint   userblock_index;
+	GLuint   userblock_ubo;
+	GLint    userblock_size;
+	GLubyte* userblock_buffer;
 
 	struct uniform_meta {
 		GLint location;
@@ -60,9 +60,6 @@ private:
 		GLint type;
 		GLint binding;
 	};
-
-	std::map<std::string, uniform_meta> global_uniforms;
-	std::map<std::string, uniform_meta> userblock_uniforms;
 
 	std::map<std::string, uniform_meta> uniform_list;
 	sampler_meta sampler_list[MAX_TEXTURES];
