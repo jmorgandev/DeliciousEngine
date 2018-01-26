@@ -1,11 +1,11 @@
 #ifndef DELICIOUS_BUILD_INFO_H
 #define DELICIOUS_BUILD_INFO_H
 
-#define ENGINE_VERSION	006
+#define ENGINE_VERSION	007
 #define ENGINE_VERSION_MAJOR 0
 #define ENGINE_VERSION_MINOR 0
-#define ENGINE_VERSION_REVISION 6
-#define ENGINE_VERSION_STRING "0.0.6"
+#define ENGINE_VERSION_REVISION 7
+#define ENGINE_VERSION_STRING "0.0.7"
 
 #define ENGINE_GL_MAJOR 4
 #define ENGINE_GL_MINOR 3
@@ -16,24 +16,24 @@
 #define EXPOSE_GLOBAL_SYSTEM true
 #define USE_SCRIPTING false
 
-/*========================== 0.0.6 CHANGELOG =========================
+/*========================== 0.0.7 CHANGELOG =========================
 
- * Fixed console bug where line wrap point is incorrectly calculated.
+ * Added time subsystem (Placeholder for now)
 
- * Added World subsystem and Entity class, created a render test
-   scene.
+ * 60hz frame & sim locking (Decouple render rate and sim rate later)
 
- * Added Material class (Placeholder for now).
+ * Basic World-Entity management (Adding, Fetching, and Removing entities)
 
- * Simple bounding sphere collision testing.
+ * Add Material class
+	-Uses UBOs to have "instances" of uniform sets amongst entities
+	-Can just bind the material UBO rather than updating all the uniforms
+	 at once using slow glUniform* calls
 
- * System variables can now be inspected and assigned to from within
-   the console.
-   e.g: "vid_fov 75"
-   Some variables cannot be assigned to and have been deliberately
-   marked for internal use only, such as "vid_aspect" and "vid_init".
+ * Added "header" scope to GLSL files. Anything typed above the first
+   shader scope declaration will be copied into all shader scopes during
+   compilation
 
- * Changed console printing to just use a format string with vargs.
+ * Added ground work for multi-texturing (Sampler and bind tracking)
 
   ====================================================================
 */
