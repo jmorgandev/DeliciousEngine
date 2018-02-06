@@ -14,6 +14,8 @@ bool Input::init(System_Ref sys) {
 	bind(SDLK_BACKQUOTE, "toggleconsole");
 	bind(SDLK_F1, "toggleconsole");
 
+	SDL_StopTextInput();
+
 	return true;
 }
 
@@ -59,14 +61,20 @@ void Input::process_events() {
 			else {
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
 					system.console->execute_keybind(bind);
+
+					//@DANGER This is the wrong thing to do just incase the next event (for whatever reason)
+					//		  is NOT a text event
+					SDL_PollEvent(&event);
+
+
+				}
+				else if (system.console->is_open()) {
+					system.console->key_input(event.key);
 				}
 				else {
 					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
 					key_records.push_back(new_record);
 				}
-			}
-			if (system.console->is_open()) {
-				system.console->key_input(event.key);
 			}
 			break;
 		case SDL_KEYUP:

@@ -684,10 +684,14 @@ void Console::set_variable(console_var* cvar, cstring value) {
 
 void Console::display(bool d) {
 	display_console = d;
+	if (display_console) SDL_StartTextInput();
+	else SDL_StopTextInput();
 }
 
 void Console::display_toggle() {
 	display_console = !display_console;
+	if (display_console) SDL_StartTextInput();
+	else SDL_StopTextInput();
 }
 
 void Console::display_reformat() {
