@@ -1,6 +1,7 @@
 #include "mesh_renderer.h"
 #include <GL/glew.h>
 #include "material.h"
+#include "mesh.h"
 
 MeshRenderer::MeshRenderer() {
 	mesh = nullptr;
@@ -20,4 +21,8 @@ void MeshRenderer::draw() {
 		glBindVertexArray(mesh->vao);
 		glDrawArrays(GL_TRIANGLES, 0, mesh->vertex_count);
 	}
+}
+
+Material* MeshRenderer::get_material() {
+	return material;
 }

@@ -44,6 +44,10 @@ void Resources::clean_exit() {
 }
 
 Texture* Resources::load_texture(std::string filepath) {
+	//@TODO: TGA pixel format is BGRA, opposite of PNG which is RGBA...
+	// Maybe add an edge case or actually start implementing resource loaders
+
+	//@TODO: Use stb_image? Support DXT textures? or just use libpng etc...?
 	Texture new_texture = {};
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
@@ -58,7 +62,6 @@ Texture* Resources::load_texture(std::string filepath) {
 	GLuint texture_object;
 	glGenTextures(1, &texture_object);
 	glBindTexture(GL_TEXTURE_2D, texture_object);
-
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

@@ -1,15 +1,15 @@
 #ifndef DELICIOUS_MATERIAL_H
 #define DELICIOUS_MATERIAL_H
 
-//Manages the attributes & uniforms of a shader.
-#include "shader.h"
-#include "texture.h"
 #include "dtypes.h"
-#include "mesh.h"
+
+struct Shader;
+struct Texture;
 
 #include <vector>
 #include <map>
 #include <string>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 //@TODO: Auto-generate global uniform block for standard engine assigned uniforms e.g:
@@ -39,6 +39,8 @@ public:
 
 	void set_float(std::string name, GLfloat value);
 	void set_floatv(std::string name, GLfloat* values, GLuint size);
+
+	void set_texture(std::string name, Texture* tex);
 private:
 	Shader* shader;
 
@@ -59,18 +61,16 @@ private:
 		GLint location;
 		GLint type;
 		GLint binding;
+		Texture* texture;
 	};
 
 	std::map<std::string, uniform_meta> uniform_list;
-	sampler_meta sampler_list[MAX_TEXTURES];
-	uint sampler_count;
+	std::map<std::string, sampler_meta> sampler_list;
 
 	bool update_buffer;
 
 	void identify_uniforms();
 	void identify_userblock(std::string blockname);
-
-	void get_user_block(std::string user_block);
 };
 
 #endif

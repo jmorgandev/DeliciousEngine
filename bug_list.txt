@@ -1,0 +1,7 @@
+-Sinewave cube snaps to other cubes position when pulling up the console.
+	Reprod = Open console in test scene
+
+-When console is open, key presses aren't registered as movement, but somehow they still
+ move the camera immediately after the console is closed...
+	Reprod = Type "WSAD" or any combination of those letters in the console
+		 and then close the console

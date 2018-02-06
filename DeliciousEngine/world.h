@@ -45,6 +45,7 @@ private:
 	//@TEMP
 	void do_camera();
 	Material* default_material;
+	Material* other_material;
 };
 
 #endif

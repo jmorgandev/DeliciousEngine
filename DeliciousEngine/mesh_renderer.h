@@ -11,6 +11,8 @@ public:
 	void draw();
 
 	void set(Mesh* new_mesh, Material* new_material);
+
+	Material* get_material();
 private:
 	Mesh*     mesh;
 	Material* material;

@@ -17,14 +17,24 @@ bool World::init(System_Ref sys) {
 
 //@TEMP
 bool World::load_test() {
-	Texture* default_texture = system.resources->load_texture("res/tile.tga");
+	//Texture* default_texture = system.resources->load_texture("res/tile.tga");
+	Texture* default_texture = system.resources->load_texture("res/tile.png");
+
+	//@Cleanup Taking advantage of TGA having a different pixel format in order to load a different
+	//colored texture is really silly. Don't do this in future.
+	Texture* other_texture = system.resources->load_texture("res/tile.tga");
+
 	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
 	if (default_texture == nullptr || default_shader == nullptr) {
 		return false;
 	}
 	default_material = system.resources->make_material("default", default_shader);
-	default_material->set_vec4("tint", 0.5f, 1.0f, 1.0f, 1.0f);
+	default_material->set_vec4("diffuse_tint", 0.5f, 1.0f, 1.0f, 1.0f);
+	default_material->set_texture("diffuse", default_texture);
 	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
+
+	other_material = system.resources->make_material("other", default_shader);
+	other_material->set_texture("diffuse", other_texture);
 
 	//Entity first, second;
 	Entity* first = create_entity("first");
@@ -32,6 +42,7 @@ bool World::load_test() {
 	first->get_transform()->set_position(-1.0f, 0.0f, 0.0f);
 
 	Entity* second = clone_entity(first, { 1.0f, 0.0f, 0.0f });
+	second->get_renderer()->set(cube, other_material);
 	second->name = "second";
 
 	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
@@ -80,7 +91,15 @@ void World::draw() {
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
 
+	default_material->set_matrix("projection", projection);
+	default_material->set_matrix("view", view);
+
+	other_material->set_matrix("projection", projection);
+	other_material->set_matrix("view", view);
+
+	default_material->set_matrix("transform", transform_a);
 	first->get_renderer()->draw();
+	other_material->set_matrix("transform", transform_b);
 	second->get_renderer()->draw();
 }
 

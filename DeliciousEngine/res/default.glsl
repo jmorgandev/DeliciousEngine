@@ -1,11 +1,11 @@
 #version 430 core
 
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 transform;
+
 uniform material {
-	mat4 transform;
-	mat4 view;
-	mat4 projection;
 	vec4 diffuse_tint;
-	vec4 other_tint;
 };
 
 #scope vertex
@@ -29,7 +29,8 @@ uniform float mult;
 uniform sampler2D diffuse;
 
 void main(void) {
-	vec4 final_tint = diffuse_tint + other_tint;
-	color = mix(texture(diffuse, uv), final_tint, diffuse_tint.a * mult);
+	//color = mix(texture(diffuse, uv), final_tint, diffuse_tint.a * mult);
+	//color = diffuse_tint;
+	color = texture(diffuse, uv);
 }
 

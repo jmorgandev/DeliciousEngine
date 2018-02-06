@@ -1,11 +1,13 @@
 #include "material.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "dgl.h"
+#include "shader.h"
+#include "texture.h"
 
 Material::Material(Shader* shader_program, std::string user_block) {
+	userblock_index = GL_INVALID_INDEX;
 	userblock_buffer = nullptr;
 	update_buffer = false;
-	std::memset(sampler_list, 0, sizeof(sampler_meta) * MAX_TEXTURES);
 	shader = shader_program;
 
 	identify_uniforms();
@@ -30,16 +32,16 @@ void Material::identify_uniforms() {
 		glGetProgramResourceName(shader->id, GL_UNIFORM, i, 256, NULL, buffer);
 
 		if (dgl::is_sampler(data[2])) {
-			if (sampler_count != MAX_TEXTURES) {
-				sampler_list[sampler_count] = { data[0], data[2], (GLint)sampler_count };
-				glUniform1i(data[0], sampler_count);
-				sampler_count++;
+			if (sampler_list.size() != MAX_TEXTURES) {
+				GLint next_binding = (GLint)sampler_list.size();
+				sampler_list[buffer] = { data[0], data[2], next_binding, nullptr };
+				glUniform1i(data[0], next_binding);
 			}
 			else {
-				//@TODO: Print some error to the console...
+				//@TODO: Print some error to the console... Used too many textures...
 			}
 		}
-		uniform_list[buffer] = { data[0], data[1], data[2], data[3] };
+		else uniform_list[buffer] = { data[0], data[1], data[2], data[3] };
 	}
 }
 
@@ -71,7 +73,7 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const uniform_meta& uniform = it->second;
-		if (uniform.block == userblock_index) {
+		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::mat4));
 		}
 		else {
@@ -88,7 +90,7 @@ void Material::set_vec4(std::string name, glm::vec4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const uniform_meta& uniform = it->second;
-		if (uniform.block == userblock_index) {
+		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec4));
 		}
 		else {
@@ -109,7 +111,7 @@ void Material::set_vec3(std::string name, glm::vec3 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const uniform_meta& uniform = it->second;
-		if (uniform.block == userblock_index) {
+		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec3));
 		}
 		else {
@@ -130,7 +132,7 @@ void Material::set_float(std::string name, GLfloat value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const uniform_meta& uniform = it->second;
-		if (uniform.block == userblock_index) {
+		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, &value, sizeof(GLfloat));
 		}
 		else {
@@ -147,7 +149,7 @@ void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const uniform_meta& uniform = it->second;
-		if (uniform.block == userblock_index) {
+		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, values, sizeof(GLfloat) * size);
 		}
 		else {
@@ -157,6 +159,16 @@ void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
+	}
+}
+
+void Material::set_texture(std::string name, Texture* tex) {
+	auto it = sampler_list.find(name);
+	if (it != sampler_list.end()) {
+		it->second.texture = tex;
+	}
+	else {
+		//Non existant sampler uniform
 	}
 }
 
@@ -172,11 +184,21 @@ void Material::bind() {
 	//@SPEED send important matrices through attributes rather than shaders?
 	if (shader != nullptr) {
 		glUseProgram(shader->id);
-		glBindBufferBase(GL_UNIFORM_BUFFER, userblock_index, userblock_ubo);
-		if (update_buffer) {
-			glBindBuffer(GL_UNIFORM_BLOCK, userblock_ubo);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, userblock_size, userblock_buffer);
-			update_buffer = false;
+		if (userblock_index != GL_INVALID_INDEX) {
+			glBindBufferBase(GL_UNIFORM_BUFFER, userblock_index, userblock_ubo);
+			if (update_buffer) {
+				glBindBuffer(GL_UNIFORM_BLOCK, userblock_ubo);
+				glBufferSubData(GL_UNIFORM_BUFFER, 0, userblock_size, userblock_buffer);
+				update_buffer = false;
+			}
+		}
+		//Bind appropriate textures
+		for (auto item : sampler_list) {
+			const sampler_meta& sampler = item.second;
+			glActiveTexture(GL_TEXTURE0 + sampler.binding);
+			if (item.second.texture == nullptr) glBindTexture(sampler.type, NULL);
+			else glBindTexture(GL_TEXTURE_2D, sampler.texture->id);
+			//@TODO: Get the texture target from the texture object in future
 		}
 	}
 }
