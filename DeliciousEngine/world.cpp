@@ -45,6 +45,9 @@ bool World::load_test() {
 	second->get_renderer()->set(cube, other_material);
 	second->name = "second";
 
+	Entity* third = clone_entity(second, { 0.0f, 0.0f, 0.0f });
+	third->name = "third";
+
 	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 	return true;
 }
@@ -68,7 +71,7 @@ void World::update() {
 	t += 0.05f;
 	float off = -0.7f;
 	first->get_transform()->set_position(math::sine(1.0f, t) + off, math::cosine(0.6f, t), 0.0f);
-	
+	second->get_transform()->set_position(math::sine(0.2f, t) + 1, math::cosine(0.2f, t), 0.0f);
 	//glUseProgram(default_material->shader->id);
 	//GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
 	//if (collision(first, second)) {
@@ -83,10 +86,12 @@ void World::draw() {
 	//@TEMP
 	Entity* first = get_entity(0);
 	Entity* second = get_entity(1);
+	Entity* third = get_entity(2);
 
 	Camera* cam = system.screen->get_camera();
 	glm::mat4 transform_a = first->get_transform()->get_matrix();
 	glm::mat4 transform_b = second->get_transform()->get_matrix();
+	glm::mat4 transform_c = third->get_transform()->get_matrix();
 
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
@@ -97,10 +102,13 @@ void World::draw() {
 	other_material->set_matrix("projection", projection);
 	other_material->set_matrix("view", view);
 
-	default_material->set_matrix("transform", transform_a);
-	first->get_renderer()->draw();
 	other_material->set_matrix("transform", transform_b);
 	second->get_renderer()->draw();
+	other_material->set_matrix("transform", transform_c);
+	third->get_renderer()->draw();
+
+	default_material->set_matrix("transform", transform_a);
+	first->get_renderer()->draw();
 }
 
 void World::do_camera() {

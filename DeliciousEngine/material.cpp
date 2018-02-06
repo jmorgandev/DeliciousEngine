@@ -75,11 +75,12 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 		const uniform_meta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::mat4));
+			update_buffer = true;
 		}
 		else {
+			glUseProgram(shader->id);
 			glUniformMatrix4fv(uniform.location, 1, GL_FALSE, glm::value_ptr(value));
 		}
-		update_buffer = true;
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
@@ -92,11 +93,12 @@ void Material::set_vec4(std::string name, glm::vec4 value) {
 		const uniform_meta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec4));
+			update_buffer = true;
 		}
 		else {
+			glUseProgram(shader->id);
 			glUniform4f(uniform.location, value.x, value.y, value.z, value.w);
 		}
-		update_buffer = true;
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
@@ -113,11 +115,12 @@ void Material::set_vec3(std::string name, glm::vec3 value) {
 		const uniform_meta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec3));
+			update_buffer = true;
 		}
 		else {
+			glUseProgram(shader->id);
 			glUniform3f(uniform.location, value.x, value.y, value.z);
 		}
-		update_buffer = true;
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
@@ -134,11 +137,12 @@ void Material::set_float(std::string name, GLfloat value) {
 		const uniform_meta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, &value, sizeof(GLfloat));
+			update_buffer = true;
 		}
 		else {
+			glUseProgram(shader->id);
 			glUniform1f(uniform.location, value);
 		}
-		update_buffer = true;
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
@@ -151,11 +155,12 @@ void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 		const uniform_meta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, values, sizeof(GLfloat) * size);
+			update_buffer = true;
 		}
 		else {
+			glUseProgram(shader->id);
 			glUniform1fv(uniform.location, size, values);
 		}
-		update_buffer = true;
 	}
 	else {
 		//ERROR, attempted to access non-existant/non-active uniform
