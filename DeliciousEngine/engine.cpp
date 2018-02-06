@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <SDL/SDL_events.h>
+#include <SDL/SDL_timer.h>
 #include <fstream>
 #include "mesh_renderer.h"
 #include "dmath.h"
@@ -8,11 +9,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-//@TEMP Move time logic into time subsystem
-#include <chrono>
-#include <ratio>
-using namespace std::chrono;
 
 Engine::Engine() {
 	running = false;
@@ -59,9 +55,6 @@ bool Engine::init(char** argv, int argc) {
 	return true;
 }
 
-//@TEMP Move time logic into time subsystem
-using hrc = high_resolution_clock;
-
 void Engine::run() {
 	running = true;
 
@@ -69,21 +62,20 @@ void Engine::run() {
 
 	//@TODO decouple world simulation and rendering, current this is just a framerate limiter
 	//      that locks simulation AND rendering at a maximum of 60hz.
-	const float max_timestep = 1.0f / 60.0f;
-	float acc = 0.0f;
-	auto last_time = hrc::now();
-
+	const uint max_timestep = 1000 / 60;
+	uint accumulator = 0;
+	uint last_time = SDL_GetTicks();
+	
 	while (running.as_bool == true) {
-		const auto current_time = hrc::now();
-		const duration<float> frame_time = current_time - last_time;
+		const uint current_time = SDL_GetTicks();
+		accumulator += (current_time - last_time);
 		last_time = current_time;
-		acc += frame_time.count();
 
-		input.process_events();
-		while (acc >= max_timestep) {
+		while (accumulator >= max_timestep) {
+			input.process_events();
 			world.update();
 			screen.render_frame();
-			acc -= max_timestep;
+			accumulator -= max_timestep;
 		}
 	}
 }
