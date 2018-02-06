@@ -52,6 +52,8 @@ bool Engine::init(char** argv, int argc) {
 	global_system = systems;
 #endif
 
+	console.display(false);
+
 	return true;
 }
 
@@ -65,7 +67,7 @@ void Engine::run() {
 	const uint max_timestep = 1000 / 60;
 	uint accumulator = 0;
 	uint last_time = SDL_GetTicks();
-	
+
 	while (running.as_bool == true) {
 		const uint current_time = SDL_GetTicks();
 		accumulator += (current_time - last_time);

@@ -14,8 +14,6 @@ bool Input::init(System_Ref sys) {
 	bind(SDLK_BACKQUOTE, "toggleconsole");
 	bind(SDLK_F1, "toggleconsole");
 
-	SDL_StopTextInput();
-
 	return true;
 }
 
