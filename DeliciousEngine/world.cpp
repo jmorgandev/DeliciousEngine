@@ -10,30 +10,29 @@
 
 #include "material.h"
 
-bool World::init(System_Ref sys) {
-	system = sys;
+bool World::init() {
 	return true;
 }
 
 //@TEMP
 bool World::load_test() {
 	//Texture* default_texture = system.resources->load_texture("res/tile.tga");
-	Texture* default_texture = system.resources->load_texture("res/tile.png");
+	Texture* default_texture = resources->load_texture("res/tile.png");
 
 	//@Cleanup Taking advantage of TGA having a different pixel format in order to load a different
 	//colored texture is really silly. Don't do this in future.
-	Texture* other_texture = system.resources->load_texture("res/tile.tga");
+	Texture* other_texture = resources->load_texture("res/tile.tga");
 
-	Shader*  default_shader = system.resources->load_shader("res/default.glsl");
+	Shader*  default_shader = resources->load_shader("res/default.glsl");
 	if (default_texture == nullptr || default_shader == nullptr) {
 		return false;
 	}
-	default_material = system.resources->make_material("default", default_shader);
+	default_material = resources->make_material("default", default_shader);
 	default_material->set_vec4("diffuse_tint", 0.5f, 1.0f, 1.0f, 1.0f);
 	default_material->set_texture("diffuse", default_texture);
-	Mesh* cube = system.resources->fetch_mesh("primitive.cube");
+	Mesh* cube = resources->fetch_mesh("primitive.cube");
 
-	other_material = system.resources->make_material("other", default_shader);
+	other_material = resources->make_material("other", default_shader);
 	other_material->set_texture("diffuse", other_texture);
 
 	//Entity first, second;
@@ -48,7 +47,7 @@ bool World::load_test() {
 	Entity* third = clone_entity(second, { 0.0f, 0.0f, 0.0f });
 	third->name = "third";
 
-	system.screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
+	screen->get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 	return true;
 }
 
@@ -88,7 +87,7 @@ void World::draw() {
 	Entity* second = get_entity(1);
 	Entity* third = get_entity(2);
 
-	Camera* cam = system.screen->get_camera();
+	Camera* cam = screen->get_camera();
 	glm::mat4 transform_a = first->get_transform()->get_matrix();
 	glm::mat4 transform_b = second->get_transform()->get_matrix();
 	glm::mat4 transform_c = third->get_transform()->get_matrix();
@@ -114,8 +113,7 @@ void World::draw() {
 void World::do_camera() {
 	//@TEMP: Until scripting
 
-	Camera* cam = system.screen->get_camera();
-	Input* input = system.input;
+	Camera* cam = screen->get_camera();
 
 	glm::vec3 cam_direction = { 0.0f, 0.0f, 0.0f };
 	glm::vec3 cam_axis = { 0.0f, 1.0f, 0.0f };

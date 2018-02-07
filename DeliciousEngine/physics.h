@@ -1,7 +1,6 @@
 #ifndef DELICIOUS_PHYSICS_H
 #define DELICIOUS_PHYSICS_H
 
-#include "system_ref.h"
 #include <vector>
 
 #include "collision_volume.h"
@@ -13,7 +12,7 @@ struct Collision {
 
 class Physics {
 public:
-	bool init(System_Ref sys);
+	bool init();
 
 	void update();
 
@@ -26,8 +25,7 @@ private:
 	std::vector<Collision> collision_list;
 
 	bool collision_exists(Entity* a, Entity* b);
-
-	System_Ref system;
 };
+extern Physics* physics;
 
 #endif

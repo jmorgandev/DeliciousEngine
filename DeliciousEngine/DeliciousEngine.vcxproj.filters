@@ -182,9 +182,6 @@
     <ClInclude Include="dcm.h">
       <Filter>Header Files\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="system_ref.h">
-      <Filter>Header Files\system_types</Filter>
-    </ClInclude>
     <ClInclude Include="screen_types.h">
       <Filter>Header Files\system_types</Filter>
     </ClInclude>

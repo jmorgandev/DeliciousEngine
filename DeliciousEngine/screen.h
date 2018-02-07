@@ -1,10 +1,8 @@
 #ifndef DELICIOUS_SCREEN_H
 #define DELICIOUS_SCREEN_H
-
 #include <SDL/SDL_video.h>
 #include <GL/glew.h>
 
-#include "system_ref.h"
 #include "system_var.h"
 #include "camera.h"
 
@@ -15,7 +13,7 @@
 class Screen {
 public:
 	Screen();
-	bool init(System_Ref sys);
+	bool init();
 	void clean_exit();
 
 	void render_frame();
@@ -33,8 +31,6 @@ public:
 
 	Camera* get_camera();
 private:
-	System_Ref system;
-
 	SDL_Window*   window;
 	SDL_GLContext gl_context;
 
@@ -51,5 +47,6 @@ private:
 
 	Camera camera;
 };
+extern Screen* screen;
 
 #endif

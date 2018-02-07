@@ -5,9 +5,7 @@
 #include <SDL/SDL_events.h>
 #include <algorithm>
 
-bool Input::init(System_Ref sys) {
-	system = sys;
-
+bool Input::init() {
 	key_records.reserve(10);
 
 	//@TEMP
@@ -50,7 +48,7 @@ void Input::process_events() {
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
-			system.console->write_variable("eng_running", false);
+			console->write_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN:
 			if (key_record* record = find_record(event.key.keysym.sym)) {
@@ -58,7 +56,7 @@ void Input::process_events() {
 			}
 			else {
 				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
-					system.console->execute_keybind(bind);
+					console->execute_keybind(bind);
 
 					//@DANGER This is the wrong thing to do just incase the next event (for whatever reason)
 					//		  is NOT a text event
@@ -66,8 +64,8 @@ void Input::process_events() {
 
 
 				}
-				else if (system.console->is_open()) {
-					system.console->key_input(event.key);
+				else if (console->is_open()) {
+					console->key_input(event.key);
 				}
 				else {
 					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
@@ -81,8 +79,8 @@ void Input::process_events() {
 			}
 			break;
 		case SDL_TEXTINPUT:
-			if (system.console->is_open()) {
-				system.console->text_input(event.text);
+			if (console->is_open()) {
+				console->text_input(event.text);
 			}
 			break;
 		}

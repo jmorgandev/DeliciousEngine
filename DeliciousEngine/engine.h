@@ -11,10 +11,6 @@
 #include "time.h"
 #include "physics.h"
 
-#if EXPOSE_GLOBAL_SYSTEM
-extern System_Ref global_system;
-#endif
-
 class Engine {
 public:
 	Engine();
@@ -25,13 +21,13 @@ private:
 	system_var running;
 	system_var strict_mode;
 
-	Console	  console;
-	Resources resources;
-	Screen	  screen;
-	Input	  input;
-	World	  world;
-	Physics   physics;
-	Time      time;
+	Console	  eng_console;
+	Resources eng_resources;
+	Screen	  eng_screen;
+	Input	  eng_input;
+	World	  eng_world;
+	Physics   eng_physics;
+	Time      eng_time;
 };
 
 #endif

@@ -11,8 +11,7 @@ bool Physics::collision_exists(Entity* a, Entity* b) {
 	return false;
 }
 
-bool Physics::init(System_Ref sys) {
-	system = sys;
+bool Physics::init() {
 	return true;
 }
 

@@ -13,11 +13,9 @@
 #include "mesh.h"
 #include "font.h"
 
-#include "system_ref.h"
-
 class Resources {
 public:
-	bool init(System_Ref sys);
+	bool init();
 	void clean_exit();
 
 	bool load_default_resources();
@@ -40,8 +38,6 @@ public:
 	//@TEMP
 	Material* make_material(std::string name, Shader* shader);
 private:
-	System_Ref system;
-
 	std::unordered_map<std::string, Texture>  texture_catalog;
 	std::unordered_map<std::string, Shader>   shader_catalog;
 	std::unordered_map<std::string, Font>     font_catalog;
@@ -56,5 +52,6 @@ private:
 	GLuint gui_vertex_array;
 	GLuint gui_vertex_buffers[2];
 };
+extern Resources* resources;
 
 #endif

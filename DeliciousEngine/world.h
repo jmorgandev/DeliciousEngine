@@ -2,7 +2,6 @@
 #define DELICIOUS_WORLD_H
 
 #include "dtypes.h"
-#include "system_ref.h"
 #include <vector>
 #include <list>
 
@@ -11,7 +10,7 @@
 
 class World {
 public:
-	bool init(System_Ref sys);
+	bool init();
 	void clean_exit();
 
 	bool load_test();
@@ -38,8 +37,6 @@ public:
 
 	bool collision(Entity* a, Entity* b);
 private:
-	System_Ref system;
-
 	std::list<Entity> entities;
 
 	//@TEMP
@@ -47,5 +44,6 @@ private:
 	Material* default_material;
 	Material* other_material;
 };
+extern World* world;
 
 #endif

@@ -6,7 +6,6 @@
 #include "console_types.h"
 #include "font_renderer.h"
 #include "box_renderer.h"
-#include "system_ref.h"
 #include "input_types.h"
 #include "cmds.h"
 
@@ -18,7 +17,7 @@
 
 class Console {
 public:
-	bool init(System_Ref sys);
+	bool init();
 	void clean_exit();
 
 	void load_config();
@@ -51,8 +50,6 @@ public:
 	void display_toggle();
 	void display_reformat();
 private:
-	System_Ref system;
-
 	//GUI Renderers
 	BoxRenderer	box_renderer;
 	FontRenderer text_renderer;
@@ -120,6 +117,7 @@ private:
 	bool scroll_left();
 	bool scroll_right();
 };
+extern Console* console;
 
 ConsoleCommand(clear);
 ConsoleCommand(quit);

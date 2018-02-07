@@ -23,12 +23,9 @@ Screen::Screen() {
 	aspect_ratio  = width.as_float / height.as_float;
 }
 
-bool Screen::init(System_Ref sys) {
-	system = sys;
-	Console& console = *system.console;
-
+bool Screen::init() {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-		console.print("SDL could not be initialised: %s", SDL_GetError());
+		console->print("SDL could not be initialised: %s", SDL_GetError());
 		return false;
 	}
 
@@ -43,13 +40,13 @@ bool Screen::init(System_Ref sys) {
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	console.register_variable("vid_init",       &init_success,  CVAR_BOOL,  CVAR_SYSTEM);
-	console.register_variable("vid_width",      &width,         CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",     &height,        CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &fullscreen,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		&field_of_view, CVAR_FLOAT, CVAR_USER  );
-	console.register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
+	console->register_variable("vid_init",       &init_success,  CVAR_BOOL,  CVAR_SYSTEM);
+	console->register_variable("vid_width",      &width,         CVAR_INT,   CVAR_CONFIG);
+	console->register_variable("vid_height",     &height,        CVAR_INT,   CVAR_CONFIG);
+	console->register_variable("vid_fullscreen", &fullscreen,    CVAR_BOOL,  CVAR_CONFIG);
+	console->register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
+	console->register_variable("vid_fov",		 &field_of_view, CVAR_FLOAT, CVAR_USER  );
+	console->register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
 
 	camera.init(&field_of_view, &aspect_ratio);
 
@@ -68,7 +65,6 @@ void Screen::clean_exit() {
 
 bool Screen::create_window() {
 	init_success = false;
-	Console& console = *system.console;
 
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
 	if (fullscreen.as_bool == true && borderless.as_bool == true) {
@@ -79,7 +75,7 @@ bool Screen::create_window() {
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
-			console.print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
+			console->print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
 			fullscreen = false;
 			borderless = false;
 		}
@@ -100,13 +96,13 @@ bool Screen::create_window() {
 		sdl_flags
 	);
 	if (window == nullptr) {
-		console.print("SDL window could not be created: %s", SDL_GetError());
+		console->print("SDL window could not be created: %s", SDL_GetError());
 		return init_success.as_bool;
 	}
 
 	if (gl_context != nullptr) {
 		if (SDL_GL_MakeCurrent(window, gl_context) != 0) {
-			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
+			console->print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return init_success.as_bool;
 		}
 		else {
@@ -116,7 +112,7 @@ bool Screen::create_window() {
 	else {
 		gl_context = SDL_GL_CreateContext(window);
 		if (gl_context == nullptr) {
-			console.print("SDL_GL context could not be created: %s", SDL_GetError());
+			console->print("SDL_GL context could not be created: %s", SDL_GetError());
 			return init_success.as_bool;
 		}
 	}
@@ -126,7 +122,7 @@ bool Screen::create_window() {
 		glewExperimental = true;
 	}
 	else {
-		console.print("GLEW could not be initialised: %s", glewGetErrorString(status));
+		console->print("GLEW could not be initialised: %s", glewGetErrorString(status));
 		return init_success.as_bool;
 	}
 	init_success = true;
@@ -153,10 +149,10 @@ bool Screen::reload_window() {
 void Screen::render_frame() {
 	camera.update();
 	
-	system.world->draw();
+	world->draw();
 	
 	//@TODO: Setup GUI Rendering generically rather than per renderer
-	system.console->draw();
+	console->draw();
 
 	SDL_GL_SwapWindow(window);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -173,7 +169,7 @@ void Screen::resize(int new_width, int new_height) {
 	width = new_width;
 	height = new_height;
 	reload_window();
-	system.console->display_reformat();
+	console->display_reformat();
 }
 
 Camera* Screen::get_camera() {

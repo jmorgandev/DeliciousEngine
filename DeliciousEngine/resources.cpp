@@ -12,8 +12,7 @@
 #include "build_info.h"
 #include <iostream>
 
-bool Resources::init(System_Ref sys) {
-	system = sys;
+bool Resources::init() {
 
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 
@@ -268,11 +267,11 @@ bool Resources::load_default_resources() {
 
 	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
 	if (con_font == nullptr) return false;
-	system.console->set_font(con_font);
+	console->set_font(con_font);
 
 	Shader* box_shader = load_shader("res/shape.glsl");
 	if (box_shader == nullptr) return false;
-	system.console->set_gui_properties(gui_vertex_array, box_shader);
+	console->set_gui_properties(gui_vertex_array, box_shader);
 
 	return true;
 }

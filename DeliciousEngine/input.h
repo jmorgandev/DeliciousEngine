@@ -1,7 +1,6 @@
 #ifndef DELICIOUS_INPUT_H
 #define DELICIOUS_INPUT_H
 
-#include "system_ref.h"
 #include "input_types.h"
 
 #include <vector>
@@ -9,7 +8,7 @@
 
 class Input {
 public:
-	bool init(System_Ref sys);
+	bool init();
 	void clean_exit();
 
 	void process_events();
@@ -19,7 +18,6 @@ public:
 	void bind(SDL_Keycode keycode, cstring command);
 	void unbind(SDL_Keycode keycode);
 private:
-	System_Ref system;
 
 	std::vector<key_bind> key_binds;
 	std::vector<key_record> key_records;
@@ -29,5 +27,6 @@ private:
 
 	void update_records();
 };
+extern Input* input;
 
 #endif

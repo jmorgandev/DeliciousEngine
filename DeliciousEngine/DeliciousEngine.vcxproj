@@ -175,7 +175,6 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="cmds.h" />
     <ClInclude Include="primitives.h" />
-    <ClInclude Include="system_ref.h" />
     <ClInclude Include="system_var.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />

@@ -2,7 +2,6 @@
 #define DELICIOUS_CONSOLE_TYPES_H
 
 #include "dtypes.h"
-#include "system_ref.h"
 #include "system_var.h"
 #include <vector>
 
@@ -21,7 +20,7 @@ struct console_var {
 	uint16		flags;
 };
 
-typedef void(*cmd_callback)(System_Ref, std::vector<cstring>);
+typedef void(*cmd_callback)(std::vector<cstring>);
 struct console_cmd {
 	char name[CON_MAX_NAME];
 	cmd_callback callback;

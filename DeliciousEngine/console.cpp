@@ -12,9 +12,7 @@
 #include "engine.h"
 #include "cmds.h"
 
-bool Console::init(System_Ref sys) {
-	system = sys;
-
+bool Console::init() {
 	write_index = 0;
 	line_size = 0;
 	border_x = 1;
@@ -56,18 +54,16 @@ void Console::draw() {
 
 void Console::draw_background() {
 	Font* fnt = text_renderer.get_font();
-	Screen* scr = system.screen;
-	box_renderer.begin(scr->get_width(), scr->get_height());
-	box_renderer.draw(0, 0, scr->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
-	box_renderer.draw(0, (fnt->cell_height * visible_lines), scr->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
+	box_renderer.begin(screen->get_width(), screen->get_height());
+	box_renderer.draw(0, 0, screen->get_width(), fnt->cell_height * visible_lines, glm::vec4(0.7f, 0.5f, 1.0f, 0.2f));
+	box_renderer.draw(0, (fnt->cell_height * visible_lines), screen->get_width(), (fnt->cell_height * visible_lines) + fnt->cell_height, glm::vec4(0.7f, 0.5f, 1.0f, 0.5f));
 	box_renderer.end();
 }
 
 void Console::draw_userinput() {
-	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 
-	text_renderer.begin(scr->get_width(), scr->get_height());
+	text_renderer.begin(screen->get_width(), screen->get_height());
 	for (int i = 0; i < line_size && i < CON_INPUT_LENGTH; i++) {
 		char c = input_buffer[i + input_scroll];
 		if (dcf::is_glyph(c)) {
@@ -79,7 +75,7 @@ void Console::draw_userinput() {
 	}
 	text_renderer.end();
 	//Draw cursor
-	box_renderer.begin(scr->get_width(), scr->get_height());
+	box_renderer.begin(screen->get_width(), screen->get_height());
 	box_renderer.draw(
 		((input_index - input_scroll) * fnt->cell_width) + fnt->cell_width,
 		(fnt->cell_height * visible_lines) + 2,
@@ -91,10 +87,9 @@ void Console::draw_userinput() {
 }
 
 void Console::draw_textbox() {
-	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 
-	text_renderer.begin(scr->get_width(), scr->get_height());
+	text_renderer.begin(screen->get_width(), screen->get_height());
 	int x_cursor = 0, y_cursor = 0;
 	int render_start = (read_index + scroll_offset) % buffer_extent;
 	for (int i = render_start; i != write_index; i = (i + 1) % buffer_extent) {
@@ -372,7 +367,7 @@ void Console::execute_string(cstring cmd_str) {
 		}
 	}
 	else if (console_cmd* cmd = find_command(label)) {
-		cmd->callback(system, args);
+		cmd->callback(args);
 	}
 	else {
 		print("Unknown command/variable: \"%s\"", label);
@@ -697,43 +692,41 @@ void Console::display_toggle() {
 void Console::display_reformat() {
 	clear();
 
-	Screen* scr = system.screen;
 	Font* fnt = text_renderer.get_font();
 
-	line_size = (scr->get_width() / fnt->cell_width) - (border_x * 2);
-	visible_lines = (scr->get_height() / fnt->cell_height) - (border_y * 2) - 1;
+	line_size = (screen->get_width() / fnt->cell_width) - (border_x * 2);
+	visible_lines = (screen->get_height() / fnt->cell_height) - (border_y * 2) - 1;
 	buffer_extent = CON_BUFFER_SIZE - (CON_BUFFER_SIZE % line_size);
 
 	//@TODO: Reformat buffer to retain previous messages from last window resolution.
 }
 
 ConsoleCommand(clear) {
-	system.console->clear();
+	console->clear();
 }
 
 ConsoleCommand(quit) {
-	system.console->write_variable("eng_running", false);
+	console->write_variable("eng_running", false);
 }
 
 ConsoleCommand(toggleconsole) {
-	system.console->display_toggle();
+	console->display_toggle();
 }
 
 ConsoleCommand(resize) {
-	Console& con = *system.console;
 	if (args.size() == 2) {
 		int w = atoi(args[0]);
 		int h = atoi(args[1]);
 
 		//@TODO: Be more flexible with resolution
 		if (w < 640 || w > 1920 || h < 480 || h > 1080) {
-			con.print("resize: invalid resolution.");
+			console->print("resize: invalid resolution.");
 		}
 		else {
-			system.screen->resize(w, h);
+			screen->resize(w, h);
 		}
 	}
 	else {
-		con.print("Usage: \"resize <width> <height>\"");
+		console->print("Usage: \"resize <width> <height>\"");
 	}
 }

@@ -3,6 +3,7 @@
 #include "dgl.h"
 #include "shader.h"
 #include "texture.h"
+#include "console.h"
 
 Material::Material(Shader* shader_program, std::string user_block) {
 	userblock_index = GL_INVALID_INDEX;
