@@ -91,7 +91,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +119,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -141,6 +141,7 @@
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
+    <ClCompile Include="scripting.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="transform.cpp" />
     <ClCompile Include="world.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="resources.h" />
     <ClInclude Include="screen.h" />
     <ClInclude Include="screen_types.h" />
+    <ClInclude Include="scripting.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="cmds.h" />
     <ClInclude Include="primitives.h" />

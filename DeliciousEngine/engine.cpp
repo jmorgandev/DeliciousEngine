@@ -19,6 +19,7 @@ bool Engine::init(char** argv, int argc) {
 	screen    = &eng_screen;
 	resources = &eng_resources;
 	input     = &eng_input;
+	scripting = &eng_scripting;
 	world     = &eng_world;
 	physics   = &eng_physics;
 	time	  = &eng_time;
@@ -34,6 +35,7 @@ bool Engine::init(char** argv, int argc) {
 	if (screen->init() == false) return false;
 	if (resources->init() == false) return false;
 	if (input->init() == false) return false;
+	if (scripting->init() == false) return false;
 	if (time->init() == false) return false;
 	if (world->init() == false) return false;
 
@@ -79,16 +81,18 @@ void Engine::run() {
 void Engine::shutdown() {
 	world->clean_exit();
 	time->clean_exit();
+	scripting->clean_exit();
 	input->clean_exit();
 	resources->clean_exit();
 	screen->clean_exit();
 	console->clean_exit();
 }
 
-Console* console;
-Screen* screen;
-Resources* resources;
-Input* input;
-World* world;
-Physics* physics;
-Time* time;
+Console*	console;
+Screen*		screen;
+Resources*	resources;
+Input*		input;
+Scripting*	scripting;
+World*		world;
+Physics*	physics;
+Time*		time;

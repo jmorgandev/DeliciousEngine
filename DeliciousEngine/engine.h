@@ -10,6 +10,7 @@
 #include "world.h"
 #include "time.h"
 #include "physics.h"
+#include "scripting.h"
 
 class Engine {
 public:
@@ -25,6 +26,7 @@ private:
 	Resources eng_resources;
 	Screen	  eng_screen;
 	Input	  eng_input;
+	Scripting eng_scripting;
 	World	  eng_world;
 	Physics   eng_physics;
 	Time      eng_time;
