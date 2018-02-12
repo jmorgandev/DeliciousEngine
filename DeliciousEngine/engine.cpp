@@ -22,7 +22,6 @@ bool Engine::init(char** argv, int argc) {
 	scripting = &eng_scripting;
 	world     = &eng_world;
 	physics   = &eng_physics;
-	time	  = &eng_time;
 
 	//@TODO: Parse command line arguments.
 	//	--strict   = Start the engine in strict mode
@@ -36,7 +35,6 @@ bool Engine::init(char** argv, int argc) {
 	if (resources->init() == false) return false;
 	if (input->init() == false) return false;
 	if (scripting->init() == false) return false;
-	if (time->init() == false) return false;
 	if (world->init() == false) return false;
 
 	//@TODO: Load config file with console
@@ -55,8 +53,6 @@ bool Engine::init(char** argv, int argc) {
 
 void Engine::run() {
 	running = true;
-
-	time->start();
 
 	//@TODO decouple world simulation and rendering, current this is just a framerate limiter
 	//      that locks simulation AND rendering at a maximum of 60hz.
@@ -80,7 +76,6 @@ void Engine::run() {
 
 void Engine::shutdown() {
 	world->clean_exit();
-	time->clean_exit();
 	scripting->clean_exit();
 	input->clean_exit();
 	resources->clean_exit();
@@ -95,4 +90,3 @@ Input*		input;
 Scripting*	scripting;
 World*		world;
 Physics*	physics;
-Time*		time;

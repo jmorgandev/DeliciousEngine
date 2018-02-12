@@ -9,8 +9,11 @@
 #include "dcf.h"
 #include "dgl.h"
 #include "primitives.h"
-#include "build_info.h"
 #include <iostream>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_FAILURE_USERMSG
+#include <stb_image.h>
 
 bool Resources::init() {
 
@@ -66,7 +69,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	//@TODO: Have some way of specifying the texture parameters outside this function
-
+	
 	new_texture.id = texture_object;
 	new_texture.width = temp_surface->w;
 	new_texture.height = temp_surface->h;
@@ -77,6 +80,29 @@ Texture* Resources::load_texture(std::string filepath) {
 	texture_catalog[filepath] = new_texture;
 	return &texture_catalog[filepath];
 }
+
+Texture* Resources::load_texture(std::string filename, std::string id) {
+	//int x, y, channels, desired channels
+	int w, h, channels;
+	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);
+	if (pixel_data == nullptr) {
+		console->print("Error loading \"%s\": %s", filename.c_str(), stbi_failure_reason());
+		return nullptr;
+	}
+	stbi__vertical_flip(pixel_data, w, h, channels);
+
+	GLuint texture_handle;
+	glGenTextures(1, &texture_handle);
+	glBindTexture(GL_TEXTURE_2D, texture_handle);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixel_data);
+
+	stbi_image_free(pixel_data);
+
+	texture_catalog[id] = { texture_handle, w, h, 4 };
+	return &texture_catalog[id];
+}
+
 Texture* Resources::fetch_texture(std::string filename) {
 	auto it = texture_catalog.find(filename);
 	if (it == texture_catalog.end()) {

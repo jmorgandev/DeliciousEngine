@@ -2,11 +2,13 @@
 #define DELICIOUS_TEXTURE_H
 
 #include <GL/glew.h>
+#include <unordered_map>
 #include "dtypes.h"
 
 struct Texture {
 	GLuint id;
-	uint16 width, height;
-	uint8  bytes_per_pixel;
+	int width, height;
+	int bytes_per_pixel;
 };
+
 #endif

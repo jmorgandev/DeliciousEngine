@@ -108,9 +108,6 @@
     <ClCompile Include="entity.cpp">
       <Filter>Source Files\objects</Filter>
     </ClCompile>
-    <ClCompile Include="time.cpp">
-      <Filter>Source Files\systems</Filter>
-    </ClCompile>
     <ClCompile Include="collision_volume.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
@@ -221,11 +218,11 @@
     <ClInclude Include="collision_volume.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="time.h">
-      <Filter>Header Files\systems</Filter>
-    </ClInclude>
     <ClInclude Include="scripting.h">
       <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_loader.h">
+      <Filter>Header Files\system_types</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

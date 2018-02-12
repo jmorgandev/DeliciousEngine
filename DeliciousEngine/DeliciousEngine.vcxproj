@@ -142,11 +142,11 @@
     <ClCompile Include="resources.cpp" />
     <ClCompile Include="screen.cpp" />
     <ClCompile Include="scripting.cpp" />
-    <ClCompile Include="time.cpp" />
     <ClCompile Include="transform.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asset_loader.h" />
     <ClInclude Include="box_renderer.h" />
     <ClInclude Include="build_info.h" />
     <ClInclude Include="camera.h" />
@@ -179,7 +179,6 @@
     <ClInclude Include="primitives.h" />
     <ClInclude Include="system_var.h" />
     <ClInclude Include="texture.h" />
-    <ClInclude Include="time.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>

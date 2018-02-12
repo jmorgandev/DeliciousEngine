@@ -13,6 +13,8 @@
 #include "mesh.h"
 #include "font.h"
 
+#include "asset_loader.h"
+
 class Resources {
 public:
 	bool init();
@@ -21,6 +23,7 @@ public:
 	bool load_default_resources();
 
 	Texture* load_texture(std::string filepath);
+	Texture* load_texture(std::string filepath, std::string id);
 	Shader* load_shader(std::string filepath);
 
 	Texture* fetch_texture(std::string filename);

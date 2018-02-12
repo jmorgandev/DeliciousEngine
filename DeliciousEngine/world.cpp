@@ -21,7 +21,8 @@ bool World::load_test() {
 
 	//@Cleanup Taking advantage of TGA having a different pixel format in order to load a different
 	//colored texture is really silly. Don't do this in future.
-	Texture* other_texture = resources->load_texture("res/tile.tga");
+	//Texture* other_texture = resources->load_texture("res/tile.tga");
+	Texture* other_texture = resources->load_texture("res/consolas_32.tga", "tile");
 
 	Shader*  default_shader = resources->load_shader("res/default.glsl");
 	if (default_texture == nullptr || default_shader == nullptr) {

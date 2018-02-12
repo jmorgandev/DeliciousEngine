@@ -8,7 +8,6 @@
 #include "resources.h"
 #include "input.h"
 #include "world.h"
-#include "time.h"
 #include "physics.h"
 #include "scripting.h"
 
@@ -29,7 +28,6 @@ private:
 	Scripting eng_scripting;
 	World	  eng_world;
 	Physics   eng_physics;
-	Time      eng_time;
 };
 
 #endif

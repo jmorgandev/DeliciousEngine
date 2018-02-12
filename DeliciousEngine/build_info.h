@@ -13,7 +13,6 @@
 #define ENGINE_GLSL_VERSION 430
 #define ENGINE_GLSL_VERSION_STRING "#version 430 core"
 
-#define EXPOSE_GLOBAL_SYSTEM true
 #define USE_SCRIPTING false
 
 /*========================== 0.0.7 CHANGELOG =========================
