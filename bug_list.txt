@@ -1,2 +1,0 @@
--When console is open, key presses still register as camera movement
-	Reprod = Type any characters of "WSAD" in the console
