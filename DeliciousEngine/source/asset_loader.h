@@ -18,7 +18,7 @@ public:
 		if (procedures.find(ext) == procedures.end()) {
 			procedures[etc] = proc;
 		}
-		else console->print("%s already has a registered procedure!", ext.c_str());
+		else console.print("%s already has a registered procedure!", ext.c_str());
 	}
 
 	TYPE* load(std::string filename) {

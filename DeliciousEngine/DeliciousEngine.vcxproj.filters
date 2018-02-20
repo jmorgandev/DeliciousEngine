@@ -204,6 +204,12 @@
     <ClInclude Include="source\build_info.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imconfig.h">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\default_shaders.h">
+      <Filter>Source\defaults</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="notes.txt">

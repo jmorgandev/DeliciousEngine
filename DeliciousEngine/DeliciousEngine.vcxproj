@@ -101,6 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -124,6 +125,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -181,6 +183,7 @@
     <ClInclude Include="source\console_types.h" />
     <ClInclude Include="source\dcf.h" />
     <ClInclude Include="source\dcm.h" />
+    <ClInclude Include="source\default_shaders.h" />
     <ClInclude Include="source\dff.h" />
     <ClInclude Include="source\dgl.h" />
     <ClInclude Include="source\dmath.h" />
@@ -205,6 +208,7 @@
     <ClInclude Include="source\texture.h" />
     <ClInclude Include="source\transform.h" />
     <ClInclude Include="source\world.h" />
+    <ClInclude Include="thirdparty\imgui\imconfig.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="notes.txt" />

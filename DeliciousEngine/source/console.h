@@ -7,7 +7,6 @@
 #include "font_renderer.h"
 #include "box_renderer.h"
 #include "input_types.h"
-#include "cmds.h"
 
 #define CON_BUFFER_SIZE 16384
 #define CON_INPUT_SIZE 128
@@ -26,7 +25,7 @@ public:
 	void print(cstring format, ...);
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
-	void register_command(const console_cmd& cmd);
+	void register_command(cstring name, cmd_callback func);
 
 	system_var* read_variable(cstring name);
 	void write_variable(cstring name, int value);
@@ -70,8 +69,6 @@ private:
 	uint16		input_index;
 	uint16		input_scroll;
 	bool		input_insert;
-	SDL_Keycode toggle_key;
-	SDL_Keycode last_input;
 
 	//History & Auto-complete variables
 	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];
@@ -118,10 +115,5 @@ private:
 	bool scroll_right();
 };
 extern Console console;
-
-ConsoleCommand(clear);
-ConsoleCommand(quit);
-ConsoleCommand(toggleconsole);
-ConsoleCommand(resize);
 
 #endif

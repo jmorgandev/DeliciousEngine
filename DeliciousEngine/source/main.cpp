@@ -23,6 +23,7 @@ static inline bool init_systems() {
 	if (!console.init()) return false;
 	if (!screen.init()) return false;
 	if (!resources.init()) return false;
+	if (!input.init()) return false;
 	if (!scripting.init()) return false;
 	if (!world.init()) return false;
 	return true;
@@ -65,6 +66,7 @@ int main(char** argv, int argc) {
 
 			while (acc >= max_timestep) {
 				input.process_events();
+				screen.begin_gui();
 				world.update();
 				screen.render_frame();
 				acc -= max_timestep;

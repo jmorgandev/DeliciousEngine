@@ -34,6 +34,9 @@ Hotloading resources:
 	-meshes
 	-textures
 	-shaders
+...Do I actually need to hotload assets if scripts are potentially loading them
+at runtime anyway? Perhaps only use hotloading when strictly programming with C++
+(Rather than a scripting language)
 
 Custom extension workflows:
 	-"FileLoaders"?
@@ -51,3 +54,6 @@ Framerate/Timing:
 Skinned animation? FBX? other animation formats?
 
 User-accessible GUI?
+
+Use std::function instead of function pointers to avoid global/static console commands,
+can make console commands actually part of an object...

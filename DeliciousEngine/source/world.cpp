@@ -63,8 +63,8 @@ void World::update() {
 	Entity* first = get_entity(0);
 	Entity* second = get_entity(1);
 
-	glm::vec3 axis = glm::normalize(glm::vec3(0.0f, 2.0f, 0.0f));
-	first->get_transform()->rotate(0.1f, axis);
+	glm::vec3 axis = glm::normalize(glm::vec3(1.0f, 2.0f, 1.2f));
+	first->get_transform()->rotate(0.5f, axis);
 	second->get_transform()->rotate(1.0f, axis);
 	
 	static float t = 0;
@@ -99,13 +99,13 @@ void World::draw() {
 	default_material->set_matrix("projection", projection);
 	default_material->set_matrix("view", view);
 
-	other_material->set_matrix("projection", projection);
-	other_material->set_matrix("view", view);
-
-	other_material->set_matrix("transform", transform_b);
-	second->get_renderer()->draw();
-	other_material->set_matrix("transform", transform_c);
-	third->get_renderer()->draw();
+	//other_material->set_matrix("projection", projection);
+	//other_material->set_matrix("view", view);
+	//
+	//other_material->set_matrix("transform", transform_b);
+	//second->get_renderer()->draw();
+	//other_material->set_matrix("transform", transform_c);
+	//third->get_renderer()->draw();
 
 	default_material->set_matrix("transform", transform_a);
 	first->get_renderer()->draw();

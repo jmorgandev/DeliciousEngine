@@ -4,18 +4,64 @@
 #include "dcf.h"
 #include <SDL_events.h>
 #include <algorithm>
+#include <imgui.h>
+#include <SDL_clipboard.h>
+
+static void gui_set_clipboard_bind(void*, const char* text) {
+	SDL_SetClipboardText(text);
+}
+static const char* gui_get_clipboard_bind(void*) {
+	return SDL_GetClipboardText();
+}
+
+Input::Input() {
+	
+}
 
 bool Input::init() {
 	key_records.reserve(10);
 
-	//@TEMP
-	bind(SDLK_BACKQUOTE, "toggleconsole");
-	bind(SDLK_F1, "toggleconsole");
+	setup_gui_bindings();
+
+	SDL_StartTextInput();
 
 	return true;
 }
 
+void Input::setup_gui_bindings() {
+	ImGuiIO& io = ImGui::GetIO();
+	io.KeyMap[ImGuiKey_Tab]		   = SDL_SCANCODE_TAB;
+	io.KeyMap[ImGuiKey_LeftArrow]  = SDL_SCANCODE_LEFT;
+	io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
+	io.KeyMap[ImGuiKey_UpArrow]    = SDL_SCANCODE_UP;
+	io.KeyMap[ImGuiKey_DownArrow]  = SDL_SCANCODE_DOWN;
+	io.KeyMap[ImGuiKey_PageUp]     = SDL_SCANCODE_PAGEUP;
+	io.KeyMap[ImGuiKey_PageDown]   = SDL_SCANCODE_PAGEDOWN;
+	io.KeyMap[ImGuiKey_Home]       = SDL_SCANCODE_HOME;
+	io.KeyMap[ImGuiKey_End]        = SDL_SCANCODE_END;
+	io.KeyMap[ImGuiKey_Insert]     = SDL_SCANCODE_INSERT;
+	io.KeyMap[ImGuiKey_Delete]     = SDL_SCANCODE_DELETE;
+	io.KeyMap[ImGuiKey_Backspace]  = SDL_SCANCODE_BACKSPACE;
+	io.KeyMap[ImGuiKey_Space]      = SDL_SCANCODE_SPACE;
+	io.KeyMap[ImGuiKey_Enter]      = SDL_SCANCODE_RETURN;
+	io.KeyMap[ImGuiKey_Escape]     = SDL_SCANCODE_ESCAPE;
+	io.KeyMap[ImGuiKey_A] = SDL_SCANCODE_A;
+	io.KeyMap[ImGuiKey_C] = SDL_SCANCODE_C;
+	io.KeyMap[ImGuiKey_V] = SDL_SCANCODE_V;
+	io.KeyMap[ImGuiKey_X] = SDL_SCANCODE_X;
+	io.KeyMap[ImGuiKey_Y] = SDL_SCANCODE_Y;
+	io.KeyMap[ImGuiKey_Z] = SDL_SCANCODE_Z;
+
+	io.SetClipboardTextFn = gui_set_clipboard_bind;
+	io.GetClipboardTextFn = gui_get_clipboard_bind;
+	io.ClipboardUserData = NULL;
+
+	io.IniFilename = NULL;
+}
+
 void Input::clean_exit() {
+	SDL_StopTextInput();
+
 	//@TODO: Dump keybinds to config files.
 }
 
@@ -41,47 +87,57 @@ void Input::unbind(SDL_Keycode keycode) {
 }
 
 void Input::process_events() {
-
 	update_records();
 
 	SDL_Event event;
+	ImGuiIO& io = ImGui::GetIO();
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
 			console.write_variable("eng_running", false);
 			break;
-		case SDL_KEYDOWN:
-			if (key_record* record = find_record(event.key.keysym.sym)) {
-				record->state = KEY_HOLD;
+		case SDL_KEYDOWN: case SDL_KEYUP:
+			if (io.WantCaptureKeyboard) {
+				io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
+				io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
+				io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
+				io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
+				io.KeySuper = event.key.keysym.mod & KMOD_GUI;
 			}
 			else {
-				if (key_bind* bind = find_bind(event.key.keysym.sym)) {
-					console.execute_keybind(bind);
-
-					//@DANGER This is the wrong thing to do just incase the next event (for whatever reason)
-					//		  is NOT a text event
-					SDL_PollEvent(&event);
-
-
+				if (key_record* record = find_record(event.key.keysym.sym)) {
+					record->state = (event.type == SDL_KEYDOWN) ? KEY_HOLD : KEY_RELEASED;
 				}
-				else if (console.is_open()) {
-					console.key_input(event.key);
+				else if (event.type == SDL_KEYDOWN) {
+					if (key_bind* bind = find_bind(event.key.keysym.sym)) {
+						console.execute_keybind(bind);
+					}
+					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
 				}
-				else {
-					key_record new_record = { event.key.keysym.sym, KEY_PRESSED };
-					key_records.push_back(new_record);
-				}
-			}
-			break;
-		case SDL_KEYUP:
-			if (key_record* record = find_record(event.key.keysym.sym)) {
-				record->state = KEY_RELEASED;
 			}
 			break;
 		case SDL_TEXTINPUT:
-			if (console.is_open()) {
-				console.text_input(event.text);
+			io.AddInputCharactersUTF8(event.text.text);
+			break;
+		case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
+			if (io.WantCaptureMouse) {
+				io.MouseDown[event.button.button - 1] = (event.type == SDL_MOUSEBUTTONDOWN);
 			}
+			else mouse_buttons[event.button.button - 1] = (event.type == SDL_MOUSEBUTTONDOWN);
+			break;
+		case SDL_MOUSEWHEEL:
+			if (io.WantCaptureMouse) {
+				if (event.wheel.x > 0) io.MouseWheelH += 1;
+				else if (event.wheel.x < 0) io.MouseWheelH -= 1;
+				if (event.wheel.y > 0) io.MouseWheel += 1;
+				else if (event.wheel.y < 0) io.MouseWheel -= 1;
+			}
+			break;
+		case SDL_MOUSEMOTION:
+			io.MousePos.x = (float)event.motion.x;
+			io.MousePos.y = (float)event.motion.y;
+			mouse_motion.x = (float)event.motion.xrel;
+			mouse_motion.y = (float)event.motion.yrel;
 			break;
 		}
 	}
@@ -111,9 +167,7 @@ void Input::update_records() {
 		if (it->state == KEY_RELEASED) {
 			it = key_records.erase(it);
 		}
-		else {
-			it++;
-		}
+		else it++;
 	}
 }
 

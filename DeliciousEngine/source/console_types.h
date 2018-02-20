@@ -7,12 +7,12 @@
 
 #define CON_MAX_NAME	32
 
-#define CVAR_SYSTEM		0x00					//Cannot be edited by the user, or written to config file
-#define CVAR_MUTABLE	0x01					//Can be edited during runtime
-#define CVAR_CONFIG		0x02					//Is written to the config file
-#define CVAR_USER	(CVAR_MUTABLE | CVAR_CONFIG)//Can be edited during runtime and is written to the config file
+#define CVAR_SYSTEM	 0							  //Cannot be edited by the user, or written to config file
+#define CVAR_MUTABLE 1							  //Can be edited during runtime
+#define CVAR_CONFIG	 1 << 1						  //Is written to the config file
+#define CVAR_USER	 (CVAR_MUTABLE | CVAR_CONFIG) //Can be edited during runtime and is written to the config file
 
-enum cvar_type {CVAR_BOOL, CVAR_FLOAT, CVAR_INT};	//The cvar type determines how the data value is restricted
+enum cvar_type {CVAR_BOOL, CVAR_FLOAT, CVAR_INT}; //The cvar type determines how the data value is restricted
 struct console_var {
 	char		name[CON_MAX_NAME];
 	system_var* value;
