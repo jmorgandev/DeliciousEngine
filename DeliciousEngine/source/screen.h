@@ -26,6 +26,8 @@ public:
 
 	int get_width();
 	int get_height();
+	ImVec2 get_imgui_size();
+	ImVec2 get_imgui_center();
 
 	void resize(int width, int height);
 	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }

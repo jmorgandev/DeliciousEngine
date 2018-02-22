@@ -51,9 +51,6 @@ int main(char** argv, int argc) {
 	
 	if (!init_systems()) return 1;
 	if (startup()) {
-
-		console.display(false);
-
 		running = true;
 		const uint max_timestep = 1000 / 60;
 		uint acc = 0;

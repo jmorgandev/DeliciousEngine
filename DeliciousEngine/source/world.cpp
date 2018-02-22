@@ -70,7 +70,7 @@ void World::update() {
 	static float t = 0;
 	t += 0.05f;
 	float off = -0.7f;
-	first->get_transform()->set_position(math::sine(1.0f, t) + off, math::cosine(0.6f, t), 0.0f);
+	first->get_transform()->set_position(0.0f, math::cosine(0.6f, t), 0.0f);
 	second->get_transform()->set_position(math::sine(0.2f, t) + 1, math::cosine(0.2f, t), 0.0f);
 	//glUseProgram(default_material->shader->id);
 	//GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");

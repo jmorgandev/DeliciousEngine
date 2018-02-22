@@ -2,10 +2,9 @@
 #define DELICIOUS_INPUT_H
 
 #include "input_types.h"
-
+#include <vec2.hpp>
 #include <vector>
 #include <SDL_events.h>
-#include <imgui.h>
 #include "dtypes.h"
 
 class Input {
@@ -30,7 +29,6 @@ private:
 	key_record* find_record(SDL_Keycode key);
 
 	void update_records();
-
 	void setup_gui_bindings();
 };
 extern Input input;

@@ -62,7 +62,8 @@ bool Screen::init() {
 	camera.init(&field_of_view, &aspect_ratio);
 
 	ImGui::CreateContext();
-	ImGui::StyleColorsClassic();
+	//ImGui::StyleColorsClassic();
+	ImGui::StyleColorsDark();
 
 	gui_cursors[ImGuiMouseCursor_Arrow] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 	gui_cursors[ImGuiMouseCursor_TextInput] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
@@ -166,23 +167,14 @@ bool Screen::reload_window() {
 	}
 	return create_window();
 }
-char buffer[30] = "Hello Sailor!";
+
 void Screen::render_frame() {
 	camera.update();
-	
 	world.draw();
-	
-	//@TODO: Setup GUI Rendering generically rather than per renderer
-	console.draw();
-
-	ImGui::Text("Hello, world %d", 123);
-	if (ImGui::Button("Save"))
-	{
-		// do stuff
-	}
-	ImGui::InputText("string", buffer, IM_ARRAYSIZE(buffer));
+	console.update_and_draw();
 
 	draw_imgui();
+
 	SDL_GL_SwapWindow(window);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -194,12 +186,18 @@ int Screen::get_height() {
 	return height.as_int;
 }
 
+ImVec2 Screen::get_imgui_size() {
+	return ImVec2((float)width.as_int, (float)height.as_int);
+}
+ImVec2 Screen::get_imgui_center() {
+	return ImVec2((float)width.as_int / 2, (float)height.as_int / 2);
+}
+
 void Screen::resize(int new_width, int new_height) {
 	width = new_width;
 	height = new_height;
 	ortho_matrix = glm::ortho(0, width.as_int, height.as_int, 0);
 	reload_window();
-	console.display_reformat();
 }
 
 Camera* Screen::get_camera() {

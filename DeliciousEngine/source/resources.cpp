@@ -284,21 +284,6 @@ void Resources::unload_gui_resources() {
 bool Resources::load_default_resources() {
 	load_gui_resources();
 	load_mesh_primitives();
-
-	Shader* font_shader = load_shader("res/bmp_font.glsl");
-	if (font_shader == nullptr)	return false;
-
-	Texture* font_texture = load_texture("res/consolas_24.tga");
-	if (font_texture == nullptr) return false;
-
-	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
-	if (con_font == nullptr) return false;
-	console.set_font(con_font);
-
-	Shader* box_shader = load_shader("res/shape.glsl");
-	if (box_shader == nullptr) return false;
-	console.set_gui_properties(gui_vertex_array, box_shader);
-
 	return true;
 }
 

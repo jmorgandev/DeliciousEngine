@@ -20,10 +20,10 @@ Input::Input() {
 
 bool Input::init() {
 	key_records.reserve(10);
-
 	setup_gui_bindings();
-
 	SDL_StartTextInput();
+
+	bind(SDLK_BACKQUOTE, "toggleconsole");
 
 	return true;
 }
@@ -97,23 +97,24 @@ void Input::process_events() {
 			console.write_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN: case SDL_KEYUP:
-			if (io.WantCaptureKeyboard) {
-				io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
-				io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
-				io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
-				io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
-				io.KeySuper = event.key.keysym.mod & KMOD_GUI;
-			}
-			else {
-				if (key_record* record = find_record(event.key.keysym.sym)) {
-					record->state = (event.type == SDL_KEYDOWN) ? KEY_HOLD : KEY_RELEASED;
-				}
-				else if (event.type == SDL_KEYDOWN) {
-					if (key_bind* bind = find_bind(event.key.keysym.sym)) {
+			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
+			io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
+			io.KeyCtrl = event.key.keysym.mod & KMOD_CTRL;
+			io.KeyAlt = event.key.keysym.mod & KMOD_ALT;
+			io.KeySuper = event.key.keysym.mod & KMOD_GUI;
+			
+			if (event.type == SDL_KEYDOWN && !io.WantCaptureKeyboard) {
+				if (key_record* record = find_record(event.key.keysym.sym))
+					record->state = KEY_HOLD;
+				else {
+					if (key_bind* bind = find_bind(event.key.keysym.sym))
 						console.execute_keybind(bind);
-					}
 					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
 				}
+			}
+			if (event.type == SDL_KEYUP) {
+				if (key_record* record = find_record(event.key.keysym.sym))
+					record->state = KEY_RELEASED;
 			}
 			break;
 		case SDL_TEXTINPUT:
