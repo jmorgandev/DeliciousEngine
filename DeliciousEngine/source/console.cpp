@@ -38,7 +38,7 @@ bool Console::init() {
 }
 
 void Console::clean_exit() {
-	//@TODO: Write CVars to config file.
+	//@Todo: Write CVars to config file.
 	variables.clear();
 	commands.clear();
 }
@@ -50,18 +50,20 @@ void Console::update_and_draw() {
 		ImGui::SetNextWindowPos(screen.get_imgui_center(), 
 								ImGuiCond_Once, 
 								ImVec2(0.5f, 0.5f));
-		ImGui::SetNextWindowSize(ImVec2(screen.get_width() * 0.75, 
-										screen.get_height() * 0.75),
+		ImGui::SetNextWindowSize(ImVec2(screen.get_width()  * 0.75f, 
+										screen.get_height() * 0.75f),
 								 ImGuiCond_Once);
 		ImGui::Begin("Console##console-window", &display_console, WIN_FLAGS);
 		const float h = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
 		ImGui::BeginChild("##console-report", ImVec2(0, -h), false);
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1));
 
-		ImGuiListClipper clipper(report_text.size());
-		while (clipper.Step())
-			for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+		ImGuiListClipper clipper((int)report_text.size());
+		while (clipper.Step()) {
+			for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
 				ImGui::TextWrapped(report_text[i].c_str());
+			}
+		}
 		if (scroll_to_bottom) {
 			ImGui::SetScrollHere();
 			scroll_to_bottom = false;
@@ -72,12 +74,11 @@ void Console::update_and_draw() {
 		ImGui::PushItemWidth(-1);
 		if (ImGui::InputText("##console-input", input_buffer, CON_INPUT_LENGTH, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			if (dcf::str_len(input_buffer) > 0) {
-				report_text.push_back(input_buffer);
-				dcf::str_cpy("", input_buffer);
+				execute_input(true);
 				scroll_to_bottom = true;
 			}
+			ImGui::SetKeyboardFocusHere(-1);
 		}
-		ImGui::SetKeyboardFocusHere(-1);
 		ImGui::PopItemWidth();
 		ImGui::End();
 	}
@@ -97,9 +98,8 @@ void Console::print(cstring format, ...) {
 
 //Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
-	while (*str != NULL && input_index != CON_INPUT_LENGTH) {
-		input_buffer[input_index++] = *str++;
-	}
+	assert(dcf::str_len(str) <= CON_INPUT_LENGTH);
+	dcf::str_cpy(str, input_buffer);
 }
 
 /*
@@ -136,11 +136,9 @@ valid pointer if the names match exactly.
 */
 console_var* Console::find_variable(cstring name) {
 	for (auto itr = variables.begin(); itr != variables.end(); itr++) {
-		if (dcf::str_cmp_exact(name, itr->name)) {
-			return &(*itr);
-		}
+		if (dcf::str_cmp_exact(name, itr->name)) return &(*itr);
 	}
-	return NULL;
+	return nullptr;
 }
 
 /*
@@ -149,17 +147,13 @@ valid pointer if the names match exactly.
 */
 console_cmd* Console::find_command(cstring name) {
 	for (auto itr = commands.begin(); itr != commands.end(); itr++) {
-		if (dcf::str_cmp_exact(name, itr->name)) {
-			return &(*itr);
-		}
+		if (dcf::str_cmp_exact(name, itr->name)) return &(*itr);
 	}
-	return NULL;
+	return nullptr;
 }
 
 system_var* Console::read_variable(cstring name) {
-	if (console_var* cvar = find_variable(name)) {
-		return cvar->value;
-	}
+	if (console_var* cvar = find_variable(name)) return cvar->value;
 	print("read_variable: \"%\" does not exist!", name);
 	return nullptr;
 }
@@ -175,16 +169,10 @@ void Console::write_variable(cstring name, bool value) {
 }
 void Console::write_variable(cstring name, system_var value, cvar_type type) {
 	if (console_var* cvar = find_variable(name)) {
-		if (cvar->type == type) {
-			*cvar->value = value;
-		}
-		else {
-			print("write_variable: \"%s\" type mismatch!", name);
-		}
+		if (cvar->type == type) *cvar->value = value;
+		else print("write_variable: \"%s\" type mismatch!", name);
 	} 
-	else {
-		print("write_variable: \"%s\" does not exist!", name);
-	}
+	else print("write_variable: \"%s\" does not exist!", name);
 }
 
 /*
@@ -201,9 +189,7 @@ void Console::execute_input(bool user_input) {
 }
 
 void Console::execute_keybind(key_bind* kb) {
-	if (display_console == false || strcmp(kb->command, "toggleconsole")) {
-		execute_string(kb->command);
-	}
+	execute_string(kb->command);
 }
 
 void Console::execute_string(cstring cmd_str) {
@@ -247,98 +233,10 @@ void Console::execute_string(cstring cmd_str) {
 }
 
 /*
-Processes user input that was not detected as a text event. Handles scrolling,
-erasing, executing, auto-completion, input history, and toggling the console.
-*/
-void Console::key_input(SDL_KeyboardEvent ev) {
-	switch (ev.keysym.sym) {
-	case SDLK_BACKSPACE:
-		if (input_index != 0) {
-			if (input_buffer[input_index] == '\0' || input_index == CON_INPUT_LENGTH) {
-				input_index--;
-				input_buffer[input_index] = '\0';
-			}
-			else {
-				input_index--;
-				dcf::str_shift_left(input_buffer, input_index);
-			}
-		}
-		break;
-	case SDLK_DELETE:
-		if (input_index != CON_INPUT_LENGTH && input_buffer[input_index] + 1 != '\0') {
-			dcf::str_shift_left(input_buffer, input_index);
-		}
-		break;
-	case SDLK_TAB:
-		//Partial command or variable completion
-		break;
-	case SDLK_RETURN:
-	case SDLK_KP_ENTER:
-		if (input_buffer[0] == NULL) {
-			break;
-		}
-		//Execute the string in the input buffer
-		execute_input(true);
-		input_scroll = 0;
-		break;
-	case SDLK_UP:
-		//Cycle back through previously entered commands#
-		write_to_input("odaijn;odna;odwdioa;dowoinda;o");
-		break;
-	case SDLK_DOWN:
-		//Cycle forward through previously entered commands
-		break;
-	case SDLK_LEFT:
-		//Shift the input cursor to the left
-		if (input_index != 0) {
-			input_index--;
-		}
-		break;
-	case SDLK_RIGHT:
-		//Shift the input cursor to the right
-		if (input_buffer[input_index] != NULL && input_index != CON_INPUT_LENGTH) {
-			input_index++;
-		}
-		break;
-	case SDLK_PAGEUP:
-		break;
-	case SDLK_PAGEDOWN:
-		break;
-	case SDLK_INSERT:
-		//Toggle insertion mode
-		input_insert = !input_insert;
-		break;
-	}
-}
-
-/*
-Processes user input that was detected as a text event. Handles inserting
-characters in the middle of the buffer, and whether the typed character
-can be printed to the screen or not.
-*/
-void Console::text_input(SDL_TextInputEvent ev) {
-	if (dcf::is_printable(*ev.text) && input_index != CON_INPUT_LENGTH) {
-		if (input_insert == false && input_buffer[input_index] != '\0') {
-			uint input_size = dcf::str_len(input_buffer);
-			if (input_size != CON_INPUT_LENGTH) {
-				dcf::str_shift_right(input_buffer, input_index);
-				input_buffer[input_index++] = *ev.text;
-			}
-		}
-		else {
-			input_buffer[input_index++] = *ev.text;
-		}
-	}
-}
-
-/*
 Wipes the input buffer with null characters and resets the input index.
 */
 void Console::clear_input() {
-	for (int i = 0; i < CON_INPUT_LENGTH; i++) {
-		input_buffer[i] = NULL;
-	}
-	input_index = 0;
+	dcf::str_cpy("", input_buffer);
 }
 
 bool Console::is_open() {
@@ -346,71 +244,8 @@ bool Console::is_open() {
 }
 
 void Console::load_config() {
-	std::fstream config_file("config.cfg", std::fstream::in);
-	if (config_file.is_open()) {
-		std::string line;
-		while (std::getline(config_file, line)) {
-			dcf::str_cpy(line.c_str(), input_buffer);
-			//dcf::str_trim_spaces(input_buffer);
-			char* label = input_buffer;
-			char* value = dcf::str_next_word(label);
-			if (value != NULL) {
-				*dcf::str_find(label, ' ') = '\0';
-				//set_variable(label, value, true);
-			}
-		}
-		clear_input();
-	}
-	else {
-		config_file.open("config.cfg", std::fstream::out);
-		for (const auto& cvar : variables) {
-			if (cvar.flags & CVAR_CONFIG) {
-				config_file << cvar.name << " ";
-				switch (cvar.type) {
-				//case CVAR_BOOL: config_file << cvar.value.as_bool; break;
-				//case CVAR_INT: config_file << cvar.value.as_int; break;
-				//case CVAR_FLOAT: config_file << cvar.value.as_float; break;
-				}
-				config_file << '\n';
-			}
-		}
-	}
-	config_file.close();
+	//@Todo: implement
 }
-
-//void Console::load_config() {
-//	std::fstream config_file("config.cfg", std::fstream::in);
-//	if (config_file.is_open()) {
-//		std::string line;
-//		while (std::getline(config_file, line)) {
-//			dcf::str_cpy(line.c_str(), input_buffer);
-//			dcf::str_trim_spaces(input_buffer);
-//			
-//			char* label = input_buffer;
-//			char* value = dcf::str_next_word(label);
-//			if (value != NULL) {
-//				*dcf::str_find(label, ' ') = '\0';
-//				set_variable(label, value);
-//			}
-//			clear_input();
-//		}
-//	}
-//	else {
-//		config_file.open("config.cfg", std::fstream::out);
-//		for (const auto& cvar : variables) {
-//			if (cvar.flags & CVAR_CONFIG) {
-//				config_file << cvar.name;
-//				switch (cvar.type) {
-//				case CVAR_INT: config_file << cvar.value->as_int; break;
-//				case CVAR_FLOAT: config_file << cvar.value->as_float; break;
-//				case CVAR_BOOL: config_file << cvar.value->as_bool; break;
-//				}
-//				config_file << '\n';
-//			}
-//		}
-//	}
-//	config_file.close();
-//}
 
 void Console::set_variable(cstring name, cstring value) {
 	if (console_var* cvar = find_variable(name)) set_variable(cvar, value);

@@ -14,14 +14,11 @@ bool World::init() {
 	return true;
 }
 
-//@TEMP
+//@Temp
 bool World::load_test() {
 	//Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Texture* default_texture = resources.load_texture("res/tile.png");
 
-	//@Cleanup Taking advantage of TGA having a different pixel format in order to load a different
-	//colored texture is really silly. Don't do this in future.
-	//Texture* other_texture = resources->load_texture("res/tile.tga");
 	Texture* other_texture = resources.load_texture("res/consolas_32.tga", "tile");
 
 	Shader*  default_shader = resources.load_shader("res/default.glsl");
@@ -57,7 +54,7 @@ void World::clean_exit() {
 }
 
 void World::update() {
-	//@TEMP: Should just be iterating through entities and calling scripts, this is just test logic for now...
+	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
 	Entity* first = get_entity(0);
@@ -83,7 +80,7 @@ void World::update() {
 }
 
 void World::draw() {
-	//@TEMP
+	//@Temp
 	Entity* first = get_entity(0);
 	Entity* second = get_entity(1);
 	Entity* third = get_entity(2);
@@ -112,7 +109,7 @@ void World::draw() {
 }
 
 void World::do_camera() {
-	//@TEMP: Until scripting
+	//@Temp: Until scripting
 
 	Camera* cam = screen.get_camera();
 

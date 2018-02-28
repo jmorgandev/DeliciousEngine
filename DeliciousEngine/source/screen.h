@@ -9,7 +9,7 @@
 #include "build_info.h"
 #include <imgui.h>
 
-//@TEMP
+//@Temp
 #define NEAR_PLANE 0.1f
 #define FAR_PLANE 1000.0f
 

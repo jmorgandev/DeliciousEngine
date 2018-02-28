@@ -12,7 +12,7 @@ struct Texture;
 #include <glew.h>
 #include <glm.hpp>
 
-//@TODO: Auto-generate global uniform block for standard engine assigned uniforms e.g:
+//@Todo: Auto-generate global uniform block for standard engine assigned uniforms e.g:
 // - matrix_mvp (Computed before sending to GPU)
 // - matrix_view
 // - matrix_projection

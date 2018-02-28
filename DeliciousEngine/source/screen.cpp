@@ -12,7 +12,7 @@
 
 #include <gtc/matrix_transform.hpp>
 
-//@TEMP
+//@Temp
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
 Screen::Screen() {
@@ -31,8 +31,6 @@ Screen::Screen() {
 	gui_texture_handle = 0;
 	
 	std::memset(gui_cursors, NULL, sizeof(gui_cursors));
-
-	ortho_matrix = glm::ortho(0, width.as_int, height.as_int, 0);
 }
 
 bool Screen::init() {
@@ -65,11 +63,11 @@ bool Screen::init() {
 	//ImGui::StyleColorsClassic();
 	ImGui::StyleColorsDark();
 
-	gui_cursors[ImGuiMouseCursor_Arrow] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-	gui_cursors[ImGuiMouseCursor_TextInput] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-	gui_cursors[ImGuiMouseCursor_ResizeAll] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-	gui_cursors[ImGuiMouseCursor_ResizeNS] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-	gui_cursors[ImGuiMouseCursor_ResizeEW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+	gui_cursors[ImGuiMouseCursor_Arrow]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	gui_cursors[ImGuiMouseCursor_TextInput]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+	gui_cursors[ImGuiMouseCursor_ResizeAll]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+	gui_cursors[ImGuiMouseCursor_ResizeNS]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+	gui_cursors[ImGuiMouseCursor_ResizeEW]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 	gui_cursors[ImGuiMouseCursor_ResizeNESW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
 	gui_cursors[ImGuiMouseCursor_ResizeNWSE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
 
@@ -88,6 +86,9 @@ void Screen::clean_exit() {
 }
 
 bool Screen::create_window() {
+	//@Todo: Deprecate full fullscreen acquisition of GPU, instead use borderless fullscreen...
+	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
+	//		 and then display that as a scaled fullscreen quad.
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
 	if (fullscreen.as_bool == true && borderless.as_bool == true) {
 		SDL_DisplayMode dm;
@@ -110,7 +111,7 @@ bool Screen::create_window() {
 	}
 
 	window = SDL_CreateWindow(
-		"Delicious Engine " ENGINE_VERSION_STRING,
+		"Delicious Engine " ENGINE_VERSION_STR,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		width.as_int,
@@ -127,9 +128,7 @@ bool Screen::create_window() {
 			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return false;
 		}
-		else {
-			glViewport(0, 0, width.as_int, height.as_int);
-		}
+		glViewport(0, 0, width.as_int, height.as_int);
 	}
 	else {
 		gl_context = SDL_GL_CreateContext(window);
@@ -156,6 +155,8 @@ bool Screen::create_window() {
 
 	create_gui_objects();
 
+	ortho_matrix = glm::ortho(0.0f, (float)width.as_int, (float)height.as_int, 0.0f);
+
 	return true;
 }
 
@@ -176,7 +177,7 @@ void Screen::render_frame() {
 	draw_imgui();
 
 	SDL_GL_SwapWindow(window);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
 int Screen::get_width() {
@@ -196,7 +197,6 @@ ImVec2 Screen::get_imgui_center() {
 void Screen::resize(int new_width, int new_height) {
 	width = new_width;
 	height = new_height;
-	ortho_matrix = glm::ortho(0, width.as_int, height.as_int, 0);
 	reload_window();
 }
 
@@ -235,14 +235,7 @@ void Screen::draw_imgui() {
 
 	glUseProgram(gui_shader_handle);
 	glUniform1i(gui_tex_uniform, 0);
-	const float ortho_projection[4][4] =
-	{
-		{ 2.0f / io.DisplaySize.x, 0.0f,                   0.0f, 0.0f },
-	{ 0.0f,                  2.0f / -io.DisplaySize.y, 0.0f, 0.0f },
-	{ 0.0f,                  0.0f,                  -1.0f, 0.0f },
-	{ -1.0f,                  1.0f,                   0.0f, 1.0f },
-	};
-	glUniformMatrix4fv(gui_proj_uniform, 1, GL_FALSE, &ortho_projection[0][0]);
+	glUniformMatrix4fv(gui_proj_uniform, 1, GL_FALSE, &ortho_matrix[0][0]);
 	glBindVertexArray(gui_vao);
 	glBindTexture(GL_TEXTURE_2D, gui_texture_handle);
 	glBindSampler(0, 0);
@@ -289,7 +282,6 @@ void Screen::draw_imgui() {
 }
 
 #include "dgl.h"
-
 void Screen::create_gui_objects() {
 	gui_shader_handle = glCreateProgram();
 	GLuint vert = glCreateShader(GL_VERTEX_SHADER);

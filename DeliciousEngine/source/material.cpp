@@ -39,7 +39,7 @@ void Material::identify_uniforms() {
 				glUniform1i(data[0], next_binding);
 			}
 			else {
-				//@TODO: Print some error to the console... Used too many textures...
+				//@Todo: Print some error to the console... Used too many textures...
 			}
 		}
 		else uniform_list[buffer] = { data[0], data[1], data[2], data[3] };
@@ -51,18 +51,18 @@ void Material::identify_userblock(std::string blockname) {
 	if (userblock_index != GL_INVALID_INDEX) {
 		glGetActiveUniformBlockiv(shader->id, userblock_index, GL_UNIFORM_BLOCK_DATA_SIZE, &userblock_size);
 		
-		//@MEMORY currently store one buffer in RAM and another on the GPU, just for the sake of slightly quicker
-		//		  buffer updating with glBufferSubData / glBufferData. Probably not necessary...
+		//@Memory: currently store one buffer in RAM and another on the GPU, just for the sake of slightly quicker
+		// buffer updating with glBufferSubData / glBufferData. Probably not necessary...
 		userblock_buffer = new GLubyte[userblock_size];
 
-		//@TODO Offload UBO to Shader object? Only update buffer from Material?
+		//@Todo: Offload UBO to Shader object? Only update buffer from Material?
 		glGenBuffers(1, &userblock_ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, userblock_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, userblock_size, userblock_buffer, GL_DYNAMIC_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, userblock_index, userblock_ubo);
 	}
 	else {
-		//@TODO: Print a warning to the console... maybe...
+		//@Todo: Print a warning to the console... maybe...
 	}
 }
 
@@ -179,15 +179,15 @@ void Material::set_texture(std::string name, Texture* tex) {
 }
 
 void Material::bind() {
-	//@SPEED Get buffer block binding point, bind program AND stream buffer data to
+	//@Speed: Get buffer block binding point, bind program AND stream buffer data to
 	// GPU. In future, group renderable objects by shader program so that
 	// buffer binding point remains the same throughout all material instance binds
 	// so that only the data needs to be streamed.
 
-	//@SPEED glBufferData, glBufferSubData, glMapBuffer, glBindBufferRange.
+	//@Speed: glBufferData, glBufferSubData, glMapBuffer, glBindBufferRange.
 	// call glBindBufferSubData for every uniform update?
 
-	//@SPEED send important matrices through attributes rather than shaders?
+	//@Speed: send important matrices through attributes rather than shaders?
 	if (shader != nullptr) {
 		glUseProgram(shader->id);
 		if (userblock_index != GL_INVALID_INDEX) {
@@ -204,7 +204,7 @@ void Material::bind() {
 			glActiveTexture(GL_TEXTURE0 + sampler.binding);
 			if (item.second.texture == nullptr) glBindTexture(sampler.type, NULL);
 			else glBindTexture(GL_TEXTURE_2D, sampler.texture->id);
-			//@TODO: Get the texture target from the texture object in future
+			//@Todo: Get the texture target from the texture object in future
 		}
 	}
 }

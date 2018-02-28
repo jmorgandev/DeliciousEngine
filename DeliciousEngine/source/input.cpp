@@ -62,7 +62,7 @@ void Input::setup_gui_bindings() {
 void Input::clean_exit() {
 	SDL_StopTextInput();
 
-	//@TODO: Dump keybinds to config files.
+	//@Todo: Dump keybinds to config files.
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {
@@ -99,8 +99,8 @@ void Input::process_events() {
 		case SDL_KEYDOWN: case SDL_KEYUP:
 			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
 			io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
-			io.KeyCtrl = event.key.keysym.mod & KMOD_CTRL;
-			io.KeyAlt = event.key.keysym.mod & KMOD_ALT;
+			io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
+			io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
 			io.KeySuper = event.key.keysym.mod & KMOD_GUI;
 			
 			if (event.type == SDL_KEYDOWN && !io.WantCaptureKeyboard) {

@@ -149,7 +149,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\box_renderer.cpp" />
     <ClCompile Include="source\camera.cpp" />
     <ClCompile Include="source\collision_volume.cpp" />
     <ClCompile Include="source\console.cpp" />
@@ -158,7 +157,6 @@
     <ClCompile Include="source\dgl.cpp" />
     <ClCompile Include="source\dmath.cpp" />
     <ClCompile Include="source\entity.cpp" />
-    <ClCompile Include="source\font_renderer.cpp" />
     <ClCompile Include="source\input.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\material.cpp" />
@@ -173,8 +171,8 @@
     <ClCompile Include="thirdparty\imgui\imgui_draw.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="help_pages.h" />
     <ClInclude Include="source\asset_loader.h" />
-    <ClInclude Include="source\box_renderer.h" />
     <ClInclude Include="source\build_info.h" />
     <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\cmds.h" />
@@ -190,7 +188,6 @@
     <ClInclude Include="source\dtypes.h" />
     <ClInclude Include="source\entity.h" />
     <ClInclude Include="source\font.h" />
-    <ClInclude Include="source\font_renderer.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\input_types.h" />
     <ClInclude Include="source\material.h" />

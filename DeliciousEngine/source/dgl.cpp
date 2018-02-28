@@ -26,8 +26,8 @@ namespace dgl {
 	}
 
 	bool is_sampler(const GLuint& uniform_type) {
-		//@TODO: Fix this lazy evaluation or find a better way to discern if a GLSL uniform
-		//		 is a sampler or not
+		//@Todo: Fix this lazy evaluation or find a better way to discern if a GLSL uniform
+		// is a sampler or not
 		return (uniform_type >= GL_SAMPLER_1D && uniform_type <= GL_UNSIGNED_INT_SAMPLER_2D_RECT);
 	}
 }

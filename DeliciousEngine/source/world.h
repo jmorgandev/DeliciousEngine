@@ -39,7 +39,7 @@ public:
 private:
 	std::list<Entity> entities;
 
-	//@TEMP
+	//@Temp
 	void do_camera();
 	Material* default_material;
 	Material* other_material;

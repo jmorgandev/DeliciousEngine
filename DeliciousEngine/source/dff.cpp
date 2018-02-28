@@ -41,7 +41,7 @@ namespace dff {
 	}
 
 	std::string get_glsl_header(std::string src) {
-		size_t pos = src.find("#scope");
+		size_t pos = src.find("#scope ");
 		if (pos == std::string::npos) return "";
 		return src.substr(0, pos);
 	}

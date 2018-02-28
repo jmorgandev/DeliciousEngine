@@ -11,7 +11,7 @@ public:
 	void update();
 	void look_at(glm::vec3 pos);
 
-	//@TODO: Pre-multiply the view and projection matrices. (Maybe)
+	//@Todo: Pre-multiply the view and projection matrices.
 	glm::mat4& transform_matrix()  { return transform;  }
 	glm::mat4& view_matrix()	   { return view;       }
 	glm::mat4& projection_matrix() { return projection; }
@@ -20,7 +20,7 @@ private:
 	glm::mat4 view;
 	glm::mat4 projection;
 
-	//@TODO: Reference an entity transform rather than having a separate transform.
+	//@Todo: Reference an entity transform rather than having a separate transform.
 	// Or have both a way to attach to entity, and a camera transform? Maybe.
 	glm::mat4 transform;
 

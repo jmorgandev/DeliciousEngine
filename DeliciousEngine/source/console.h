@@ -5,14 +5,10 @@
 #include <string>
 #include <SDL_Events.h>
 #include "console_types.h"
-#include "font_renderer.h"
-#include "box_renderer.h"
 #include "input_types.h"
 
-#define CON_BUFFER_SIZE 16384
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
-#define CON_INPUT_SCROLL_MULTIPLE 4
 #define CON_HISTORY_SIZE 32
 
 class Console {
@@ -36,21 +32,13 @@ public:
 
 	void execute_keybind(key_bind* kb);
 
-	void key_input(SDL_KeyboardEvent ev);
-	void text_input(SDL_TextInputEvent ev);
-
 	bool is_open();
 	void display(bool d);
 	void display_toggle();
 private:
 	std::vector<std::string> report_text;
+	char input_buffer[CON_INPUT_SIZE];
 	bool scroll_to_bottom;
-
-	//Input buffer variables
-	char		input_buffer[CON_INPUT_SIZE];
-	uint16		input_index;
-	uint16		input_scroll;
-	bool		input_insert;
 
 	//History & Auto-complete variables
 	///uint16	history_buffer[CON_HISTORY_SIZE][CON_INPUT_LENGTH];

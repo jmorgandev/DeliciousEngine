@@ -30,7 +30,7 @@ void Physics::update() {
 	}
 }
 
-//@TEMP
+//@Temp: Until physics library
 bool Physics::intersection(Entity* first, Entity* second) {
 	return collision_exists(first, second);
 }

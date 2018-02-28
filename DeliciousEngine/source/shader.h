@@ -3,7 +3,7 @@
 
 #include <glew.h>
 
-//@TODO: Add more information to shader:
+//@Todo: Add more information to shader:
 // -Enabled attributes
 // -Uniform list/count
 // -Metadata

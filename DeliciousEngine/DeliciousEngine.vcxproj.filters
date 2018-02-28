@@ -34,16 +34,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\box_renderer.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
     <ClCompile Include="source\camera.cpp">
       <Filter>Source\components</Filter>
     </ClCompile>
     <ClCompile Include="source\collision_volume.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
-    <ClCompile Include="source\font_renderer.cpp">
       <Filter>Source\components</Filter>
     </ClCompile>
     <ClCompile Include="source\mesh_renderer.cpp">
@@ -102,16 +96,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\box_renderer.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
     <ClInclude Include="source\camera.h">
       <Filter>Source\components</Filter>
     </ClInclude>
     <ClInclude Include="source\collision_volume.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
-    <ClInclude Include="source\font_renderer.h">
       <Filter>Source\components</Filter>
     </ClInclude>
     <ClInclude Include="source\mesh_renderer.h">
@@ -208,6 +196,9 @@
       <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
     <ClInclude Include="source\default_shaders.h">
+      <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="help_pages.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
   </ItemGroup>

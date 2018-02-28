@@ -18,7 +18,7 @@ public:
 
 	void add_collider(SphereCollider* col);
 
-	//@TEMP
+	//@Temp
 	bool intersection(Entity* first, Entity* second);
 private:
 	std::vector<SphereCollider*> colliders;

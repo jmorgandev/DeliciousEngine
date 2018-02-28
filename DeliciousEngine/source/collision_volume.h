@@ -5,7 +5,7 @@
 
 class Entity;
 
-//@TODO: For now just have every collision volume as a bounding sphere.
+//@Todo: For now just have every collision volume as a bounding sphere.
 class SphereCollider {
 public:
 	SphereCollider();

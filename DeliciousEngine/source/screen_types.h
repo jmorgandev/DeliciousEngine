@@ -1,7 +1,7 @@
 #ifndef DELICIOUS_SCREEN_TYPES_H
 #define DELICIOUS_SCREEN_TYPES_H
 
-//@DEPRECATE - Use console variables instead?
+//@Deprecate: Use console variables instead?
 
 enum VideoMode {
 	VIDEO_WINDOWED,
