@@ -24,13 +24,13 @@
 
 /*========================== 0.0.8 CHANGELOG =========================
 
- * Added ImGui Library (For "immediate-mode style" rendering of gui
+ * Added ImGui Library (For "immediate-mode style" rendering of gui)
 
  * Changed the console to use ImGui
 
  * Removed unnecessary gui renderers (BoxRenderer, FontRenderer)
 
- * Small systems refactor (Engine is no longer a class)
+ * Small systems refactor (Engine is no longer a class, but this could be reverted)
 
  * Added stb_* libraries
 

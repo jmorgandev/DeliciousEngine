@@ -1,6 +1,5 @@
 #include "dgl.h"
 #include "dtypes.h"
-#include "dcf.h"
 #include "build_info.h"
 #include <algorithm>
 
@@ -17,7 +16,7 @@ namespace dgl {
 	}
 
 	bool compile(const GLuint& object, const GLchar* source) {
-		const GLint size = dcf::str_len(source);
+		const GLint size = strlen(source);
 		glShaderSource(object, 1, &source, NULL);
 		glCompileShader(object);
 		GLint status = 0;

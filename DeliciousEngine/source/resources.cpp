@@ -6,10 +6,10 @@
 #include "console.h"
 #include "screen.h"
 #include "dff.h"
-#include "dcf.h"
 #include "dgl.h"
 #include "primitives.h"
 #include <iostream>
+#include <math.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG

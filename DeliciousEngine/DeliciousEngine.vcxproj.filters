@@ -73,9 +73,6 @@
     <ClCompile Include="source\world.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="source\dcf.cpp">
-      <Filter>Source\toolbox</Filter>
-    </ClCompile>
     <ClCompile Include="source\dff.cpp">
       <Filter>Source\toolbox</Filter>
     </ClCompile>
@@ -93,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="source\main.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\dstr.cpp">
+      <Filter>Source\toolbox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +171,6 @@
     <ClInclude Include="source\world.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="source\dcf.h">
-      <Filter>Source\toolbox</Filter>
-    </ClInclude>
     <ClInclude Include="source\dcm.h">
       <Filter>Source\toolbox</Filter>
     </ClInclude>
@@ -198,8 +195,11 @@
     <ClInclude Include="source\default_shaders.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="help_pages.h">
+    <ClInclude Include="source\help_pages.h">
       <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dstr.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,13 +24,14 @@ public:
 	bool create_window();
 	bool reload_window();
 
-	int get_width();
-	int get_height();
-	ImVec2 get_imgui_size();
-	ImVec2 get_imgui_center();
+	int width();
+	int height();
+	float aspect_ratio();
+
+	ImVec2 imgui_size();
+	ImVec2 imgui_center();
 
 	void resize(int width, int height);
-	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }
 
 	void begin_gui();
 
@@ -41,12 +42,11 @@ private:
 
 	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_Count_];
 
-	system_var width;
-	system_var height;
-	system_var fullscreen;
-	system_var borderless;
-	system_var field_of_view;
-	system_var aspect_ratio;
+	system_var vid_width;
+	system_var vid_height;
+	system_var vid_fullscreen;
+	system_var vid_borderless;
+	system_var vid_fov;
 	
 	float near_plane;
 	float far_plane;

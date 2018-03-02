@@ -19,12 +19,11 @@ Screen::Screen() {
 	window     = nullptr;
 	gl_context = nullptr;
 
-	width         = 800;
-	height        = 600;
-	fullscreen    = false;
-	borderless    = false;
-	field_of_view = 60.0f;
-	aspect_ratio  = (float)width.as_int / (float)height.as_int;
+	vid_width         = 800;
+	vid_height        = 600;
+	vid_fullscreen    = false;
+	vid_borderless    = false;
+	vid_fov = 60.0f;
 
 	gui_vao = gui_vbo = gui_ebo = 0;
 	gui_shader_handle = 0;
@@ -50,14 +49,13 @@ bool Screen::init() {
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	console.register_variable("vid_width",      &width,         CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",     &height,        CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &fullscreen,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		&field_of_view, CVAR_FLOAT, CVAR_USER  );
-	console.register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
+	console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
 
-	camera.init(&field_of_view, &aspect_ratio);
+	//camera.init(&field_of_view, &aspect_ratio);
 
 	ImGui::CreateContext();
 	//ImGui::StyleColorsClassic();
@@ -90,23 +88,23 @@ bool Screen::create_window() {
 	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
 	//		 and then display that as a scaled fullscreen quad.
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
-	if (fullscreen.as_bool == true && borderless.as_bool == true) {
+	if (vid_fullscreen.as_bool == true && vid_borderless.as_bool == true) {
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
-			width.as_int  = dm.w;
-			height.as_int = dm.h;
+			vid_width.as_int  = dm.w;
+			vid_height.as_int = dm.h;
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
 			console.print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
-			fullscreen = false;
-			borderless = false;
+			vid_fullscreen = false;
+			vid_borderless = false;
 		}
 	}
-	else if (fullscreen.as_bool == true) {
+	else if (vid_fullscreen.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_FULLSCREEN;
 	}
-	else if (borderless.as_bool == true) {
+	else if (vid_borderless.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
 
@@ -114,8 +112,8 @@ bool Screen::create_window() {
 		"Delicious Engine " ENGINE_VERSION_STR,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		width.as_int,
-		height.as_int,
+		vid_width.as_int,
+		vid_height.as_int,
 		sdl_flags
 	);
 	if (window == nullptr) {
@@ -128,7 +126,7 @@ bool Screen::create_window() {
 			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return false;
 		}
-		glViewport(0, 0, width.as_int, height.as_int);
+		glViewport(0, 0, vid_width.as_int, vid_height.as_int);
 	}
 	else {
 		gl_context = SDL_GL_CreateContext(window);
@@ -145,7 +143,6 @@ bool Screen::create_window() {
 		return false;
 	}
 
-	aspect_ratio = (float)width.as_int / (float)height.as_int;
 	glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
 
 	glEnable(GL_CULL_FACE);
@@ -155,7 +152,7 @@ bool Screen::create_window() {
 
 	create_gui_objects();
 
-	ortho_matrix = glm::ortho(0.0f, (float)width.as_int, (float)height.as_int, 0.0f);
+	ortho_matrix = glm::ortho(0.0f, (float)vid_width.as_int, (float)vid_height.as_int, 0.0f);
 
 	return true;
 }
@@ -180,23 +177,23 @@ void Screen::render_frame() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
-int Screen::get_width() {
-	return width.as_int;
+int Screen::width() {
+	return vid_width.as_int;
 }
-int Screen::get_height() {
-	return height.as_int;
+int Screen::height() {
+	return vid_height.as_int;
 }
 
-ImVec2 Screen::get_imgui_size() {
-	return ImVec2((float)width.as_int, (float)height.as_int);
+ImVec2 Screen::imgui_size() {
+	return ImVec2((float)vid_width.as_int, (float)vid_height.as_int);
 }
-ImVec2 Screen::get_imgui_center() {
-	return ImVec2((float)width.as_int / 2, (float)height.as_int / 2);
+ImVec2 Screen::imgui_center() {
+	return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
 }
 
 void Screen::resize(int new_width, int new_height) {
-	width = new_width;
-	height = new_height;
+	vid_width = new_width;
+	vid_height = new_height;
 	reload_window();
 }
 
@@ -206,8 +203,8 @@ Camera* Screen::get_camera() {
 
 void Screen::begin_gui() {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize.x = width.as_int;
-	io.DisplaySize.y = height.as_int;
+	io.DisplaySize.x = vid_width.as_int;
+	io.DisplaySize.y = vid_height.as_int;
 
 	auto cursor = ImGui::GetMouseCursor();
 	if (io.MouseDrawCursor || cursor == ImGuiMouseCursor_None) {
@@ -264,7 +261,7 @@ void Screen::draw_imgui() {
 			else {
 				glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 				glScissor((int)pcmd->ClipRect.x,
-						  (int)(height.as_int - pcmd->ClipRect.w),
+						  (int)(vid_height.as_int - pcmd->ClipRect.w),
 						  (int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
 						  (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 				glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,

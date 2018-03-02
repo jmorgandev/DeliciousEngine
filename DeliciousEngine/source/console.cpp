@@ -7,8 +7,7 @@
 #include <string>
 
 #include "font.h"
-#include "dcf.h"
-#include "dff.h"
+#include "dstr.h"
 #include "dcm.h"
 #include "dmath.h"
 #include "cmds.h"
@@ -47,11 +46,11 @@ static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
 							   ImGuiWindowFlags_NoSavedSettings);
 void Console::update_and_draw() {
 	if (display_console) {
-		ImGui::SetNextWindowPos(screen.get_imgui_center(), 
+		ImGui::SetNextWindowPos(screen.imgui_center(), 
 								ImGuiCond_Once, 
 								ImVec2(0.5f, 0.5f));
-		ImGui::SetNextWindowSize(ImVec2(screen.get_width()  * 0.75f, 
-										screen.get_height() * 0.75f),
+		ImGui::SetNextWindowSize(ImVec2(screen.width()  * 0.75f, 
+										screen.height() * 0.75f),
 								 ImGuiCond_Once);
 		ImGui::Begin("Console##console-window", &display_console, WIN_FLAGS);
 		const float h = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
@@ -73,7 +72,7 @@ void Console::update_and_draw() {
 		ImGui::Separator();
 		ImGui::PushItemWidth(-1);
 		if (ImGui::InputText("##console-input", input_buffer, CON_INPUT_LENGTH, ImGuiInputTextFlags_EnterReturnsTrue)) {
-			if (dcf::str_len(input_buffer) > 0) {
+			if (strlen(input_buffer) > 0) {
 				execute_input(true);
 				scroll_to_bottom = true;
 			}
@@ -98,8 +97,8 @@ void Console::print(cstring format, ...) {
 
 //Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
-	assert(dcf::str_len(str) <= CON_INPUT_LENGTH);
-	dcf::str_cpy(str, input_buffer);
+	assert(strlen(str) <= CON_INPUT_LENGTH);
+	strcpy(input_buffer, str);
 }
 
 /*
@@ -108,9 +107,9 @@ exists with the same name, print an error to the console.
 */
 void Console::register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags) {
 	if (!find_variable(name)) {
-		assert(dcf::str_len(name) <= CON_MAX_NAME);
+		assert(strlen(name) <= CON_MAX_NAME);
 		console_var new_cvar = { "", ref, type, access_flags };
-		dcf::str_cpy(name, new_cvar.name);
+		strcpy(new_cvar.name, name);
 		variables.push_back(new_cvar);
 	}
 	else print("register_variable: \"%s\" already exists!", name);
@@ -122,9 +121,9 @@ with the same name, print an error to the console.
 */
 void Console::register_command(cstring name, cmd_callback func) {
 	if (!find_command(name)) {
-		assert(dcf::str_len(name) <= CON_MAX_NAME);
+		assert(strlen(name) <= CON_MAX_NAME);
 		console_cmd new_cmd = { "", func };
-		dcf::str_cpy(name, new_cmd.name);
+		strcpy(new_cmd.name, name);
 		commands.push_back(new_cmd);
 	}
 	else print("register_command: \"%s\" already exists!", name);
@@ -136,7 +135,7 @@ valid pointer if the names match exactly.
 */
 console_var* Console::find_variable(cstring name) {
 	for (auto itr = variables.begin(); itr != variables.end(); itr++) {
-		if (dcf::str_cmp_exact(name, itr->name)) return &(*itr);
+		if (strcmp(name, itr->name)) return &(*itr);
 	}
 	return nullptr;
 }
@@ -147,7 +146,7 @@ valid pointer if the names match exactly.
 */
 console_cmd* Console::find_command(cstring name) {
 	for (auto itr = commands.begin(); itr != commands.end(); itr++) {
-		if (dcf::str_cmp_exact(name, itr->name)) return &(*itr);
+		if (strcmp(name, itr->name)) return &(*itr);
 	}
 	return nullptr;
 }
@@ -193,26 +192,22 @@ void Console::execute_keybind(key_bind* kb) {
 }
 
 void Console::execute_string(cstring cmd_str) {
-	if (dcf::is_glyph(*cmd_str) == false) {
-		cmd_str = dcf::str_next_glyph(cmd_str);
-		if (cmd_str == nullptr) return;
-	}
-
+	//@Todo: implement command chaining with ';'
 	char buffer[CON_INPUT_SIZE];
-	dcf::str_cpy(cmd_str, buffer);
-	dcf::str_trim_spaces(buffer);
+	strcpy(buffer, cmd_str);
+	char* label = dstr::trim(buffer);
+	dstr::cut_extra_spaces(label);
 
-	char* label = &buffer[0];
-	std::vector<cstring> args;
+	std::vector<cstring> argv;
 
-	char* arg_str = dcf::str_next_word(label);
-	if (arg_str != nullptr) {
-		*(arg_str - 1) = '\0';
-		dcf::str_split_vector(arg_str, args, ' ');
+	char* args = strchr(label, ' ');
+	if (args != nullptr) {
+		*(args - 1) = 0;
+		dstr::split(args, ' ', argv);
 	}
 
 	if (console_var* cvar = find_variable(label)) {
-		if (args.empty()) {
+		if (argv.empty()) {
 			switch (cvar->type) {
 			case CVAR_INT:
 				print("%s is %i", cvar->name, cvar->value->as_int);
@@ -225,10 +220,10 @@ void Console::execute_string(cstring cmd_str) {
 				break;
 			}
 		}
-		else if (args.size() == 1) set_variable(cvar, args[0]);
+		else if (argv.size() == 1) set_variable(cvar, argv[0]);
 		else print("Set variable usage: <var> <value>");
 	}
-	else if (console_cmd* cmd = find_command(label)) cmd->callback(args);
+	else if (console_cmd* cmd = find_command(label)) cmd->callback(argv);
 	else print("Unknown command/variable: \"%s\"", label);
 }
 
@@ -236,7 +231,7 @@ void Console::execute_string(cstring cmd_str) {
 Wipes the input buffer with null characters and resets the input index.
 */
 void Console::clear_input() {
-	dcf::str_cpy("", input_buffer);
+	*input_buffer = 0;
 }
 
 bool Console::is_open() {

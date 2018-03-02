@@ -1,18 +1,21 @@
 #include "camera.h"
+#include "screen.h"
 #include <gtc/matrix_transform.hpp>
 
 Camera::Camera() {
 	transform = view = projection = glm::mat4(1.0f);
+	fov = 60.0f;
+	nearclip = 0.1f;
+	farclip = 1000.0f;
+	ortho = false;
 }
 
-void Camera::init(system_var* fov_var, system_var* aspect_var) {
-	//@Todo: just access the screen instead of passing these pointers
-	field_of_view = fov_var;
-	aspect_ratio = aspect_var;
-}
+void Camera::update_matrices() {
+	if (ortho)
+		projection = glm::ortho(0.0f, (float)screen.width(), (float)screen.height(), 0.0f);
+	else
+		projection = glm::perspective(glm::radians(fov), screen.aspect_ratio(), nearclip, farclip);
 
-void Camera::update() {
-	projection = glm::perspective(glm::radians(field_of_view->as_float), aspect_ratio->as_float, 0.1f, 1000.0f);	
 	view = glm::inverse(transform);
 }
 

@@ -1,7 +1,6 @@
 #include "input.h"
 
 #include "console.h"
-#include "dcf.h"
 #include <SDL_events.h>
 #include <algorithm>
 #include <imgui.h>
@@ -61,19 +60,18 @@ void Input::setup_gui_bindings() {
 
 void Input::clean_exit() {
 	SDL_StopTextInput();
-
 	//@Todo: Dump keybinds to config files.
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {
 	for (auto bind : key_binds) {
 		if (bind.keycode == keycode) {
-			dcf::str_cpy(command, bind.command);
+			strcpy(bind.command, command);
 			return;
 		}
 	}
 	key_bind new_binding = { keycode, "" };
-	dcf::str_cpy(command, new_binding.command);
+	strcpy(new_binding.command, command);
 	key_binds.push_back(new_binding);
 }
 
