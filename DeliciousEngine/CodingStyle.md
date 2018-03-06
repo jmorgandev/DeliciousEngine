@@ -27,13 +27,13 @@ All header files should have `#define` guards. The format of the definition guar
 6. A blank line
 7. Delicious Engine headers (e.g. `console.h` or `material.h`)
 ```cpp
-#include "console.h"
+#include "console.h" // Associated header..
 
-#include <string>	// C++ library
-#include <math.h>	// C library
-#include <imgui.h>	// Third-party library
+#include <string>	 // C++ library.
+#include <math.h>	 // C library.
+#include <imgui.h>	 // Third-party library.
 
-#include "dstr.h"	// Core engine headers
+#include "dstr.h"	 // Core engine headers.
 #include "dtypes.h"
 
 ...
@@ -41,10 +41,10 @@ All header files should have `#define` guards. The format of the definition guar
 ### Forward declarations
 Avoid using forward declarations and instead `#include` the necessary headers. Forward declarations are nice and can potentially result in shorter compile times but they generally introduce **friction** when trying to refactor or make a related change.
 ```cpp
-struct Shader; // Bad -- Avoid forward declaration.
+struct Shader; // Bad - Avoid forward declaration.
 ```
 ```cpp 
-#include "shader.h" // Good -- Include the relevant header instead.
+#include "shader.h" // Good - Include the relevant header instead.
 ```
 If an `#include` statement is causing circular dependencies or any other compiler issues that cannot be resolved with anything else, then Forward Declarations may be used only if the reason for their use is provided with a comment.
 # Scoping
@@ -55,18 +55,18 @@ Anonymous namespaces should not be declared (Favour using `static` instead for i
 
 Avoid bringing namespace functions or variables into another scope with `using` statements. Always prefer the named context accessor.
 ```cpp
-using namespace dcf; // Bad -- Avoid bringing the namespace into another scope.
+using namespace dcf; // Bad - Avoid bringing the namespace into another scope.
 ```
 ```cpp
-int a = dcf::make_integer(5); // Good -- Access namespace by context.
+int a = dcf::make_integer(5); // Good - Access namespace by context.
 ```
 This rule can only be broken when accessing standard C++ nested namespaces in order reduce **friction**. In this case, `using` statements should always be declared in local scope.
 ```cpp
-// Bad -- Never spend more time typing than thinking.
+// Bad - Lots of unnecessary typing.
 std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
 ```
 ```cpp
-// Good -- Reduces amount of typing and keeps namespace in local scope.
+// Good - Reduces amount of typing and keeps namespace in local scope.
 void foo() {
     using namespace std::chrono;
     time_point<system_clock> now = system_clock::now();
@@ -77,35 +77,35 @@ Global functions should either be placed inside a namespace (As a utility functi
 
 Avoid using classes or structs to group static functions together, instead prefer using namespaces. Static methods can be declared within classes *only* if it relates to instances of the class or the static data of the class.
 ```cpp
-// Bad -- Avoid grouping internal functions into anonymous namespaces.
+// Bad - Avoid grouping internal functions into anonymous namespaces.
 namespace {
     void start_frame() {...}
     void end_frame() {...}
 }
 ```
 ```cpp
-// Good -- Prefer declaring internal functions as static.
+// Good - Prefer declaring internal functions as static.
 static void start_frame() {...}
 static void end_frame() {...}
 ```
 ### Local variables
-Place local variables in the most local scope possible, and as close to its first use as possible. This makes it easy to see why the variable was declared and what it is going to be used for.
+Place local variables in the most local scope possible, and as close to its first use as possible. This makes it easy to see why the variable was declared and what it is going to be used for. Prefer to assign local variables as they are declared.
 ```cpp
 int foo;
-foo = get_next_foo(); // Bad -- Don't separate declaration and initilization.
+foo = get_next_foo(); // Bad - Don't separate declaration and assignment.
 ```
 ```cpp
-int foo = get_next_foo(); // Good -- Declare and initialize on the same line.
+int foo = get_next_foo(); // Good - Declare and assign on the same line.
 ```
-Variables to be used with `if` and `while` statements should be declared within those statements if possible. Though this isn't a strict rule and can only be followed in specific cases, it provides cleaner and more readable code. However, `for` statements **should always** follow this rule (Apart from rare edge cases).
+Variables to be used with `if` and `while` statements should be declared within those statements if possible. Though this isn't a strict rule and can only be followed in specific cases, it provides cleaner and more readable code. However, `for` statements should **always** follow this rule (Apart from rare edge cases).
 ```cpp
-if (int* foo = get_foo()) {...} // Good -- Variable is assigned and condition is still checked.
+if (int* foo = get_foo()) {...} // Good - Variable is assigned and condition is still checked.
 ...
 int* foo = get_foo();
 if (foo != nullptr) {...} // Essentially the same result as above.
 ```
 ```cpp
-while(int* foo = get_next_foo()) {...} // Good -- Variable is assigned and scoped to loop.
+while(int* foo = get_next_foo()) {...} // Good - Variable is assigned and scoped to loop.
 ...
 int* foo = get_next_foo();
 while(foo != nullptr) {
@@ -115,10 +115,10 @@ while(foo != nullptr) {
 ```
 ```cpp
 int i = 5;
-for(; i < 10; i++) {...} // Bad -- Variable should be declared within statement when possible.
+for(; i < 10; i++) {...} // Bad - Variable should be declared within statement when possible.
 ```
 ```cpp
-for(int i = 5; i < 10; i++) {...} // Good -- Variable is assigned and scoped to the loop.
+for(int i = 5; i < 10; i++) {...} // Good - Variable is assigned and scoped to the loop.
 ```
 ### Static and global variables
 Objects with static storage duration should be avoided unless the object is a core engine subsystem (e.g. Console, Screen, etc...). These subsystems should also have explicit `init` and `exit` functions rather than relying on constructors and destructors. 
@@ -128,26 +128,25 @@ The only exception to this rule is within `main.cpp`, where the source file shou
 Variables inside of a function or statement scope should not be declared as `static` for persistence, always prefer defining persistent variables inside of a class definition.
 ```cpp
 void foo() {
-    static float t = 0; // Bad -- Variables that require scope persistence should not be static.
+    static float t = 0; // Bad - Variables that require scope persistence should not be static.
     ...
     t += 0.01f;
 }
 ```
 Global variables are only permitted if they can be declared as `const` or `constexpr`.
 ```cpp
-int task_id = 7; // Bad -- This should be const or constexpr.
+int task_id = 7; // Bad - This should be const or constexpr.
 ```
 ```cpp
-constexpr task_id = 7; // Good -- Constant is evaluated at compile time.
+constexpr task_id = 7; // Good - Constant is evaluated at compile time.
 ```
 ## Classes
 ### Constructors
-Prefer doing the absolute minimum work required to initialize the object in a constructor. Function calls and procedures that could potentially throw and error should be avoided in any constructor.
+Prefer doing the absolute minimum work required to initialize the object in a constructor. Function calls and procedures that could potentially throw and error should be avoided in any constructor **unless** the constructor can deal with the error elegantly.
 ```cpp
 foo::foo() {
     ...
-    // Bad -- This could cause an error with no way to externally handle it.
-    local_file = ifstream("res/file.txt");
+    local_file = ifstream("res/file.txt"); // Bad - Could cause an error that the constructor doesn't handle.
 }
 ```
 Instead prefer putting error-prone code inside methods that can be used to signal any potential errors with return values or pointer/reference out variables.
@@ -155,14 +154,14 @@ Instead prefer putting error-prone code inside methods that can be used to signa
 foo::foo() {...}
 bool foo::load_file(string path) {
     local_file = ifstream("res/file.txt");
-    return local_file.is_open(); // Good -- Errors are caught and can be dealt with externally.
+    return local_file.is_open(); // Good - Errors can be dealt with externally.
 }
 ```
 An alternative solution would be to use a Builder pattern which provides a form of modular constructor that can be error checked before the object is finalized.
 ### Structs or classes
 Prefer using structs for grouping data together that doesn't operate on itself. Otherwise use `class` definitions if grouped data needs to operate on itself.
 ```cpp
-// Good -- struct is just a container for data
+// Good - struct is just a container for data
 struct ImageData {
     vector<int> pixels;
     int width;
@@ -170,7 +169,7 @@ struct ImageData {
 };
 ```
 ```cpp
-// Good -- Class has data but also methods to operate on that data.
+// Good - Class has data but also methods to operate on that data.
 class Image {
 public:
     flip() {...}
@@ -213,27 +212,17 @@ Nested class definitions are not allowed.
 ### Output parameters
 Prefer using return values rather than output parameters. If you must use output parameters then place them after all other input parameters.
 ```cpp
-// Bad -- Place output parameters after inputs.
-void make_foo(foo* out, int in) {...}
+void make_foo(foo* out, int in) {...} // Bad - Output parameters placed before inputs.
 ```
 ```cpp
-// Good -- Input and output parameters are left to right.
-void make_foo(int in, foo* out) {...}
-```
-```cpp
-// Good -- Prefer using return rather than output parameters.
-foo* make_foo(int in) {...}
+void make_foo(int in, foo* out) {...} // Good - Inputs come before output parameters.
+
+foo* make_foo(int in) {...}           // Good - Prefer using return rather than output parameters.
 ```
 ### Function length
 Prefer writing short functions. Long functions are still allowed, but run the risk of causing **friction**.
 ```cpp
-// Bad -- Consider breaking this function up into smaller ones.
-void process_entire_frame() {
-    ... // ~100 lines of code
-}
-```
-```cpp
-// Good -- Function is broken up into stages
+// Good - Function is broken up into stages.
 void process_entire_frame() {
     prepare_gui();
     draw_world();
@@ -246,7 +235,7 @@ When breaking up a long function into shorter ones, generally do so if the short
 
 If there is no way to break a long function up without causing readability issues, then it is preferred to use anonymous scopes (or unnamed scopes) to split the code up into readable sections.
 ```cpp
-// Good -- Code is split up into readable sections
+// Good - Code is split up into readable scoped sections.
 bool create_window() {
     /* start sdl */ { ... }
     /* create_window_from_flags */ {...}
@@ -258,12 +247,12 @@ bool create_window() {
 ### Function overloading
 Prefer to overload functions rather than giving different names to different sets of parameters that perform the same operation. Overloaded functions must closely relate to each other in terms of functionality and the result of the procedure.
 ```cpp
-// Bad -- Overloaded functions have different results.
+// Bad - Overloaded functions have different results.
 int   calculate(int a, int b) { return a*b; }
 float calculate(float a, float b) { return a/b; }
 ```
 ```cpp
-// Bad -- Prefer overloading similar functions.
+// Bad - Prefer overloading similar functions.
 int   multiply_int(int a, int b) { return a*b; }
 float multiply_float(float a, float b) { return a*b; }
 ```
@@ -275,8 +264,7 @@ float multiply(float a, float b) { return a*b; }
 ### Default arguments
 Default arguments should be used when multiple function/method calls use the same parameters. Default arguments should not be used on `virtual` functions or when the default value might evaluate differently between different calls.
 ```cpp
-// Bad -- Evaluates differently between calls.
-void foo(int num = bar++) {...} 
+void foo(int num = bar++) {...} // Bad - Evaluates differently between calls.
 ```
 ### Trailing return types
 C++ 11 introduced the trailing return type that works like the trailing return type seen in lambda expressions by using the `auto` keyword.
@@ -287,11 +275,11 @@ auto foo(int num) -> int { return num * 3; }
 ```
 Prefer writing function signatures in the original C style unless the return type is easier to specify and read using the C++ 11 syntax.
 ```cpp
-// Context heavy type information clutters code.
+// Bad - Context heavy type information clutters code.
 Material::UniformMeta Material::uniform_meta(string name) {...}
 ```
 ```cpp
-// Trailing return type already has context.
+// Good - Trailing return type already has context.
 auto Material::uniform_meta(string name) -> UniformMeta {...}
 ```
 ## Other C++ Features
@@ -312,19 +300,16 @@ If your code needs to perform differently depending upon specific child classes,
 ### Casting
 Prefer to use C style casting syntax when performing a **conversion** between primitive types and classes. Any other casting should be performed with C++ casting syntax.
 ```cpp
-// Good -- Use C style syntax for conversions.
 float bar = 5.3f;
-int foo = (int)bar;
+int foo = (int)bar; // Good - Use C style casts for type conversion.
 ```
 ```cpp
-// Bad -- Don't use C style syntax for type casting.
 float* foo = new float(5.0f);
-void* bar = (void*)foo; 
+void* bar = (void*)foo; // Bad - Don't use C style casts for type casting.
 ```
 ```cpp
-// Good -- Use C++ style syntax for type casting.
 float* foo = new float(2.7f)
-void* bar = reinterpret_cast<void*>(foo);
+void* bar = reinterpret_cast<void*>(foo); // Good - Use C++ style casts for type casting.
 ```
 ### Streams
 Avoid using streams for non-trivial code. Streams should only be used in simple cases (e.g. file io)
@@ -347,33 +332,26 @@ Generally use the following style for assigning zero/invalid values to these typ
 ```cpp
 int i = 0;
 float f = 0.0f;
-char c = '\0'; // Prefer over NULL
+char c = '\0';    // Prefer over NULL
 int* p = nullptr; // Prefer over NULL
 ```
 Only use `NULL` if a third-party library uses it for error handling, function parameters, etc...
 ### Auto
 Only use the `auto` specifier when declaring and assigning a variable in which the assigned value's type can easily be determined.
 ```cpp
-// Bad -- Variable is assigned with a non-obvious type.
-auto foo = get_last_value();
+auto foo = get_last_value(); // Bad - Assigned with a non-obvious type.
 ```
 ```cpp
-// Good -- Variable is assigned with an integer literal.
-auto foo = 182;
-```
-```cpp
-// Good -- Variable type can be determined from function name.
-auto foo = make_vector3(3.0f, 2.7f, 1.0f);
+auto foo = 182; // Good - Assigned with an integer literal.
+
+auto bar = make_vector3(3.0f, 2.7f, 1.0f); // Good - Type can be determined from function name
 ```
 ### Initializer lists
 Initializer lists can be used but prefer to use constructors for classes.
 ```cpp
-// Okay -- Constructor can be called with initializer list.
-Vector3 vec = {3.0f, 2.7f, 1.0f};
-```
-```cpp
-// Good -- Prefer to call the constructor directly.
-Vector3 vec = Vector3(3.0f, 2.7f, 1.0f);
+Vector3 foo = {3.0f, 2.7f, 1.0f}; // Okay - Constructor can be called with initializer list.
+
+Vector3 bar = Vector3(3.0f, 2.7f, 1.0f); // Good - Prefer calling constructor directly.
 ```
 ### Lambda expressions
 Generally lambda expressions should only be used in combination with STL, but they can be used for situations where trivial function definitions can be avoided by declaring a lambda.
@@ -383,36 +361,35 @@ Avoid template metaprogramming wherever possible unless it can potentially provi
 ### Variable names
 Prefer variable names to use `snake_case`. Be reasonably descriptive and avoid abbreviation unless they are well known or unambiguous. Additionally, abbreviations are also accepted if the variable type has specific uses which provide the context lost from abbreviating. 
 ```cpp
-int n; // Bad -- Provides no meaning or context.
-int n_conn; // Bad -- Ambiguous abbreviation.
-int pc; // Bad -- "pc" has multiple meanings.
+int n;      // Bad - Provides no meaning or context.
+int n_conn; // Bad - Ambiguous abbreviation.
+int pc;     // Bad - "pc" has multiple meanings.
 ```
 ```cpp
-int object_count; // Good -- No abbreviation.
-int num_errors; // Good -- "num" is a common abbreviation.
-Camera* cam; // Good -- Abbreviated but type provides context.
-MeshData md; // Good -- Abbreviated but type provides context.
+int object_count; // Good - No abbreviation.
+int num_errors;   // Good - "num" is a common abbreviation.
+Camera* cam;      // Good - Abbreviated but type provides context.
+MeshData md;      // Good - Abbreviated but type provides context.
 ```
 Ultimately, these rules can be flexed under specific circumstances, such as defining local temporary variables or if a name only makes sense within the context of where it is declared (e.g. in a class). Generally follow the above guide, but bend these rules within reason.
 
 Variable names with underscores from `snake_case` can also drop the underscore if the result does not suffer a large degree of readability and still makes sense.
 ```cpp
-// Bad -- Sacrifices too much readability.
-float farclipplane = 100.0f;
+float farclipplane = 100.0f; // Bad - Sacrifices too much readability.
 ```
 ```cpp
-float far_clip_plane = 100.0f; // Good -- Separates all words.
-float farclip_plane = 100.0f; // Good -- Separates unrelated words.
+float far_clip_plane = 100.0f; // Good - Separates all words.
+float farclip_plane = 100.0f;  // Good - Separates loosely related words.
 ```
 ### Function names
 Function names should also generally follow the same rules as variable naming. Use `snake_case` and be descriptive, but not too descriptive.
 ```cpp
-void do_camera() {...} // Bad -- Non-obvious purpose.
-int checkError(int code) {...} // Bad -- Doesn't use snake_case.
+void do_camera() {...}         // Bad - Non-obvious purpose.
+int checkError(int code) {...} // Bad - Doesn't use snake_case.
 ```
 ```cpp
-void move_camera() {...} // Good -- Name gives purpose and context.
-int check_error(int code) {...} // Good -- Correctly uses snake_case.
+void move_camera() {...}        // Good - Name gives purpose and context.
+int check_error(int code) {...} // Good - Correctly uses snake_case.
 ```
 ### File names
 Filenames should also follow the `snake_case` style. C++ source files should end in `.cpp` and header files should end in `.h` (**not** `.hpp`). In the rare case that a source file must be explicitly included, it must end in `.inc` instead.
@@ -423,7 +400,6 @@ Type names should strictly use `UpperCamelCase` in order to contrast with the va
 
 The names of all types -- classes, structs, typedefs, aliases, and templates -- should have this same naming convention.
 ```cpp
-// Good -- Type definitions all use UpperCamelCase.
 class ScriptedEntity {...};
 struct ImageData {...};
 enum class ResourceType {...};
@@ -442,7 +418,6 @@ private:
 };
 ```
 Avoid using any type of unique identifier for member variables like "`name_`" or "`m_name`". If you want to name class methods after member variables, consider using different names or prefixing the method name with "`get_`" or "`set_`" if you are writing getter and setter methods.
-
 ### Const and constexpr names
 Prefer using `UPPER_SNAKE_CASE` to name `const` or `constexpr` variables. 
 ```cpp
@@ -456,12 +431,10 @@ constexpr int factorial(int n) {...}
 ### Namespace names
 Namespace names should generally be short or abbreviated. 
 ```cpp
-// Bad -- Avoid long/explicit names.
-namespace delicious_common_functions {...}
+namespace delicious_common_functions {...} // Bad - Avoid long/explicit names.
 ```
 ```cpp
-// Good -- Prefer short/abbreviated names.
-namespace dcf {...}
+namespace dcf {...} // Good - Prefer short/abbreviated names.
 ```
 ### Enum names
 Prefer naming enums as if they were types (Using `UpperCamelCase`), but the individual enumerators should be named as if they were constant variables (using `UPPER_SNAKE_CASE`).
@@ -474,7 +447,7 @@ enum MeshAttributes {
 };
 ```
 ### Macro names
-If you really need to define a macro, generally use the same naming style as enums and constant variables.
+If you *really* need to define a macro, generally use the same naming style as enums and constant variables.
 ```cpp
 #define MAX(x) ...
 #define BUFFER_SIZE 0xFF
@@ -569,7 +542,7 @@ do {
 ```
 Single line control statements (Without curly braces) are permitted, and can use any style so long as the style is consistent throughout the code block.
 ```cpp
-// Bad -- Don't mix and match styles.
+// Bad - Don't mix and match styles.
 if (condition) 
     do_something();
 else do_something_else();
@@ -578,14 +551,14 @@ while (condition)
     do_something(); 
 ```
 ```cpp
-// Good -- Everything is on the same line.
+// Good - Everything is on the same line.
 if (condition) do_something();
 else do_something_else();
 for (condition) do_something();
 while (condition) do_something();
 ```
 ```cpp
-// Good -- Separate control flow statements from executed code.
+// Good - Separate control flow statements from executed code.
 if (condition)
     do_something();
 else
@@ -598,11 +571,11 @@ while (condition)
 ### Function calls
 Prefer calling functions and passing parameters on the same line if it is possible to do so without breaking the line-width rule. If this isn't possible, then arguments can be placed on a new line so long as the indentation is aligned to the **first** argument.
 ```cpp
-// Bad -- Long parameter list breaks the line-width rule.
-handle = CreateWindowEx(WS_EX_CLIENTEDGE, winclass, wintitle, winstyle, ...
+// Bad - Long parameter list breaks the line-width rule.
+handle = CreateWindowEx(WS_EX_CLIENTEDGE, winclass, wintitle, winstyle, CW_USEDEFAULT, ...
 ```
 ```cpp
-// Bad -- Function call should not look like a scope.
+// Good - Parameters align with first argument.
 handle = CreateWindowEx(
     WS_EX_CLIENTEDGE,
     winclass, wintitle, 
@@ -616,7 +589,7 @@ handle = CreateWindowEx(
 );
 ```
 ```cpp
-// Good -- Long parameter list is aligned with first argument.
+// Good - Different style, but still follows the rule.
 handle = CreateWindowEx(WS_EX_CLIENTEDGE,
                         winclass,
                         wintitle,
@@ -631,14 +604,14 @@ handle = CreateWindowEx(WS_EX_CLIENTEDGE,
 ### Declaring pointers and references
 The additional syntax required to declare a variable as a pointer or reference should always be next to the **type** and not the name.
 ```cpp
-// Bad -- Syntax is placed next to the name rather than the type.
+// Bad - Syntax is placed next to the name rather than the type.
 int *foo = new int(15);
 int &bar = *foo;
 int *baz = &bar;
 ```
 This is because the format above has the same way of writing `*foo` or `&bar` whilst having two different meanings.
 ```cpp
-// Good -- Syntax is placed next the types.
+// Good - Syntax is placed next the type names to indicate a TYPE of int.
 int* foo = new int(15);
 int& bar = *foo;
 int* baz = &bar;
@@ -646,7 +619,7 @@ int* baz = &bar;
 ### Preprocessor directives
 Any preprocessor directive should be placed at the beginning of each line regardless of the current indentation.
 ```cpp
-// Bad -- Preprocessor directives must stand out from ordinary code.
+// Bad - Preprocessor directives must stand out from ordinary code.
 void foo() {
     #if USE_HEAP
     float* inputs = new float[16];
