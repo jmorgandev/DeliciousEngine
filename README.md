@@ -37,9 +37,9 @@ The same way that the engine can be scripted with lua/angelscript, it can also b
 - Added coding style document to reflect the style of the source code
 
 ### Next Milestone (0.1.0)
-[ ] Embedded scripting
-[x] Game-object management
-[ ] Scripting entry point
-[x] Moving camera test
+- [ ] Embedded scripting
+- [x] Game-object management
+- [ ] Scripting entry point
+- [x] Moving camera test
 
 Last updated: 07/03/2018
