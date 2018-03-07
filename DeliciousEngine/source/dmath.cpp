@@ -49,4 +49,8 @@ namespace math {
 	float cosine(float magnitude, float frequency, float time) {
 		return cosf(time * frequency) * magnitude;
 	}
+
+	float lerp(float start, float end, float percent) {
+		return (start + percent * (end - start));
+	}
 }

@@ -9,7 +9,7 @@
 #include "build_info.h"
 #include <imgui.h>
 
-//@TEMP
+//@Temp
 #define NEAR_PLANE 0.1f
 #define FAR_PLANE 1000.0f
 
@@ -24,27 +24,34 @@ public:
 	bool create_window();
 	bool reload_window();
 
-	int get_width();
-	int get_height();
+	int width() { return vid_width.as_int; }
+	int height() { return vid_height.as_int; }
+	float aspect_ratio() {
+		return (float)vid_width.as_int / (float)vid_height.as_int;
+	}
+	ImVec2 imgui_size() {
+		return ImVec2((float)vid_width.as_int, (float)vid_height.as_int);
+	}
+	ImVec2 imgui_center() {
+		return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
+	}
 
 	void resize(int width, int height);
-	float get_aspect_ratio() { return (float)width.as_int / (float)height.as_int; }
 
 	void begin_gui();
 
-	Camera* get_camera();
+	Camera* get_camera() { return &camera; }
 private:
 	SDL_Window*   window;
 	SDL_GLContext gl_context;
 
 	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_Count_];
 
-	system_var width;
-	system_var height;
-	system_var fullscreen;
-	system_var borderless;
-	system_var field_of_view;
-	system_var aspect_ratio;
+	system_var vid_width;
+	system_var vid_height;
+	system_var vid_fullscreen;
+	system_var vid_borderless;
+	system_var vid_fov;
 	
 	float near_plane;
 	float far_plane;

@@ -1,8 +1,8 @@
 #ifndef DELICIOUS_MESH_RENDERER_H
 #define DELICIOUS_MESH_RENDERER_H
 
-class Material;
-struct Mesh;
+#include "mesh.h"
+#include "material.h"
 
 class MeshRenderer {
 public:
@@ -10,9 +10,15 @@ public:
 
 	void draw();
 
-	void set(Mesh* new_mesh, Material* new_material);
+	MeshRenderer& set_mesh(Mesh* const mesh) { this->mesh = mesh; return *this; }
+	MeshRenderer& set_material(Material* const material) { this->material = material; return *this; }
 
-	Material* get_material();
+	Mesh* get_mesh() const { return mesh; }
+	Material* get_material() const { return material; }
+
+	void display(const bool& is_visible) { visible = is_visible; }
+	bool is_visible() const { return visible; }
+
 private:
 	Mesh*     mesh;
 	Material* material;

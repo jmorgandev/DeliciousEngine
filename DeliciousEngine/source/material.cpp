@@ -39,7 +39,7 @@ void Material::identify_uniforms() {
 				glUniform1i(data[0], next_binding);
 			}
 			else {
-				//@TODO: Print some error to the console... Used too many textures...
+				//@Todo: Print some error to the console... Used too many textures...
 			}
 		}
 		else uniform_list[buffer] = { data[0], data[1], data[2], data[3] };
@@ -51,18 +51,18 @@ void Material::identify_userblock(std::string blockname) {
 	if (userblock_index != GL_INVALID_INDEX) {
 		glGetActiveUniformBlockiv(shader->id, userblock_index, GL_UNIFORM_BLOCK_DATA_SIZE, &userblock_size);
 		
-		//@MEMORY currently store one buffer in RAM and another on the GPU, just for the sake of slightly quicker
-		//		  buffer updating with glBufferSubData / glBufferData. Probably not necessary...
+		//@Memory: currently store one buffer in RAM and another on the GPU, just for the sake of slightly quicker
+		// buffer updating with glBufferSubData / glBufferData. Probably not necessary...
 		userblock_buffer = new GLubyte[userblock_size];
 
-		//@TODO Offload UBO to Shader object? Only update buffer from Material?
+		//@Todo: Offload UBO to Shader object? Only update buffer from Material?
 		glGenBuffers(1, &userblock_ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, userblock_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, userblock_size, userblock_buffer, GL_DYNAMIC_DRAW);
 		glBindBufferBase(GL_UNIFORM_BUFFER, userblock_index, userblock_ubo);
 	}
 	else {
-		//@TODO: Print a warning to the console... maybe...
+		//@Todo: Print a warning to the console... maybe...
 	}
 }
 
@@ -73,7 +73,7 @@ Shader* Material::get_shader() {
 void Material::set_matrix(std::string name, glm::mat4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::mat4));
 			update_buffer = true;
@@ -91,7 +91,7 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 void Material::set_vec4(std::string name, glm::vec4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec4));
 			update_buffer = true;
@@ -113,7 +113,7 @@ void Material::set_vec4(std::string name, GLfloat x, GLfloat y, GLfloat z, GLflo
 void Material::set_vec3(std::string name, glm::vec3 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec3));
 			update_buffer = true;
@@ -135,7 +135,7 @@ void Material::set_vec3(std::string name, GLfloat x, GLfloat y, GLfloat z) {
 void Material::set_float(std::string name, GLfloat value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, &value, sizeof(GLfloat));
 			update_buffer = true;
@@ -153,7 +153,7 @@ void Material::set_float(std::string name, GLfloat value) {
 void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, values, sizeof(GLfloat) * size);
 			update_buffer = true;
@@ -179,15 +179,15 @@ void Material::set_texture(std::string name, Texture* tex) {
 }
 
 void Material::bind() {
-	//@SPEED Get buffer block binding point, bind program AND stream buffer data to
+	//@Speed: Get buffer block binding point, bind program AND stream buffer data to
 	// GPU. In future, group renderable objects by shader program so that
 	// buffer binding point remains the same throughout all material instance binds
 	// so that only the data needs to be streamed.
 
-	//@SPEED glBufferData, glBufferSubData, glMapBuffer, glBindBufferRange.
+	//@Speed: glBufferData, glBufferSubData, glMapBuffer, glBindBufferRange.
 	// call glBindBufferSubData for every uniform update?
 
-	//@SPEED send important matrices through attributes rather than shaders?
+	//@Speed: send important matrices through attributes rather than shaders?
 	if (shader != nullptr) {
 		glUseProgram(shader->id);
 		if (userblock_index != GL_INVALID_INDEX) {
@@ -200,11 +200,11 @@ void Material::bind() {
 		}
 		//Bind appropriate textures
 		for (auto item : sampler_list) {
-			const sampler_meta& sampler = item.second;
+			const SamplerMeta& sampler = item.second;
 			glActiveTexture(GL_TEXTURE0 + sampler.binding);
 			if (item.second.texture == nullptr) glBindTexture(sampler.type, NULL);
 			else glBindTexture(GL_TEXTURE_2D, sampler.texture->id);
-			//@TODO: Get the texture target from the texture object in future
+			//@Todo: Get the texture target from the texture object in future
 		}
 	}
 }

@@ -1,22 +1,19 @@
 #include "resources.h"
 
-#include <glew.h>
-#include <SDL_image.h>
-#include <geometric.hpp>
-#include "console.h"
-#include "screen.h"
-#include "dff.h"
-#include "dcf.h"
-#include "dgl.h"
-#include "primitives.h"
 #include <iostream>
 
+#include <SDL_image.h>
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_FAILURE_USERMSG
 #include <stb_image.h>
+#include <vec4.hpp>
+#include <vec3.hpp>
+#include <mat4x4.hpp>
+
+#include "dgl.h"
+#include "default_mesh.h"
 
 bool Resources::init() {
-
+	//@Deprecated: We are no longer using SDL_Image for loading textures
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 
 	return true;
@@ -40,16 +37,10 @@ void Resources::clean_exit() {
 		glDeleteTextures(1, &item.second.id);
 	}
 	texture_catalog.clear();
-
-	unload_gui_resources();
-	IMG_Quit();
 }
 
 Texture* Resources::load_texture(std::string filepath) {
-	//@TODO: TGA pixel format is BGRA, opposite of PNG which is RGBA...
-	// Maybe add an edge case or actually start implementing resource loaders
-
-	//@TODO: Use stb_image? Support DXT textures? or just use libpng etc...?
+	//@Deprecated: Use stb_image instead of SDL_Image
 	Texture new_texture = {};
 
 	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
@@ -68,7 +59,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	//@TODO: Have some way of specifying the texture parameters outside this function
+	//@Todo: Have some way of specifying the texture parameters outside this function
 	
 	new_texture.id = texture_object;
 	new_texture.width = temp_surface->w;
@@ -81,7 +72,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	return &texture_catalog[filepath];
 }
 
-Texture* Resources::load_texture(std::string filename, std::string id) {
+[[deprecated]] Texture* Resources::load_texture(std::string filename, std::string id) {
 	//int x, y, channels, desired channels
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);
@@ -216,34 +207,6 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	return &mesh_catalog[name];
 }
 
-Font* Resources::make_font(std::string name, Texture* texture, Shader* shader, int font_px) {
-	Font new_font = {};
-
-	new_font.char_offset = '!';
-	new_font.total_cells = ('~' - '!') + 1;
-	new_font.cell_height = font_px;
-	new_font.cell_width = (font_px / 2);
-	new_font.cell_rows = texture->height / new_font.cell_height;
-	new_font.cell_columns = texture->width / new_font.cell_width;
-
-	new_font.gui_vao = gui_vertex_array;
-	new_font.shader = shader;
-	new_font.texture = texture;
-
-	font_catalog[name] = new_font;
-	return &font_catalog[name];
-}
-
-Font* Resources::fetch_font(std::string name) {
-	auto it = font_catalog.find(name);
-	if (it == font_catalog.end()) {
-		return nullptr;
-	}
-	else {
-		return &it->second;
-	}
-}
-
 Material* Resources::make_material(std::string name, Shader* shader) {
 	material_catalog.emplace(name, shader);
 	return &material_catalog[name];
@@ -259,50 +222,8 @@ Material* Resources::fetch_material(std::string filename) {
 	}
 }
 
-void Resources::load_gui_resources() {
-	glGenVertexArrays(1, &gui_vertex_array);
-	glBindVertexArray(gui_vertex_array);
-
-	glGenBuffers(2, gui_vertex_buffers);
-
-	glBindBuffer(GL_ARRAY_BUFFER, gui_vertex_buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(gui_vertices), gui_vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, gui_vertex_buffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(gui_texcoords), gui_texcoords, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-}
-
-void Resources::unload_gui_resources() {
-	glDeleteBuffers(2, gui_vertex_buffers);
-	glDeleteVertexArrays(1, &gui_vertex_array);
-}
-
 bool Resources::load_default_resources() {
-	load_gui_resources();
-	load_mesh_primitives();
-
-	Shader* font_shader = load_shader("res/bmp_font.glsl");
-	if (font_shader == nullptr)	return false;
-
-	Texture* font_texture = load_texture("res/consolas_24.tga");
-	if (font_texture == nullptr) return false;
-
-	Font* con_font = make_font("consolas", font_texture, font_shader, 24);
-	if (con_font == nullptr) return false;
-	console.set_font(con_font);
-
-	Shader* box_shader = load_shader("res/shape.glsl");
-	if (box_shader == nullptr) return false;
-	console.set_gui_properties(gui_vertex_array, box_shader);
-
+	make_mesh("primitive.quad", default_quad_mesh);
+	make_mesh("primitive.cube", default_cube_mesh);
 	return true;
-}
-
-void Resources::load_mesh_primitives() {
-	make_mesh("primitive.quad", primitive_quad);
-	make_mesh("primitive.cube", primitive_cube);
 }

@@ -1,27 +1,22 @@
 #include "world.h"
 
+#include <algorithm>
+
 #include "resources.h"
 #include "screen.h"
 #include "input.h"
-#include "physics.h"
 #include "dmath.h"
-
-#include <algorithm>
-
 #include "material.h"
 
 bool World::init() {
 	return true;
 }
 
-//@TEMP
+//@Temp
 bool World::load_test() {
 	//Texture* default_texture = system.resources->load_texture("res/tile.tga");
 	Texture* default_texture = resources.load_texture("res/tile.png");
 
-	//@Cleanup Taking advantage of TGA having a different pixel format in order to load a different
-	//colored texture is really silly. Don't do this in future.
-	//Texture* other_texture = resources->load_texture("res/tile.tga");
 	Texture* other_texture = resources.load_texture("res/consolas_32.tga", "tile");
 
 	Shader*  default_shader = resources.load_shader("res/default.glsl");
@@ -38,15 +33,19 @@ bool World::load_test() {
 
 	//Entity first, second;
 	Entity* first = create_entity("first");
-	first->get_renderer()->set(cube, default_material);
-	first->get_transform()->set_position(-1.0f, 0.0f, 0.0f);
+	first->get_renderer()
+		.set_mesh(cube)
+		.set_material(default_material);
+	first->get_transform().set_position(-1.0f, 0.0f, 0.0f);
 
 	Entity* second = clone_entity(first, { 1.0f, 0.0f, 0.0f });
-	second->get_renderer()->set(cube, other_material);
-	second->name = "second";
+	second->get_renderer()
+		.set_mesh(cube)
+		.set_material(other_material);
+	second->set_name("second");
 
 	Entity* third = clone_entity(second, { 0.0f, 0.0f, 0.0f });
-	third->name = "third";
+	third->set_name("third");
 
 	screen.get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 	return true;
@@ -57,21 +56,21 @@ void World::clean_exit() {
 }
 
 void World::update() {
-	//@TEMP: Should just be iterating through entities and calling scripts, this is just test logic for now...
+	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
 	Entity* first = get_entity(0);
 	Entity* second = get_entity(1);
 
 	glm::vec3 axis = glm::normalize(glm::vec3(1.0f, 2.0f, 1.2f));
-	first->get_transform()->rotate(0.5f, axis);
-	second->get_transform()->rotate(1.0f, axis);
+	first->get_transform().rotate(0.5f, axis);
+	second->get_transform().rotate(1.0f, axis);
 	
 	static float t = 0;
 	t += 0.05f;
 	float off = -0.7f;
-	first->get_transform()->set_position(math::sine(1.0f, t) + off, math::cosine(0.6f, t), 0.0f);
-	second->get_transform()->set_position(math::sine(0.2f, t) + 1, math::cosine(0.2f, t), 0.0f);
+	first->get_transform().set_position(0.0f, math::cosine(0.6f, t), 0.0f);
+	second->get_transform().set_position(math::sine(0.2f, t) + 1, math::cosine(0.2f, t), 0.0f);
 	//glUseProgram(default_material->shader->id);
 	//GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
 	//if (collision(first, second)) {
@@ -83,15 +82,15 @@ void World::update() {
 }
 
 void World::draw() {
-	//@TEMP
+	//@Temp
 	Entity* first = get_entity(0);
 	Entity* second = get_entity(1);
 	Entity* third = get_entity(2);
 
 	Camera* cam = screen.get_camera();
-	glm::mat4 transform_a = first->get_transform()->get_matrix();
-	glm::mat4 transform_b = second->get_transform()->get_matrix();
-	glm::mat4 transform_c = third->get_transform()->get_matrix();
+	glm::mat4 transform_a = first->get_transform().get_matrix();
+	glm::mat4 transform_b = second->get_transform().get_matrix();
+	glm::mat4 transform_c = third->get_transform().get_matrix();
 
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
@@ -108,11 +107,11 @@ void World::draw() {
 	//third->get_renderer()->draw();
 
 	default_material->set_matrix("transform", transform_a);
-	first->get_renderer()->draw();
+	first->get_renderer().draw();
 }
 
 void World::do_camera() {
-	//@TEMP: Until scripting
+	//@Temp: Until scripting
 
 	Camera* cam = screen.get_camera();
 
@@ -154,34 +153,34 @@ Entity* World::copy_entity(Entity* ent) {
 
 Entity* World::clone_entity(Entity* ent, glm::vec3 pos) {
 	entities.emplace_back(*ent);
-	entities.back().get_transform()->set_position(pos);
+	entities.back().get_transform().set_position(pos);
 	return &entities.back();
 }
 Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot) {
 	entities.emplace_back(*ent);
-	Transform* t = entities.back().get_transform();
-	t->set_position(pos);
-	t->set_rotation(rot);
+	Transform& t = entities.back().get_transform();
+	t.set_position(pos);
+	t.set_rotation(rot);
 	return &entities.back();
 }
 Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::vec3 scale) {
 	entities.emplace_back(*ent);
-	Transform* t = entities.back().get_transform();
-	t->set_position(pos);
-	t->set_scale(scale);
+	Transform& t = entities.back().get_transform();
+	t.set_position(pos);
+	t.set_scale(scale);
 	return &entities.back();
 }
 Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot, glm::vec3 scale) {
 	entities.emplace_back(*ent);
-	Transform* t = entities.back().get_transform();
-	t->set_position(pos);
-	t->set_rotation(rot);
-	t->set_scale(scale);
+	Transform& t = entities.back().get_transform();
+	t.set_position(pos);
+	t.set_rotation(rot);
+	t.set_scale(scale);
 	return &entities.back();
 }
-Entity* World::clone_entity(Entity* ent, Transform* tfm) {
+Entity* World::clone_entity(Entity* ent, Transform tfm) {
 	entities.emplace_back(*ent);
-	entities.back().set_transform(tfm);
+	entities.back().get_transform() = tfm;
 	return &entities.back();
 }
 
@@ -193,8 +192,4 @@ void World::destroy_entity(Entity* ent) {
 		}
 		else ++it;
 	}
-}
-
-bool World::collision(Entity* a, Entity* b) {
-	return a->get_collider()->intersect(b->get_collider());
 }

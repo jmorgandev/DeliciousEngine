@@ -34,16 +34,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\box_renderer.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
     <ClCompile Include="source\camera.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
-    <ClCompile Include="source\collision_volume.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
-    <ClCompile Include="source\font_renderer.cpp">
       <Filter>Source\components</Filter>
     </ClCompile>
     <ClCompile Include="source\mesh_renderer.cpp">
@@ -64,9 +55,6 @@
     <ClCompile Include="source\input.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="source\physics.cpp">
-      <Filter>Source\systems</Filter>
-    </ClCompile>
     <ClCompile Include="source\resources.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
@@ -78,9 +66,6 @@
     </ClCompile>
     <ClCompile Include="source\world.cpp">
       <Filter>Source\systems</Filter>
-    </ClCompile>
-    <ClCompile Include="source\dcf.cpp">
-      <Filter>Source\toolbox</Filter>
     </ClCompile>
     <ClCompile Include="source\dff.cpp">
       <Filter>Source\toolbox</Filter>
@@ -100,18 +85,12 @@
     <ClCompile Include="source\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="source\dstr.cpp">
+      <Filter>Source\toolbox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\box_renderer.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
     <ClInclude Include="source\camera.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
-    <ClInclude Include="source\collision_volume.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
-    <ClInclude Include="source\font_renderer.h">
       <Filter>Source\components</Filter>
     </ClInclude>
     <ClInclude Include="source\mesh_renderer.h">
@@ -144,9 +123,6 @@
     <ClInclude Include="source\cmds.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="source\primitives.h">
-      <Filter>Source\defaults</Filter>
-    </ClInclude>
     <ClInclude Include="source\asset_loader.h">
       <Filter>Source\types</Filter>
     </ClInclude>
@@ -168,9 +144,6 @@
     <ClInclude Include="source\input.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="source\physics.h">
-      <Filter>Source\systems</Filter>
-    </ClInclude>
     <ClInclude Include="source\resources.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
@@ -182,9 +155,6 @@
     </ClInclude>
     <ClInclude Include="source\world.h">
       <Filter>Source\systems</Filter>
-    </ClInclude>
-    <ClInclude Include="source\dcf.h">
-      <Filter>Source\toolbox</Filter>
     </ClInclude>
     <ClInclude Include="source\dcm.h">
       <Filter>Source\toolbox</Filter>
@@ -207,7 +177,16 @@
     <ClInclude Include="thirdparty\imgui\imconfig.h">
       <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="source\default_shaders.h">
+    <ClInclude Include="source\help_pages.h">
+      <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\dstr.h">
+      <Filter>Source\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="source\default_mesh.h">
+      <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\default_shader.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
   </ItemGroup>

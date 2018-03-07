@@ -20,6 +20,6 @@ struct key_bind {
 	char command[CON_MAX_NAME];
 };
 
-//@TODO - User defined buttons
+//@Todo: User defined buttons
 
 #endif

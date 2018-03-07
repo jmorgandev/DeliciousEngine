@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -112,7 +112,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -125,7 +125,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -140,7 +140,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -149,21 +149,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\box_renderer.cpp" />
     <ClCompile Include="source\camera.cpp" />
-    <ClCompile Include="source\collision_volume.cpp" />
     <ClCompile Include="source\console.cpp" />
-    <ClCompile Include="source\dcf.cpp" />
     <ClCompile Include="source\dff.cpp" />
     <ClCompile Include="source\dgl.cpp" />
     <ClCompile Include="source\dmath.cpp" />
+    <ClCompile Include="source\dstr.cpp" />
     <ClCompile Include="source\entity.cpp" />
-    <ClCompile Include="source\font_renderer.cpp" />
     <ClCompile Include="source\input.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\material.cpp" />
     <ClCompile Include="source\mesh_renderer.cpp" />
-    <ClCompile Include="source\physics.cpp" />
     <ClCompile Include="source\resources.cpp" />
     <ClCompile Include="source\screen.cpp" />
     <ClCompile Include="source\scripting.cpp" />
@@ -174,31 +170,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\asset_loader.h" />
-    <ClInclude Include="source\box_renderer.h" />
     <ClInclude Include="source\build_info.h" />
     <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\cmds.h" />
-    <ClInclude Include="source\collision_volume.h" />
     <ClInclude Include="source\console.h" />
     <ClInclude Include="source\console_types.h" />
-    <ClInclude Include="source\dcf.h" />
     <ClInclude Include="source\dcm.h" />
-    <ClInclude Include="source\default_shaders.h" />
+    <ClInclude Include="source\default_shader.h" />
     <ClInclude Include="source\dff.h" />
     <ClInclude Include="source\dgl.h" />
     <ClInclude Include="source\dmath.h" />
+    <ClInclude Include="source\dstr.h" />
     <ClInclude Include="source\dtypes.h" />
     <ClInclude Include="source\entity.h" />
     <ClInclude Include="source\font.h" />
-    <ClInclude Include="source\font_renderer.h" />
+    <ClInclude Include="source\help_pages.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\input_types.h" />
     <ClInclude Include="source\material.h" />
     <ClInclude Include="source\mesh.h" />
     <ClInclude Include="source\mesh_data.h" />
     <ClInclude Include="source\mesh_renderer.h" />
-    <ClInclude Include="source\physics.h" />
-    <ClInclude Include="source\primitives.h" />
+    <ClInclude Include="source\default_mesh.h" />
     <ClInclude Include="source\resources.h" />
     <ClInclude Include="source\screen.h" />
     <ClInclude Include="source\screen_types.h" />

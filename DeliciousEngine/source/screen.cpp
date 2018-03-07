@@ -6,33 +6,30 @@
 #include "console.h"
 #include "world.h"
 #include "build_info.h"
-#include "default_shaders.h"
+#include "default_shader.h"
 
 #include <imgui.h>
 
 #include <gtc/matrix_transform.hpp>
 
-//@TEMP
+//@Temp
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
 Screen::Screen() {
 	window     = nullptr;
 	gl_context = nullptr;
 
-	width         = 800;
-	height        = 600;
-	fullscreen    = false;
-	borderless    = false;
-	field_of_view = 60.0f;
-	aspect_ratio  = (float)width.as_int / (float)height.as_int;
+	vid_width         = 800;
+	vid_height        = 600;
+	vid_fullscreen    = false;
+	vid_borderless    = false;
+	vid_fov = 60.0f;
 
 	gui_vao = gui_vbo = gui_ebo = 0;
 	gui_shader_handle = 0;
 	gui_texture_handle = 0;
 	
 	std::memset(gui_cursors, NULL, sizeof(gui_cursors));
-
-	ortho_matrix = glm::ortho(0, width.as_int, height.as_int, 0);
 }
 
 bool Screen::init() {
@@ -52,23 +49,23 @@ bool Screen::init() {
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	console.register_variable("vid_width",      &width,         CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",     &height,        CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &fullscreen,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless", &borderless,    CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		&field_of_view, CVAR_FLOAT, CVAR_USER  );
-	console.register_variable("vid_aspect",     &aspect_ratio,  CVAR_FLOAT, CVAR_SYSTEM);
+	console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
+	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
+	console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
 
-	camera.init(&field_of_view, &aspect_ratio);
+	//camera.init(&field_of_view, &aspect_ratio);
 
 	ImGui::CreateContext();
-	ImGui::StyleColorsClassic();
+	//ImGui::StyleColorsClassic();
+	ImGui::StyleColorsDark();
 
-	gui_cursors[ImGuiMouseCursor_Arrow] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-	gui_cursors[ImGuiMouseCursor_TextInput] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-	gui_cursors[ImGuiMouseCursor_ResizeAll] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-	gui_cursors[ImGuiMouseCursor_ResizeNS] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-	gui_cursors[ImGuiMouseCursor_ResizeEW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+	gui_cursors[ImGuiMouseCursor_Arrow]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	gui_cursors[ImGuiMouseCursor_TextInput]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+	gui_cursors[ImGuiMouseCursor_ResizeAll]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+	gui_cursors[ImGuiMouseCursor_ResizeNS]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+	gui_cursors[ImGuiMouseCursor_ResizeEW]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
 	gui_cursors[ImGuiMouseCursor_ResizeNESW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
 	gui_cursors[ImGuiMouseCursor_ResizeNWSE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
 
@@ -87,33 +84,36 @@ void Screen::clean_exit() {
 }
 
 bool Screen::create_window() {
+	//@Todo: Deprecate full fullscreen acquisition of GPU, instead use borderless fullscreen...
+	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
+	//		 and then display that as a scaled fullscreen quad.
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
-	if (fullscreen.as_bool == true && borderless.as_bool == true) {
+	if (vid_fullscreen.as_bool == true && vid_borderless.as_bool == true) {
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
-			width.as_int  = dm.w;
-			height.as_int = dm.h;
+			vid_width.as_int  = dm.w;
+			vid_height.as_int = dm.h;
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
 			console.print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
-			fullscreen = false;
-			borderless = false;
+			vid_fullscreen = false;
+			vid_borderless = false;
 		}
 	}
-	else if (fullscreen.as_bool == true) {
+	else if (vid_fullscreen.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_FULLSCREEN;
 	}
-	else if (borderless.as_bool == true) {
+	else if (vid_borderless.as_bool == true) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
 
 	window = SDL_CreateWindow(
-		"Delicious Engine " ENGINE_VERSION_STRING,
+		DEFAULT_WIN_TITLE,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		width.as_int,
-		height.as_int,
+		vid_width.as_int,
+		vid_height.as_int,
 		sdl_flags
 	);
 	if (window == nullptr) {
@@ -126,9 +126,7 @@ bool Screen::create_window() {
 			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return false;
 		}
-		else {
-			glViewport(0, 0, width.as_int, height.as_int);
-		}
+		glViewport(0, 0, vid_width.as_int, vid_height.as_int);
 	}
 	else {
 		gl_context = SDL_GL_CreateContext(window);
@@ -145,7 +143,6 @@ bool Screen::create_window() {
 		return false;
 	}
 
-	aspect_ratio = (float)width.as_int / (float)height.as_int;
 	glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
 
 	glEnable(GL_CULL_FACE);
@@ -154,6 +151,8 @@ bool Screen::create_window() {
 	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 
 	create_gui_objects();
+
+	ortho_matrix = glm::ortho(0.0f, (float)vid_width.as_int, (float)vid_height.as_int, 0.0f);
 
 	return true;
 }
@@ -166,50 +165,28 @@ bool Screen::reload_window() {
 	}
 	return create_window();
 }
-char buffer[30] = "Hello Sailor!";
-void Screen::render_frame() {
-	camera.update();
-	
-	world.draw();
-	
-	//@TODO: Setup GUI Rendering generically rather than per renderer
-	console.draw();
 
-	ImGui::Text("Hello, world %d", 123);
-	if (ImGui::Button("Save"))
-	{
-		// do stuff
-	}
-	ImGui::InputText("string", buffer, IM_ARRAYSIZE(buffer));
+void Screen::render_frame() {
+	camera.update_projection();
+	world.draw();
+	console.update_and_draw();
 
 	draw_imgui();
-	SDL_GL_SwapWindow(window);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
 
-int Screen::get_width() {
-	return width.as_int;
-}
-int Screen::get_height() {
-	return height.as_int;
+	SDL_GL_SwapWindow(window);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
 void Screen::resize(int new_width, int new_height) {
-	width = new_width;
-	height = new_height;
-	ortho_matrix = glm::ortho(0, width.as_int, height.as_int, 0);
+	vid_width = new_width;
+	vid_height = new_height;
 	reload_window();
-	console.display_reformat();
-}
-
-Camera* Screen::get_camera() {
-	return &camera;
 }
 
 void Screen::begin_gui() {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize.x = width.as_int;
-	io.DisplaySize.y = height.as_int;
+	io.DisplaySize.x = vid_width.as_int;
+	io.DisplaySize.y = vid_height.as_int;
 
 	auto cursor = ImGui::GetMouseCursor();
 	if (io.MouseDrawCursor || cursor == ImGuiMouseCursor_None) {
@@ -237,14 +214,7 @@ void Screen::draw_imgui() {
 
 	glUseProgram(gui_shader_handle);
 	glUniform1i(gui_tex_uniform, 0);
-	const float ortho_projection[4][4] =
-	{
-		{ 2.0f / io.DisplaySize.x, 0.0f,                   0.0f, 0.0f },
-	{ 0.0f,                  2.0f / -io.DisplaySize.y, 0.0f, 0.0f },
-	{ 0.0f,                  0.0f,                  -1.0f, 0.0f },
-	{ -1.0f,                  1.0f,                   0.0f, 1.0f },
-	};
-	glUniformMatrix4fv(gui_proj_uniform, 1, GL_FALSE, &ortho_projection[0][0]);
+	glUniformMatrix4fv(gui_proj_uniform, 1, GL_FALSE, &ortho_matrix[0][0]);
 	glBindVertexArray(gui_vao);
 	glBindTexture(GL_TEXTURE_2D, gui_texture_handle);
 	glBindSampler(0, 0);
@@ -273,7 +243,7 @@ void Screen::draw_imgui() {
 			else {
 				glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 				glScissor((int)pcmd->ClipRect.x,
-						  (int)(height.as_int - pcmd->ClipRect.w),
+						  (int)(vid_height.as_int - pcmd->ClipRect.w),
 						  (int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
 						  (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 				glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,
@@ -291,7 +261,6 @@ void Screen::draw_imgui() {
 }
 
 #include "dgl.h"
-
 void Screen::create_gui_objects() {
 	gui_shader_handle = glCreateProgram();
 	GLuint vert = glCreateShader(GL_VERTEX_SHADER);

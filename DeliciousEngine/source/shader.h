@@ -3,7 +3,7 @@
 
 #include <glew.h>
 
-//@TODO: Add more information to shader:
+//@Todo: Move material meta data (uniforms, samplers) to here instead.
 // -Enabled attributes
 // -Uniform list/count
 // -Metadata

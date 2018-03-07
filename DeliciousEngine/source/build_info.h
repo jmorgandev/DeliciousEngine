@@ -1,38 +1,43 @@
 #ifndef DELICIOUS_BUILD_INFO_H
 #define DELICIOUS_BUILD_INFO_H
 
-#define ENGINE_VERSION	007
-#define ENGINE_VERSION_MAJOR 0
-#define ENGINE_VERSION_MINOR 0
-#define ENGINE_VERSION_REVISION 7
-#define ENGINE_VERSION_STRING "0.0.7"
+#include "dcm.h"
+
+//Main version declaration
+#define ENG_VER_MAJOR 0
+#define ENG_VER_MINOR 0
+#define ENG_VER_PATCH 8
+
+#define ENG_VERSION_STR \
+	TO_STR(ENG_VER_MAJOR) "." TO_STR(ENG_VER_MINOR) "." TO_STR(ENG_VER_PATCH)
+
+#define DEFAULT_WIN_TITLE "Delicious Engine " ENG_VERSION_STR
 
 #define ENGINE_GL_MAJOR 4
 #define ENGINE_GL_MINOR 3
 
-#define ENGINE_GLSL_VERSION 430
-#define ENGINE_GLSL_VERSION_STRING "#version 430 core"
+#define DEFAULT_GLSL_VERSION 430
+#define DEFAULT_GLSL_STR "#version " TO_STR(DEFAULT_GLSL_VERSION) "\n"
 
 #define USE_SCRIPTING false
 
-/*========================== 0.0.7 CHANGELOG =========================
+/*========================== 0.0.8 CHANGELOG =========================
 
- * Added time subsystem (Placeholder for now)
+ * Added ImGui Library (For "immediate-mode" style rendering of gui)
 
- * 60hz frame & sim locking (Decouple render rate and sim rate later)
+ * Changed the console to use ImGui
 
- * Basic World-Entity management (Adding, Fetching, and Removing entities)
+ * Removed unnecessary gui renderers (BoxRenderer, FontRenderer)
 
- * Add Material class
-	-Uses UBOs to have "instances" of uniform sets amongst entities
-	-Can just bind the material UBO rather than updating all the uniforms
-	 at once using slow glUniform* calls
+ * Small systems refactor (Engine is no longer a class, but this can be reverted)
 
- * Added "header" scope to GLSL files. Anything typed above the first
-   shader scope declaration will be copied into all shader scopes during
-   compilation
+ * Added stb_* libraries
 
- * Added ground work for multi-texturing (Sampler and bind tracking)
+ * Added support for stb_image in resource system
+
+ * Restructered project directories to better reflect what is happening
+
+ * Added coding style document to reflect the style of the source code
 
   ====================================================================
 */

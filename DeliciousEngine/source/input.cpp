@@ -1,11 +1,12 @@
 #include "input.h"
 
-#include "console.h"
-#include "dcf.h"
-#include <SDL_events.h>
 #include <algorithm>
+
 #include <imgui.h>
+#include <SDL_events.h>
 #include <SDL_clipboard.h>
+
+#include "console.h"
 
 static void gui_set_clipboard_bind(void*, const char* text) {
 	SDL_SetClipboardText(text);
@@ -20,10 +21,10 @@ Input::Input() {
 
 bool Input::init() {
 	key_records.reserve(10);
-
 	setup_gui_bindings();
-
 	SDL_StartTextInput();
+
+	bind(SDLK_BACKQUOTE, "toggleconsole");
 
 	return true;
 }
@@ -61,19 +62,18 @@ void Input::setup_gui_bindings() {
 
 void Input::clean_exit() {
 	SDL_StopTextInput();
-
-	//@TODO: Dump keybinds to config files.
+	//@Todo: Dump keybinds to config files.
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {
 	for (auto bind : key_binds) {
 		if (bind.keycode == keycode) {
-			dcf::str_cpy(command, bind.command);
+			strcpy(bind.command, command);
 			return;
 		}
 	}
 	key_bind new_binding = { keycode, "" };
-	dcf::str_cpy(command, new_binding.command);
+	strcpy(new_binding.command, command);
 	key_binds.push_back(new_binding);
 }
 
@@ -97,23 +97,24 @@ void Input::process_events() {
 			console.write_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN: case SDL_KEYUP:
-			if (io.WantCaptureKeyboard) {
-				io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
-				io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
-				io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
-				io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
-				io.KeySuper = event.key.keysym.mod & KMOD_GUI;
-			}
-			else {
-				if (key_record* record = find_record(event.key.keysym.sym)) {
-					record->state = (event.type == SDL_KEYDOWN) ? KEY_HOLD : KEY_RELEASED;
-				}
-				else if (event.type == SDL_KEYDOWN) {
-					if (key_bind* bind = find_bind(event.key.keysym.sym)) {
+			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
+			io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
+			io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
+			io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
+			io.KeySuper = event.key.keysym.mod & KMOD_GUI;
+			
+			if (event.type == SDL_KEYDOWN && !io.WantCaptureKeyboard) {
+				if (key_record* record = find_record(event.key.keysym.sym))
+					record->state = KEY_HOLD;
+				else {
+					if (key_bind* bind = find_bind(event.key.keysym.sym))
 						console.execute_keybind(bind);
-					}
 					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
 				}
+			}
+			if (event.type == SDL_KEYUP) {
+				if (key_record* record = find_record(event.key.keysym.sym))
+					record->state = KEY_RELEASED;
 			}
 			break;
 		case SDL_TEXTINPUT:
