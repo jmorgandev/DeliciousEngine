@@ -1,0 +1,13 @@
+#ifndef DELICIOUS_SCREEN_TYPES_H
+#define DELICIOUS_SCREEN_TYPES_H
+
+//@Deprecate: Use console variables instead?
+
+enum VideoMode {
+	VIDEO_WINDOWED,
+	VIDEO_FULLSCREEN,
+	VIDEO_BORDERLESS,
+	VIDEO_BORDERLESS_FULLSCREEN
+};
+
+#endif

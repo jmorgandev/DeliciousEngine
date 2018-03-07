@@ -69,29 +69,53 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -101,10 +125,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -114,72 +140,71 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="box_renderer.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="collision_volume.cpp" />
-    <ClCompile Include="console.cpp" />
-    <ClCompile Include="dcf.cpp" />
-    <ClCompile Include="dff.cpp" />
-    <ClCompile Include="dgl.cpp" />
-    <ClCompile Include="dmath.cpp" />
-    <ClCompile Include="engine.cpp" />
-    <ClCompile Include="entity.cpp" />
-    <ClCompile Include="font_renderer.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="material.cpp" />
-    <ClCompile Include="mesh_renderer.cpp" />
-    <ClCompile Include="physics.cpp" />
-    <ClCompile Include="resources.cpp" />
-    <ClCompile Include="screen.cpp" />
-    <ClCompile Include="time.cpp" />
-    <ClCompile Include="transform.cpp" />
-    <ClCompile Include="world.cpp" />
+    <ClCompile Include="source\camera.cpp" />
+    <ClCompile Include="source\console.cpp" />
+    <ClCompile Include="source\dff.cpp" />
+    <ClCompile Include="source\dgl.cpp" />
+    <ClCompile Include="source\dmath.cpp" />
+    <ClCompile Include="source\dstr.cpp" />
+    <ClCompile Include="source\entity.cpp" />
+    <ClCompile Include="source\input.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\material.cpp" />
+    <ClCompile Include="source\mesh_renderer.cpp" />
+    <ClCompile Include="source\resources.cpp" />
+    <ClCompile Include="source\screen.cpp" />
+    <ClCompile Include="source\scripting.cpp" />
+    <ClCompile Include="source\transform.cpp" />
+    <ClCompile Include="source\world.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_draw.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="box_renderer.h" />
-    <ClInclude Include="build_info.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="collision_volume.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="console_types.h" />
-    <ClInclude Include="dcf.h" />
-    <ClInclude Include="dcm.h" />
-    <ClInclude Include="dff.h" />
-    <ClInclude Include="dgl.h" />
-    <ClInclude Include="dmath.h" />
-    <ClInclude Include="dtypes.h" />
-    <ClInclude Include="engine.h" />
-    <ClInclude Include="entity.h" />
-    <ClInclude Include="font.h" />
-    <ClInclude Include="font_renderer.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="input_types.h" />
-    <ClInclude Include="material.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="mesh_data.h" />
-    <ClInclude Include="mesh_renderer.h" />
-    <ClInclude Include="physics.h" />
-    <ClInclude Include="resources.h" />
-    <ClInclude Include="screen.h" />
-    <ClInclude Include="screen_types.h" />
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="cmds.h" />
-    <ClInclude Include="primitives.h" />
-    <ClInclude Include="system_var.h" />
-    <ClInclude Include="texture.h" />
-    <ClInclude Include="time.h" />
-    <ClInclude Include="transform.h" />
-    <ClInclude Include="world.h" />
+    <ClInclude Include="source\asset_loader.h" />
+    <ClInclude Include="source\build_info.h" />
+    <ClInclude Include="source\camera.h" />
+    <ClInclude Include="source\cmds.h" />
+    <ClInclude Include="source\console.h" />
+    <ClInclude Include="source\console_types.h" />
+    <ClInclude Include="source\dcm.h" />
+    <ClInclude Include="source\default_shader.h" />
+    <ClInclude Include="source\dff.h" />
+    <ClInclude Include="source\dgl.h" />
+    <ClInclude Include="source\dmath.h" />
+    <ClInclude Include="source\dstr.h" />
+    <ClInclude Include="source\dtypes.h" />
+    <ClInclude Include="source\entity.h" />
+    <ClInclude Include="source\font.h" />
+    <ClInclude Include="source\help_pages.h" />
+    <ClInclude Include="source\input.h" />
+    <ClInclude Include="source\input_types.h" />
+    <ClInclude Include="source\material.h" />
+    <ClInclude Include="source\mesh.h" />
+    <ClInclude Include="source\mesh_data.h" />
+    <ClInclude Include="source\mesh_renderer.h" />
+    <ClInclude Include="source\default_mesh.h" />
+    <ClInclude Include="source\resources.h" />
+    <ClInclude Include="source\screen.h" />
+    <ClInclude Include="source\screen_types.h" />
+    <ClInclude Include="source\scripting.h" />
+    <ClInclude Include="source\shader.h" />
+    <ClInclude Include="source\system_var.h" />
+    <ClInclude Include="source\texture.h" />
+    <ClInclude Include="source\transform.h" />
+    <ClInclude Include="source\world.h" />
+    <ClInclude Include="thirdparty\imgui\imconfig.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="notes.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

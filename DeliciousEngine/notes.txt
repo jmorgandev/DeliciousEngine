@@ -1,0 +1,59 @@
+FMOD vs SDL_Mixer vs Wwise
+
+Multithreading:
+    -locks
+	-mutexes
+	-condition variables
+
+Newton dynamics / Bullet
+
+Advanced audio effects:
+	-materials
+	-pathfinding
+	-special effects
+
+Rendering:
+	-deferred rendering
+	-per-pixel lighting
+	-shadow mapping
+	-reflections
+	-framebuffer effects
+	-lightmapping
+
+Angelscript vs Lua vs Python vs ChaiScript
+
+AngelScript seems similar to C / C++, but is slower...
+Lua is probably the fastest, with LuaJIT too. But the API is C-like and really old...
+Python seems a nice choice but seems like a pain to integrate.
+ChaiScript is looking nicer and nicer with a modern syntax and easy C++ binding...
+
+Reloading C++ .dlls? Have to recompile if you change data structures or other major changes...
+
+Hotloading resources:
+	-sounds
+	-meshes
+	-textures
+	-shaders
+...Do I actually need to hotload assets if scripts are potentially loading them
+at runtime anyway? Perhaps only use hotloading when strictly programming with C++
+(Rather than a scripting language)
+
+Custom extension workflows:
+	-"FileLoaders"?
+	-script extensions
+
+Framerate/Timing:
+	-FPS cap?
+	-Vsync?
+	-Determinism?
+	-Different "timelines"
+	-Delta time?
+	-Physics time?
+	-Fixed time updates?
+
+Skinned animation? FBX? other animation formats?
+
+User-accessible GUI?
+
+Use std::function instead of function pointers to avoid global/static console commands,
+can make console commands actually part of an object...

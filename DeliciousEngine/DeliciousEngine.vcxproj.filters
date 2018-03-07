@@ -1,225 +1,198 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="Source">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header Files\systems">
+    <Filter Include="Source\systems">
       <UniqueIdentifier>{d3a3fbbe-0139-448c-a928-64b84bf7b9b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\systems">
-      <UniqueIdentifier>{0c715370-5b31-4ef7-892c-6375d0578306}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\system_types">
-      <UniqueIdentifier>{e5d4ba57-a749-4ef7-b5d8-277895f67e51}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\objects">
+    <Filter Include="Source\objects">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\components">
+    <Filter Include="Source\components">
       <UniqueIdentifier>{32ab64fd-b729-4284-adee-65b0183d1a65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\components">
-      <UniqueIdentifier>{684cd585-140c-4a07-a794-07e81ae1fc48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\intermediate_types">
-      <UniqueIdentifier>{689387bb-077f-4715-96c1-f1e45833eb74}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\engine_info">
-      <UniqueIdentifier>{e578f52d-f572-4173-8949-d88dbe2af03a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\toolbox">
+    <Filter Include="Source\toolbox">
       <UniqueIdentifier>{2a5c4150-2e98-4cbf-abcc-46f14dcbedf0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\toolbox">
-      <UniqueIdentifier>{44f97e9a-3a54-43a5-83b5-b3ba676033d7}</UniqueIdentifier>
+    <Filter Include="Source\intermediate">
+      <UniqueIdentifier>{689387bb-077f-4715-96c1-f1e45833eb74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\system_defaults">
+    <Filter Include="Source\defaults">
       <UniqueIdentifier>{e4f227d9-c824-4f52-8634-dec3dfb8fcde}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\system_defaults">
-      <UniqueIdentifier>{a97aba70-234f-49d1-ba6f-34855517e649}</UniqueIdentifier>
+    <Filter Include="Source\types">
+      <UniqueIdentifier>{e5d4ba57-a749-4ef7-b5d8-277895f67e51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\objects">
-      <UniqueIdentifier>{c17c48d3-5fde-47b9-bbac-5d357b6effda}</UniqueIdentifier>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{a8a098b9-b465-46bd-8441-43fff77e8930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\imgui">
+      <UniqueIdentifier>{075b5312-5989-42b6-a54a-829f79dd10ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\camera.cpp">
+      <Filter>Source\components</Filter>
     </ClCompile>
-    <ClCompile Include="engine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="source\mesh_renderer.cpp">
+      <Filter>Source\components</Filter>
     </ClCompile>
-    <ClCompile Include="console.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="source\transform.cpp">
+      <Filter>Source\components</Filter>
     </ClCompile>
-    <ClCompile Include="screen.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="source\entity.cpp">
+      <Filter>Source\objects</Filter>
     </ClCompile>
-    <ClCompile Include="dcf.cpp">
-      <Filter>Source Files\toolbox</Filter>
+    <ClCompile Include="source\material.cpp">
+      <Filter>Source\objects</Filter>
     </ClCompile>
-    <ClCompile Include="dmath.cpp">
-      <Filter>Source Files\toolbox</Filter>
+    <ClCompile Include="source\console.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="resources.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="source\input.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="dff.cpp">
-      <Filter>Source Files\toolbox</Filter>
+    <ClCompile Include="source\resources.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="dgl.cpp">
-      <Filter>Source Files\toolbox</Filter>
+    <ClCompile Include="source\screen.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="font_renderer.cpp">
-      <Filter>Source Files\components</Filter>
+    <ClCompile Include="source\scripting.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="box_renderer.cpp">
-      <Filter>Source Files\components</Filter>
+    <ClCompile Include="source\world.cpp">
+      <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="source\dff.cpp">
+      <Filter>Source\toolbox</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\components</Filter>
+    <ClCompile Include="source\dgl.cpp">
+      <Filter>Source\toolbox</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_renderer.cpp">
-      <Filter>Source Files\components</Filter>
+    <ClCompile Include="source\dmath.cpp">
+      <Filter>Source\toolbox</Filter>
     </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="thirdparty\imgui\imgui.cpp">
+      <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="transform.cpp">
-      <Filter>Source Files\components</Filter>
+    <ClCompile Include="thirdparty\imgui\imgui_draw.cpp">
+      <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="physics.cpp">
-      <Filter>Source Files\systems</Filter>
+    <ClCompile Include="source\main.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="entity.cpp">
-      <Filter>Source Files\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="time.cpp">
-      <Filter>Source Files\systems</Filter>
-    </ClCompile>
-    <ClCompile Include="collision_volume.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
-    <ClCompile Include="material.cpp">
-      <Filter>Source Files\objects</Filter>
+    <ClCompile Include="source\dstr.cpp">
+      <Filter>Source\toolbox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="source\camera.h">
+      <Filter>Source\components</Filter>
     </ClInclude>
-    <ClInclude Include="console.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\mesh_renderer.h">
+      <Filter>Source\components</Filter>
     </ClInclude>
-    <ClInclude Include="screen.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\transform.h">
+      <Filter>Source\components</Filter>
     </ClInclude>
-    <ClInclude Include="console_types.h">
-      <Filter>Header Files\system_types</Filter>
+    <ClInclude Include="source\mesh_data.h">
+      <Filter>Source\intermediate</Filter>
     </ClInclude>
-    <ClInclude Include="dtypes.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\entity.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="dcf.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\font.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="dmath.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\material.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\mesh.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="resources.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\shader.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="dff.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\texture.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\cmds.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="dgl.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\asset_loader.h">
+      <Filter>Source\types</Filter>
     </ClInclude>
-    <ClInclude Include="font.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\console_types.h">
+      <Filter>Source\types</Filter>
     </ClInclude>
-    <ClInclude Include="font_renderer.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="source\input_types.h">
+      <Filter>Source\types</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\screen_types.h">
+      <Filter>Source\types</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_data.h">
-      <Filter>Header Files\intermediate_types</Filter>
+    <ClInclude Include="source\system_var.h">
+      <Filter>Source\types</Filter>
     </ClInclude>
-    <ClInclude Include="build_info.h">
-      <Filter>Header Files\engine_info</Filter>
+    <ClInclude Include="source\console.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="box_renderer.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="source\input.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="cmds.h">
-      <Filter>Header Files\system_defaults</Filter>
+    <ClInclude Include="source\resources.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="primitives.h">
-      <Filter>Header Files\system_defaults</Filter>
+    <ClInclude Include="source\screen.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="dcm.h">
-      <Filter>Header Files\toolbox</Filter>
+    <ClInclude Include="source\scripting.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="screen_types.h">
-      <Filter>Header Files\system_types</Filter>
+    <ClInclude Include="source\world.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="system_var.h">
-      <Filter>Header Files\system_types</Filter>
+    <ClInclude Include="source\dcm.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\dff.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="input_types.h">
-      <Filter>Header Files\system_types</Filter>
+    <ClInclude Include="source\dgl.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="source\dmath.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_renderer.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="source\dtypes.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\build_info.h">
+      <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="transform.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="thirdparty\imgui\imconfig.h">
+      <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="entity.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\help_pages.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>Header Files\objects</Filter>
+    <ClInclude Include="source\dstr.h">
+      <Filter>Source\toolbox</Filter>
     </ClInclude>
-    <ClInclude Include="physics.h">
-      <Filter>Header Files\systems</Filter>
+    <ClInclude Include="source\default_mesh.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="collision_volume.h">
-      <Filter>Header Files\components</Filter>
+    <ClInclude Include="source\default_shader.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="time.h">
-      <Filter>Header Files\systems</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="notes.txt">
+      <Filter>Source</Filter>
+    </Text>
   </ItemGroup>
 </Project>
