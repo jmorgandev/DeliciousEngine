@@ -2,7 +2,7 @@
 #define DELICIOUS_MESH_DATA_H
 
 #include <vector>
-#include <glm.hpp>
+#include <vec3.hpp>
 
 struct MeshData {
 	std::vector<glm::vec3> vertices;

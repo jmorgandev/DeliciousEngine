@@ -3,9 +3,12 @@
 
 #include <string>
 
+#include "dtypes.h"
 #include "transform.h"
 #include "mesh_renderer.h"
-#include "collision_volume.h"
+#include <mat4x4.hpp>
+#include <vec3.hpp>
+#include <gtc/quaternion.hpp>
 
 //@Todo, @Speed: Consider SoA vs AoS. Data-oriented design
 // Should entities have individual MeshRenderers or just meshes that can be sent
@@ -13,21 +16,23 @@
 
 class Entity {
 public:
-	Entity(std::string ent_name);
-	Entity(const Entity& e);
+	Entity(std::string name = "new_entity", uint tag = 0) : name(name), tag_index(tag) {}
 	virtual ~Entity() {}
 
-	std::string name;
+	std::string get_name() const { return name; }
+	void set_name(const std::string& name) { this->name = name; }
 
-	void set_transform(Transform* value);
-	Transform* get_transform();
+	uint get_tag() const { return tag_index; }
+	void set_tag(const uint& tag) { tag_index = tag; }
 
-	MeshRenderer* get_renderer();
-	SphereCollider* get_collider();
+	Transform& get_transform() { return transform; }
+	MeshRenderer& get_renderer() { return renderer; }
 protected:
 	Transform transform;
-	SphereCollider collider;
 	MeshRenderer renderer;
+
+	std::string name;
+	uint tag_index;
 };
 
 #endif

@@ -1,13 +1,11 @@
+#include <SDL_timer.h>
+
 #include "console.h"
 #include "screen.h"
 #include "resources.h"
 #include "input.h"
 #include "scripting.h"
 #include "world.h"
-#include "physics.h"
-
-#include <SDL_timer.h>
-#include <chrono>
 
 Console   console;
 Screen    screen;
@@ -15,7 +13,6 @@ Resources resources;
 Input     input;
 Scripting scripting;
 World     world;
-Physics   physics;
 
 system_var eng_running = false;
 system_var eng_strict = false;
@@ -30,8 +27,6 @@ static bool init_systems() {
 	return true;
 }
 static bool startup() {
-	using namespace std::chrono;
-	std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
 	if (!screen.create_window()) return false;
 	if (!resources.load_default_resources()) return false;
 	if (!world.load_test()) return false;

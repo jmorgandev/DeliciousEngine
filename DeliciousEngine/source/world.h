@@ -1,12 +1,11 @@
 #ifndef DELICIOUS_WORLD_H
 #define DELICIOUS_WORLD_H
 
-#include "dtypes.h"
-#include <vector>
 #include <list>
 
 #include "system_var.h"
 #include "entity.h"
+#include "dtypes.h"
 
 class World {
 public:
@@ -31,7 +30,7 @@ public:
 	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot);
 	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::vec3 scale);
 	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot, glm::vec3 scale);
-	Entity* clone_entity(Entity* ent, Transform* tfm);
+	Entity* clone_entity(Entity* ent, Transform tfm);
 
 	void destroy_entity(Entity* ent);
 

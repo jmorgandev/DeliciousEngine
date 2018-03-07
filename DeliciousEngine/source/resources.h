@@ -6,13 +6,11 @@
 
 #include "dtypes.h"
 #include "mesh_data.h"
-
 #include "shader.h"
 #include "texture.h"
 #include "material.h"
 #include "mesh.h"
 #include "font.h"
-
 #include "asset_loader.h"
 
 class Resources {

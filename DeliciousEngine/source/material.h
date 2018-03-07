@@ -1,16 +1,16 @@
 #ifndef DELICIOUS_MATERIAL_H
 #define DELICIOUS_MATERIAL_H
 
-#include "dtypes.h"
-
-struct Shader;
-struct Texture;
-
-#include <vector>
 #include <map>
 #include <string>
+
 #include <glew.h>
-#include <glm.hpp>
+#include <vec3.hpp>
+#include <mat4x4.hpp>
+
+#include "dtypes.h"
+#include "shader.h"
+#include "texture.h"
 
 //@Todo: Auto-generate global uniform block for standard engine assigned uniforms e.g:
 // - matrix_mvp (Computed before sending to GPU)
@@ -51,21 +51,21 @@ private:
 	GLint    userblock_size;
 	GLubyte* userblock_buffer;
 
-	struct uniform_meta {
+	struct UniformMeta {
 		GLint location;
 		GLint offset;
 		GLint type;
 		GLint block;
 	};
-	struct sampler_meta {
+	struct SamplerMeta {
 		GLint location;
 		GLint type;
 		GLint binding;
 		Texture* texture;
 	};
 
-	std::map<std::string, uniform_meta> uniform_list;
-	std::map<std::string, sampler_meta> sampler_list;
+	std::map<std::string, UniformMeta> uniform_list;
+	std::map<std::string, SamplerMeta> sampler_list;
 
 	bool update_buffer;
 

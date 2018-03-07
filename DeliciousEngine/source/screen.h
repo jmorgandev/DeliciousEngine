@@ -24,18 +24,23 @@ public:
 	bool create_window();
 	bool reload_window();
 
-	int width();
-	int height();
-	float aspect_ratio();
-
-	ImVec2 imgui_size();
-	ImVec2 imgui_center();
+	int width() { return vid_width.as_int; }
+	int height() { return vid_height.as_int; }
+	float aspect_ratio() {
+		return (float)vid_width.as_int / (float)vid_height.as_int;
+	}
+	ImVec2 imgui_size() {
+		return ImVec2((float)vid_width.as_int, (float)vid_height.as_int);
+	}
+	ImVec2 imgui_center() {
+		return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
+	}
 
 	void resize(int width, int height);
 
 	void begin_gui();
 
-	Camera* get_camera();
+	Camera* get_camera() { return &camera; }
 private:
 	SDL_Window*   window;
 	SDL_GLContext gl_context;

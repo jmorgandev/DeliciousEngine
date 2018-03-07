@@ -6,7 +6,7 @@
 #include "console.h"
 #include "world.h"
 #include "build_info.h"
-#include "default_shaders.h"
+#include "default_shader.h"
 
 #include <imgui.h>
 
@@ -109,7 +109,7 @@ bool Screen::create_window() {
 	}
 
 	window = SDL_CreateWindow(
-		"Delicious Engine " ENGINE_VERSION_STR,
+		DEFAULT_WIN_TITLE,
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		vid_width.as_int,
@@ -167,7 +167,7 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
-	camera.update();
+	camera.update_projection();
 	world.draw();
 	console.update_and_draw();
 
@@ -177,28 +177,10 @@ void Screen::render_frame() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 }
 
-int Screen::width() {
-	return vid_width.as_int;
-}
-int Screen::height() {
-	return vid_height.as_int;
-}
-
-ImVec2 Screen::imgui_size() {
-	return ImVec2((float)vid_width.as_int, (float)vid_height.as_int);
-}
-ImVec2 Screen::imgui_center() {
-	return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
-}
-
 void Screen::resize(int new_width, int new_height) {
 	vid_width = new_width;
 	vid_height = new_height;
 	reload_window();
-}
-
-Camera* Screen::get_camera() {
-	return &camera;
 }
 
 void Screen::begin_gui() {

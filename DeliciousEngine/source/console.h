@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <string>
+
 #include <SDL_Events.h>
+
 #include "console_types.h"
 #include "input_types.h"
 

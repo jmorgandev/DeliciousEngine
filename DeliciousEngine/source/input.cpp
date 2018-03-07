@@ -1,10 +1,12 @@
 #include "input.h"
 
-#include "console.h"
-#include <SDL_events.h>
 #include <algorithm>
+
 #include <imgui.h>
+#include <SDL_events.h>
 #include <SDL_clipboard.h>
+
+#include "console.h"
 
 static void gui_set_clipboard_bind(void*, const char* text) {
 	SDL_SetClipboardText(text);

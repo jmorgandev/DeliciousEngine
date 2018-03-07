@@ -9,25 +9,25 @@ public:
 	enum Mode { Perspective, Orthographic };
 
 	Camera();
-	void update_matrices();
+	void update_projection();
 	void look_at(glm::vec3 pos);
 
-	inline float get_fov()         const { return fov; }
-	inline float get_nearclip()    const { return nearclip; }
-	inline float get_farclip()     const { return farclip; }
-	inline bool  is_orthographic() const { return ortho; }
+	float get_fov() const { return fov; }
+	float get_nearclip() const { return nearclip; }
+	float get_farclip() const { return farclip; }
+	bool  is_orthographic() const { return ortho; }
 
-	inline void set_fov(float degrees)       { fov = degrees; }
-	inline void set_nearclip(float distance) { nearclip = distance; }
-	inline void set_farclip(float distance)  { farclip = distance; }
+	void set_fov(float fov) { this->fov = fov; }
+	void set_nearclip(float nearclip) { this->nearclip = nearclip; }
+	void set_farclip(float farclip) { this->farclip = farclip; }
 
-	inline void use_perspective()  { ortho = false; }
-	inline void use_orthographic() { ortho = true; }
+	void use_perspective()  { ortho = false; }
+	void use_orthographic() { ortho = true; }
 
 	//@Todo: Pre-multiply the view and projection matrices.
 	glm::mat4& transform_matrix()  { return transform; }
-	glm::mat4& view_matrix()	   { return view; }
 	glm::mat4& projection_matrix() { return projection; }
+	glm::mat4& view_matrix() { return view; }
 
 private:
 	glm::mat4 view;

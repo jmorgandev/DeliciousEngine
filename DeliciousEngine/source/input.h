@@ -1,11 +1,10 @@
 #ifndef DELICIOUS_INPUT_H
 #define DELICIOUS_INPUT_H
 
-#include "input_types.h"
+#include <SDL_keycode.h>
 #include <vec2.hpp>
-#include <vector>
-#include <SDL_events.h>
-#include "dtypes.h"
+
+#include "input_types.h"
 
 class Input {
 public:

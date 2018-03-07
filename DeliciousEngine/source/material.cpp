@@ -73,7 +73,7 @@ Shader* Material::get_shader() {
 void Material::set_matrix(std::string name, glm::mat4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::mat4));
 			update_buffer = true;
@@ -91,7 +91,7 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 void Material::set_vec4(std::string name, glm::vec4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec4));
 			update_buffer = true;
@@ -113,7 +113,7 @@ void Material::set_vec4(std::string name, GLfloat x, GLfloat y, GLfloat z, GLflo
 void Material::set_vec3(std::string name, glm::vec3 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, glm::value_ptr(value), sizeof(glm::vec3));
 			update_buffer = true;
@@ -135,7 +135,7 @@ void Material::set_vec3(std::string name, GLfloat x, GLfloat y, GLfloat z) {
 void Material::set_float(std::string name, GLfloat value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, &value, sizeof(GLfloat));
 			update_buffer = true;
@@ -153,7 +153,7 @@ void Material::set_float(std::string name, GLfloat value) {
 void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
-		const uniform_meta& uniform = it->second;
+		const UniformMeta& uniform = it->second;
 		if (uniform.block != GL_INVALID_INDEX && uniform.block == userblock_index) {
 			memcpy(userblock_buffer + uniform.offset, values, sizeof(GLfloat) * size);
 			update_buffer = true;
@@ -200,7 +200,7 @@ void Material::bind() {
 		}
 		//Bind appropriate textures
 		for (auto item : sampler_list) {
-			const sampler_meta& sampler = item.second;
+			const SamplerMeta& sampler = item.second;
 			glActiveTexture(GL_TEXTURE0 + sampler.binding);
 			if (item.second.texture == nullptr) glBindTexture(sampler.type, NULL);
 			else glBindTexture(GL_TEXTURE_2D, sampler.texture->id);

@@ -1,22 +1,19 @@
 #include "resources.h"
 
-#include <glew.h>
-#include <SDL_image.h>
-#include <geometric.hpp>
-#include "console.h"
-#include "screen.h"
-#include "dff.h"
-#include "dgl.h"
-#include "primitives.h"
 #include <iostream>
-#include <math.h>
 
+#include <SDL_image.h>
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_FAILURE_USERMSG
 #include <stb_image.h>
+#include <vec4.hpp>
+#include <vec3.hpp>
+#include <mat4x4.hpp>
+
+#include "dgl.h"
+#include "default_mesh.h"
 
 bool Resources::init() {
-
+	//@Deprecated: We are no longer using SDL_Image for loading textures
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 
 	return true;
@@ -75,7 +72,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	return &texture_catalog[filepath];
 }
 
-Texture* Resources::load_texture(std::string filename, std::string id) {
+[[deprecated]] Texture* Resources::load_texture(std::string filename, std::string id) {
 	//int x, y, channels, desired channels
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);
@@ -226,7 +223,7 @@ Material* Resources::fetch_material(std::string filename) {
 }
 
 bool Resources::load_default_resources() {
-	make_mesh("primitive.quad", primitive_quad);
-	make_mesh("primitive.cube", primitive_cube);
+	make_mesh("primitive.quad", default_quad_mesh);
+	make_mesh("primitive.cube", default_cube_mesh);
 	return true;
 }

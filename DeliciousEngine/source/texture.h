@@ -2,7 +2,7 @@
 #define DELICIOUS_TEXTURE_H
 
 #include <glew.h>
-#include <unordered_map>
+
 #include "dtypes.h"
 
 struct Texture {

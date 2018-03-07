@@ -1,94 +1,11 @@
-#ifndef DELICIOUS_PRIMITIVES_H
-#define DELICIOUS_PRIMITIVES_H
+#ifndef DELICIOUS_DEFAULT_MESH_H
+#define DELICIOUS_DEFAULT_MESH_H
 
 #include "mesh_data.h"
-#include <string>
 
-//float gui_vertices[] = {
-//	 0.0f,  1.0f,
-//	 0.0f,  0.0f,
-//	 1.0f,  1.0f,
-//	 1.0f,  0.0f
-//};
-float gui_vertices[] = {
-	0.0f,  0.0f,
-	0.0f,  -1.0f,
-	1.0f,  0.0f,
-	1.0f,  -1.0f
-};
-float gui_texcoords[] = {
-	0.0f, 0.0f,
-	0.0f, 1.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f
-};
-
-const float std_triangle[] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f,
-
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-
-	 0.0f, 0.0f,
-	 1.0f, 0.0f,
-	 0.5f, 1.0f
-};
-const float std_triangle_2d[] = {
-	-0.5f, -0.5f,
-	 0.5f, -0.5f,
-	 0.0f,  0.5f,
-	 	    
-	 0.0f, 0.0f,
-	 1.0f, 0.0f,
-	 0.5f, 1.0f
-};
-const int std_triangle_vcount = 3;
-
-
-const float std_quad[] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.5f,  0.5f, 0.0f,
-	-0.5f, -0.5f, 0.0f,
-	 0.5f,  0.5f, 0.0f,
-	-0.5f,  0.5f, 0.0f,
-
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-	 0.0f,  0.0f, 1.0f,
-
-	 0.0f, 0.0f,
-	 1.0f, 0.0f,
-	 1.0f, 1.0f,
-	 0.0f, 0.0f,
-	 1.0f, 1.0f,
-	 0.0f, 1.0f
-};
-const float std_quad_2d[] = {
-	-0.5f, -0.5f,
-	 0.5f, -0.5f,
-	 0.5f,  0.5f,
-	-0.5f, -0.5f,
-	 0.5f,  0.5f,
-	-0.5f,  0.5f,
-
-	0.0f, 0.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 1.0
-};
-const int std_quad_vcount = 6;
-
-const MeshData primitive_cube = {
-	/*Vertices*/ {
+const MeshData default_cube_mesh = {
+	//Vertices
+	{
 		//Front face
 		{-0.5f,-0.5f, 0.5f}, { 0.5f,-0.5f, 0.5f}, { 0.5f, 0.5f, 0.5f},
 		{-0.5f,-0.5f, 0.5f}, { 0.5f, 0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f},
@@ -108,56 +25,63 @@ const MeshData primitive_cube = {
 		{ 0.5f,-0.5f,-0.5f}, { 0.5f,-0.5f, 0.5f}, {-0.5f,-0.5f, 0.5f},
 		{-0.5f,-0.5f,-0.5f}, { 0.5f,-0.5f,-0.5f}, {-0.5f,-0.5f, 0.5f},
 	},
-	/*Normals*/ {
+	//Normals
+	{
+		//Front face
 		{ 0.0f,0.0f,1.0f },{ 0.0f,0.0f,1.0f },{ 0.0f,0.0f,1.0f },
 		{ 0.0f,0.0f,1.0f },{ 0.0f,0.0f,1.0f },{ 0.0f,0.0f,1.0f },
-
+		//Left face
 		{-1.0f,0.0f,0.0f },{-1.0f,0.0f,0.0f },{-1.0f,0.0f,0.0f },
 		{-1.0f,0.0f,0.0f },{-1.0f,0.0f,0.0f },{-1.0f,0.0f,0.0f },
-
+		//Right face
 		{ 1.0f,0.0f,0.0f },{ 1.0f,0.0f,0.0f },{ 1.0f,0.0f,0.0f },
 		{ 1.0f,0.0f,0.0f },{ 1.0f,0.0f,0.0f },{ 1.0f,0.0f,0.0f },
-
+		//Back face
 		{ 0.0f,0.0f,-1.0f},{ 0.0f,0.0f,-1.0f},{ 0.0f,0.0f,-1.0f},
 		{ 0.0f,0.0f,-1.0f},{ 0.0f,0.0f,-1.0f},{ 0.0f,0.0f,-1.0f},
-
+		//Top face
 		{ 0.0f,1.0f,0.0f },{ 0.0f,1.0f,0.0f },{ 0.0f,1.0f,0.0f },
 		{ 0.0f,1.0f,0.0f },{ 0.0f,1.0f,0.0f },{ 0.0f,1.0f,0.0f },
-
+		//Bottom face
 		{0.0f,-1.0f,0.0f},{0.0f,-1.0f,0.0f },{0.0f,-1.0f,0.0f },
 		{0.0f,-1.0f,0.0f},{0.0f,-1.0f,0.0f },{0.0f,-1.0f,0.0f },
 	},
-	/*Texcoords*/ {
+	//Texcoords
+	{
+		//Front face
 		{ 0.0f, 0.0f },{ 1.0f, 0.0f },{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f },{ 1.0f, 1.0f },{ 0.0f, 1.0f },
-
+		//Left face
 		{ 0.0f, 0.0f },{ 1.0f, 0.0f },{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f },{ 1.0f, 1.0f },{ 0.0f, 1.0f },
-
+		//Right face
 		{ 0.0f, 0.0f },{ 1.0f, 0.0f },{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f },{ 1.0f, 1.0f },{ 0.0f, 1.0f },
-
+		//Back face
 		{ 0.0f, 0.0f },{ 1.0f, 0.0f },{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f },{ 1.0f, 1.0f },{ 0.0f, 1.0f },
-
+		//Top face
 		{ 0.0f, 0.0f },{ 1.0f, 0.0f },{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f },{ 1.0f, 1.0f },{ 0.0f, 1.0f },
-
+		//Bottom face
 		{ 1.0f, 1.0f },{ 1.0f, 0.0f },{ 0.0f, 0.0f },
 		{ 0.0f, 1.0f },{ 1.0f, 1.0f },{ 0.0f, 0.0f },
 	}
 };
 
-const MeshData primitive_quad = {
-	/*Vertices*/ {
+const MeshData default_quad_mesh = {
+	//Vertices
+	{
 		{-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},	{ 0.5f,  0.5f, 0.0f},
 		{-0.5f, -0.5f, 0.0f}, { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f}
 	},
-	/*Normals*/ {
+	//Normals
+	{
 		{ 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },	{ 0.0f, 0.0f, 1.0f },
 		{ 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f },	{ 0.0f, 0.0f, 1.0f }
 	},
-	/*Texcoords*/ {
+	//Texcoords
+	{
 		{ 0.0f, 0.0f },	{ 1.0f, 0.0f },	{ 1.0f, 1.0f },
 		{ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }
 	}

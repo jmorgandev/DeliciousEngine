@@ -1,5 +1,5 @@
-#ifndef DELICIOUS_DEFAULT_SHADERS_H
-#define DELICIOUS_DEFAULT_SHADERS_H
+#ifndef DELICIOUS_DEFAULT_SHADER_H
+#define DELICIOUS_DEFAULT_SHADER_H
 #pragma once
 
 const char* gui_vert_shader =

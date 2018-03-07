@@ -10,12 +10,11 @@ Camera::Camera() {
 	ortho = false;
 }
 
-void Camera::update_matrices() {
+void Camera::update_projection() {
 	if (ortho)
 		projection = glm::ortho(0.0f, (float)screen.width(), (float)screen.height(), 0.0f);
 	else
 		projection = glm::perspective(glm::radians(fov), screen.aspect_ratio(), nearclip, farclip);
-
 	view = glm::inverse(transform);
 }
 

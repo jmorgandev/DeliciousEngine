@@ -1,8 +1,9 @@
 #ifndef DELICIOUS_MESH_H
 #define DELICIOUS_MESH_H
 
-#include "dtypes.h"
 #include <glew.h>
+
+#include "dtypes.h"
 
 enum MeshAttribute {
 	VERTICES,

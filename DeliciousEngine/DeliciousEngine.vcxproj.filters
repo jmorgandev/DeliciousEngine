@@ -37,9 +37,6 @@
     <ClCompile Include="source\camera.cpp">
       <Filter>Source\components</Filter>
     </ClCompile>
-    <ClCompile Include="source\collision_volume.cpp">
-      <Filter>Source\components</Filter>
-    </ClCompile>
     <ClCompile Include="source\mesh_renderer.cpp">
       <Filter>Source\components</Filter>
     </ClCompile>
@@ -56,9 +53,6 @@
       <Filter>Source\systems</Filter>
     </ClCompile>
     <ClCompile Include="source\input.cpp">
-      <Filter>Source\systems</Filter>
-    </ClCompile>
-    <ClCompile Include="source\physics.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
     <ClCompile Include="source\resources.cpp">
@@ -99,9 +93,6 @@
     <ClInclude Include="source\camera.h">
       <Filter>Source\components</Filter>
     </ClInclude>
-    <ClInclude Include="source\collision_volume.h">
-      <Filter>Source\components</Filter>
-    </ClInclude>
     <ClInclude Include="source\mesh_renderer.h">
       <Filter>Source\components</Filter>
     </ClInclude>
@@ -132,9 +123,6 @@
     <ClInclude Include="source\cmds.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
-    <ClInclude Include="source\primitives.h">
-      <Filter>Source\defaults</Filter>
-    </ClInclude>
     <ClInclude Include="source\asset_loader.h">
       <Filter>Source\types</Filter>
     </ClInclude>
@@ -154,9 +142,6 @@
       <Filter>Source\systems</Filter>
     </ClInclude>
     <ClInclude Include="source\input.h">
-      <Filter>Source\systems</Filter>
-    </ClInclude>
-    <ClInclude Include="source\physics.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
     <ClInclude Include="source\resources.h">
@@ -192,14 +177,17 @@
     <ClInclude Include="thirdparty\imgui\imconfig.h">
       <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="source\default_shaders.h">
-      <Filter>Source\defaults</Filter>
-    </ClInclude>
     <ClInclude Include="source\help_pages.h">
       <Filter>Source\defaults</Filter>
     </ClInclude>
     <ClInclude Include="source\dstr.h">
       <Filter>Source\toolbox</Filter>
+    </ClInclude>
+    <ClInclude Include="source\default_mesh.h">
+      <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\default_shader.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

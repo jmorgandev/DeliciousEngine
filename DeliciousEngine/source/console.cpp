@@ -1,18 +1,10 @@
 #include "console.h"
-#include "screen.h"
-
-#include <iostream>
-#include <math.h>
-#include <fstream>
-#include <string>
-
-#include "font.h"
-#include "dstr.h"
-#include "dcm.h"
-#include "dmath.h"
-#include "cmds.h"
 
 #include <imgui.h>
+
+#include "screen.h"
+#include "dstr.h"
+#include "cmds.h"
 
 ConsoleCommand(toggleconsole) {
 	console.display_toggle();
