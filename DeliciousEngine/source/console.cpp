@@ -38,12 +38,9 @@ static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
 							   ImGuiWindowFlags_NoSavedSettings);
 void Console::update_and_draw() {
 	if (display_console) {
-		ImGui::SetNextWindowPos(screen.imgui_center(), 
-								ImGuiCond_Once, 
-								ImVec2(0.5f, 0.5f));
-		ImGui::SetNextWindowSize(ImVec2(screen.width()  * 0.75f, 
-										screen.height() * 0.75f),
-								 ImGuiCond_Once);
+		ImGui::SetNextWindowPos(screen.imgui_center(), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowSize(screen.imgui_size(0.75f), ImGuiCond_Once);
+
 		ImGui::Begin("Console##console-window", &display_console, WIN_FLAGS);
 		const float h = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
 		ImGui::BeginChild("##console-report", ImVec2(0, -h), false);
@@ -127,7 +124,7 @@ valid pointer if the names match exactly.
 */
 console_var* Console::find_variable(cstring name) {
 	for (auto itr = variables.begin(); itr != variables.end(); itr++) {
-		if (strcmp(name, itr->name)) return &(*itr);
+		if (strcmp(name, itr->name) == 0) return &(*itr);
 	}
 	return nullptr;
 }
@@ -138,7 +135,7 @@ valid pointer if the names match exactly.
 */
 console_cmd* Console::find_command(cstring name) {
 	for (auto itr = commands.begin(); itr != commands.end(); itr++) {
-		if (strcmp(name, itr->name)) return &(*itr);
+		if (strcmp(name, itr->name) == 0) return &(*itr);
 	}
 	return nullptr;
 }
@@ -215,8 +212,10 @@ void Console::execute_string(cstring cmd_str) {
 		else if (argv.size() == 1) set_variable(cvar, argv[0]);
 		else print("Set variable usage: <var> <value>");
 	}
-	else if (console_cmd* cmd = find_command(label)) cmd->callback(argv);
-	else print("Unknown command/variable: \"%s\"", label);
+	else if (console_cmd* cmd = find_command(label)) 
+		cmd->callback(argv);
+	else 
+		print("Unknown command/variable: \"%s\"", label);
 }
 
 /*

@@ -45,12 +45,12 @@
 #include <vec4.hpp>
 
 #define IM_VEC2_CLASS_EXTRA                                                 \
-        ImVec2(const glm::vec2& f) { x = f.x; y = f.y; }                       \
+        ImVec2(const glm::vec2& f) { x = f.x; y = f.y; }                    \
         operator glm::vec2() const { return glm::vec2(x,y); }				\
 		static ImVec2 zero() { return ImVec2(0,0); }
 
 #define IM_VEC4_CLASS_EXTRA                                                 \
-        ImVec4(const glm::vec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
+        ImVec4(const glm::vec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }  \
         operator glm::vec4() const { return glm::vec4(x,y,z,w); }
 
 

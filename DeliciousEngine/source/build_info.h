@@ -23,7 +23,7 @@
 
 /*========================== 0.0.8 CHANGELOG =========================
 
- * Added ImGui Library (For "immediate-mode" style rendering of gui)
+ * Added ImGui Library (For "immediate-mode" style gui rendering)
 
  * Changed the console to use ImGui
 

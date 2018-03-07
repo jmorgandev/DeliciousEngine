@@ -15,27 +15,31 @@ The engine comes with a development console to allow inspection of the engine wi
 
 The same way that the engine can be scripted with lua/angelscript, it can also be extended with lua/angelscript. If the engine doesn't support a file format (Which could be an asset, or a level), then the engine will subsequently search for a lua/angelscript file that tells the engine how to deal with that particular file format. As a result, the user can add support to any custom asset or level files that the engine doesn't know how to process.
 
-## Technologies Used
+## Technologies Used/Planned
 - OpenGL 4.3+
 - glew
 - SDL2
-- SDL2-image (May change to stb-image)
-- SDL2-mixer (May change to FMod)
+- stb_image
+- SDL2_mixer (May change to FMod)
 - Lua 5.3+
-- AngelScript 2.31.2
+- Python 3+
 
 ## Development Information
 
-### Current Version (0.0.7)
-- Added basic World-Entity management (Adding, Fetching, Removing entities)
-- Added Material class allowing "instances" of uniform sets amongst entities
-- Added "header" scope for GLSL files
-- Locked framerate and simulation rate at 60hz (For now)
+### Current Version (0.0.8)
+- Added ImGui Library (For "immediate-mode" style gui rendering)
+- Changed the console to use ImGui
+- Remove unnecessary gui renderers (BoxRenderer, FontRenderer)
+- Small systems refactor (Engine is no longer a class, but this can be reverted)
+- Added stb_* libraries
+- Added support for stb_image in resource system
+- Restructured project directories
+- Added coding style document to reflect the style of the source code
 
 ### Next Milestone (0.1.0)
-- Embedded scripting
-- Game-object management
-- Scripting entry point
-- Moving camera test
+[ ] Embedded scripting
+[x] Game-object management
+[ ] Scripting entry point
+[x] Moving camera test
 
-Last updated: 26/01/2018
+Last updated: 07/03/2018

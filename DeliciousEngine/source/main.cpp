@@ -59,13 +59,13 @@ int main(char** argv, int argc) {
 			acc += (current_time - last_time);
 			last_time = current_time;
 
+			input.process_events();
+			screen.begin_gui();
 			while (acc >= max_timestep) {
-				input.process_events();
-				screen.begin_gui();
 				world.update();
-				screen.render_frame();
 				acc -= max_timestep;
 			}
+			screen.render_frame();
 		}
 
 	}

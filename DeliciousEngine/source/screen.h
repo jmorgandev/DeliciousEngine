@@ -29,8 +29,8 @@ public:
 	float aspect_ratio() {
 		return (float)vid_width.as_int / (float)vid_height.as_int;
 	}
-	ImVec2 imgui_size() {
-		return ImVec2((float)vid_width.as_int, (float)vid_height.as_int);
+	ImVec2 imgui_size(float scale = 1.0f) {
+		return ImVec2((float)vid_width.as_int * scale, (float)vid_height.as_int * scale);
 	}
 	ImVec2 imgui_center() {
 		return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
