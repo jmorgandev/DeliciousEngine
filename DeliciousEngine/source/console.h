@@ -6,6 +6,8 @@
 
 #include <SDL_Events.h>
 
+#include <sol.hpp>
+
 #include "console_types.h"
 #include "input_types.h"
 
@@ -26,6 +28,7 @@ public:
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(cstring name, cmd_callback func);
+	void register_lua_command(cstring name, sol::function func);
 
 	system_var* read_variable(cstring name);
 	void write_variable(cstring name, int value);

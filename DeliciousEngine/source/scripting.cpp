@@ -15,10 +15,10 @@ bool Scripting::init() {
 
 bool Scripting::bind_systems() {
 	sol::table console_bind = lua.create_named_table("Console");
-	//console_bind.set_function("print", &Console::print, console);
-	//lua.set_function("print", &Console::load_config);
-	//console_bind.set_function("print", &Console::print, console);
 	console_bind.set_function("print", &Console::print, &console);
+	
+	
+
 	return true;
 }
 
