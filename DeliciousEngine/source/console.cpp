@@ -3,6 +3,7 @@
 #include <imgui.h>
 
 #include "screen.h"
+#include "scripting.h"
 #include "dstr.h"
 #include "cmds.h"
 
@@ -21,9 +22,11 @@ ConsoleCommand(quit) {
 bool Console::init() {
 	display_console = false;
 
-	register_command("toggleconsole", cmd_toggleconsole);
-	register_command("clear", cmd_clear);
-	register_command("quit",  cmd_quit);
+	//register_command("toggleconsole", cmd_toggleconsole);
+	//register_command("clear", cmd_clear);
+	//register_command("quit",  cmd_quit);
+
+	register_cmd("toggleconsole", cmd_toggleconsole);
 
 	return true;
 }
@@ -118,6 +121,27 @@ void Console::register_command(cstring name, cmd_callback func) {
 	else printf("register_command: \"%s\" already exists!", name);
 }
 
+void Console::register_cmd(cstring name, CmdFunc func) {
+	if (!find_command(name)) {
+		assert(strlen(name) <= CON_MAX_NAME);
+		ConsoleCmd new_cmd = { "", func, CMD_CPP };
+		strcpy(new_cmd.name, name);
+		new_commands.push_back(new_cmd);
+	}
+	else printf("register_cmd: \"%s\" already exists.", name);
+}
+
+void Console::register_lua_cmd(cstring name) {
+	if (!find_command(name)) {
+		assert(strlen(name) <= CON_MAX_NAME);
+		ConsoleCmd new_cmd = { "", [=](std::vector<cstring> arg) {scripting.execute_lua_function(name, arg); } , CMD_LUA };
+		strcpy(new_cmd.name, name);
+		new_commands.push_back(new_cmd);
+		printf("Registered lua: %s", name);
+	}
+	else printf("register_cmd: \"%s\" already exists.", name);
+}
+
 /*
 Attempts to fetch the pointer of a registered variable. Only returns a
 valid pointer if the names match exactly.
@@ -133,8 +157,8 @@ console_var* Console::find_variable(cstring name) {
 Attempts to fetch the pointer of a registered command. Only returns a
 valid pointer if the names match exactly.
 */
-console_cmd* Console::find_command(cstring name) {
-	for (auto itr = commands.begin(); itr != commands.end(); itr++) {
+ConsoleCmd* Console::find_command(cstring name) {
+	for (auto itr = new_commands.begin(); itr != new_commands.end(); itr++) {
 		if (strcmp(name, itr->name) == 0) return &(*itr);
 	}
 	return nullptr;
@@ -191,7 +215,7 @@ void Console::execute_string(cstring cmd_str) {
 
 	char* args = strchr(label, ' ');
 	if (args != nullptr) {
-		*(args - 1) = 0;
+		*(args++) = 0;
 		dstr::split(args, ' ', argv);
 	}
 
@@ -212,7 +236,7 @@ void Console::execute_string(cstring cmd_str) {
 		else if (argv.size() == 1) set_variable(cvar, argv[0]);
 		else printf("Set variable usage: <var> <value>");
 	}
-	else if (console_cmd* cmd = find_command(label)) 
+	else if (ConsoleCmd* cmd = find_command(label)) 
 		cmd->callback(argv);
 	else 
 		printf("Unknown command/variable: \"%s\"", label);

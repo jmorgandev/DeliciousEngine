@@ -6,8 +6,6 @@
 
 #include <SDL_Events.h>
 
-#include <sol.hpp>
-
 #include "console_types.h"
 #include "input_types.h"
 
@@ -28,7 +26,9 @@ public:
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(cstring name, cmd_callback func);
-	void register_lua_command(cstring name, sol::function func);
+
+	void register_cmd(cstring name, CmdFunc callback);
+	void register_lua_cmd(cstring name);
 
 	system_var* read_variable(cstring name);
 	void write_variable(cstring name, int value);
@@ -55,8 +55,11 @@ private:
 	std::vector<console_var> variables;
 	std::vector<console_cmd> commands;
 
+	std::vector<ConsoleVar> new_variables;
+	std::vector<ConsoleCmd> new_commands;
+
 	console_var* find_variable(cstring name);
-	console_cmd* find_command(cstring name);
+	ConsoleCmd* find_command(cstring name);
 
 	void set_variable(cstring name, cstring value);
 	void set_variable(console_var* cvar, cstring value);
