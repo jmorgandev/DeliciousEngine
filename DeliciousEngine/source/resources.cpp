@@ -77,7 +77,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);
 	if (pixel_data == nullptr) {
-		console.print("Error loading \"%s\": %s", filename.c_str(), stbi_failure_reason());
+		console.printf("Error loading \"%s\": %s", filename.c_str(), stbi_failure_reason());
 		return nullptr;
 	}
 	stbi__vertical_flip(pixel_data, w, h, channels);

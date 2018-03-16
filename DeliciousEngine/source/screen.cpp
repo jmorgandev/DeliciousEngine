@@ -34,7 +34,7 @@ Screen::Screen() {
 
 bool Screen::init() {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-		console.print("SDL could not be initialised: %s", SDL_GetError());
+		console.printf("SDL could not be initialised: %s", SDL_GetError());
 		return false;
 	}
 
@@ -117,13 +117,13 @@ bool Screen::create_window() {
 		sdl_flags
 	);
 	if (window == nullptr) {
-		console.print("SDL window could not be created: %s", SDL_GetError());
+		console.printf("SDL window could not be created: %s", SDL_GetError());
 		return false;
 	}
 
 	if (gl_context != nullptr) {
 		if (SDL_GL_MakeCurrent(window, gl_context) != 0) {
-			console.print("Could not attach existing GL context to SDL window: %s", SDL_GetError());
+			console.printf("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return false;
 		}
 		glViewport(0, 0, vid_width.as_int, vid_height.as_int);
@@ -131,7 +131,7 @@ bool Screen::create_window() {
 	else {
 		gl_context = SDL_GL_CreateContext(window);
 		if (gl_context == nullptr) {
-			console.print("SDL_GL context could not be created: %s", SDL_GetError());
+			console.printf("SDL_GL context could not be created: %s", SDL_GetError());
 			return false;
 		}
 	}
@@ -139,7 +139,7 @@ bool Screen::create_window() {
 	glewExperimental = true;
 	GLenum status = glewInit();
 	if (status != GLEW_OK) {
-		console.print("GLEW could not be initialised: %s", glewGetErrorString(status));
+		console.printf("GLEW could not be initialised: %s", glewGetErrorString(status));
 		return false;
 	}
 

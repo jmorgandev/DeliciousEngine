@@ -21,7 +21,8 @@ public:
 	void load_config();
 	void update_and_draw();
 
-	void print(cstring format, ...);
+	void print(cstring str) { report_text.push_back(str); }
+	void printf(cstring format, ...);
 
 	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
 	void register_command(cstring name, cmd_callback func);

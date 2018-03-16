@@ -73,7 +73,7 @@ void Console::update_and_draw() {
 }
 
 #define FORMAT_STR_BUFFER 1024
-void Console::print(cstring format, ...) {
+void Console::printf(cstring format, ...) {
 	va_list args;
 	char buffer[FORMAT_STR_BUFFER];
 
@@ -101,7 +101,7 @@ void Console::register_variable(cstring name, system_var* ref, cvar_type type, u
 		strcpy(new_cvar.name, name);
 		variables.push_back(new_cvar);
 	}
-	else print("register_variable: \"%s\" already exists!", name);
+	else printf("register_variable: \"%s\" already exists!", name);
 }
 
 /*
@@ -115,7 +115,7 @@ void Console::register_command(cstring name, cmd_callback func) {
 		strcpy(new_cmd.name, name);
 		commands.push_back(new_cmd);
 	}
-	else print("register_command: \"%s\" already exists!", name);
+	else printf("register_command: \"%s\" already exists!", name);
 }
 
 /*
@@ -142,7 +142,7 @@ console_cmd* Console::find_command(cstring name) {
 
 system_var* Console::read_variable(cstring name) {
 	if (console_var* cvar = find_variable(name)) return cvar->value;
-	print("read_variable: \"%\" does not exist!", name);
+	printf("read_variable: \"%\" does not exist!", name);
 	return nullptr;
 }
 
@@ -158,9 +158,9 @@ void Console::write_variable(cstring name, bool value) {
 void Console::write_variable(cstring name, system_var value, cvar_type type) {
 	if (console_var* cvar = find_variable(name)) {
 		if (cvar->type == type) *cvar->value = value;
-		else print("write_variable: \"%s\" type mismatch!", name);
+		else printf("write_variable: \"%s\" type mismatch!", name);
 	} 
-	else print("write_variable: \"%s\" does not exist!", name);
+	else printf("write_variable: \"%s\" does not exist!", name);
 }
 
 /*
@@ -199,23 +199,23 @@ void Console::execute_string(cstring cmd_str) {
 		if (argv.empty()) {
 			switch (cvar->type) {
 			case CVAR_INT:
-				print("%s is %i", cvar->name, cvar->value->as_int);
+				printf("%s is %i", cvar->name, cvar->value->as_int);
 				break;
 			case CVAR_FLOAT:
-				print("%s is %f", cvar->name, cvar->value->as_float);
+				printf("%s is %f", cvar->name, cvar->value->as_float);
 				break;
 			case CVAR_BOOL:
-				print("%s is %i", cvar->name, cvar->value->as_bool);
+				printf("%s is %i", cvar->name, cvar->value->as_bool);
 				break;
 			}
 		}
 		else if (argv.size() == 1) set_variable(cvar, argv[0]);
-		else print("Set variable usage: <var> <value>");
+		else printf("Set variable usage: <var> <value>");
 	}
 	else if (console_cmd* cmd = find_command(label)) 
 		cmd->callback(argv);
 	else 
-		print("Unknown command/variable: \"%s\"", label);
+		printf("Unknown command/variable: \"%s\"", label);
 }
 
 /*
@@ -235,7 +235,7 @@ void Console::load_config() {
 
 void Console::set_variable(cstring name, cstring value) {
 	if (console_var* cvar = find_variable(name)) set_variable(cvar, value);
-	else print("set_variable: \"%s\" does not exist!", name);
+	else printf("set_variable: \"%s\" does not exist!", name);
 }
 
 void Console::set_variable(console_var* cvar, cstring value) {
@@ -253,7 +253,7 @@ void Console::set_variable(console_var* cvar, cstring value) {
 			break;
 		}
 	}
-	else print("%s is read-only.", cvar->name);
+	else printf("%s is read-only.", cvar->name);
 }
 
 void Console::display(bool d) {

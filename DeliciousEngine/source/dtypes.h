@@ -1,7 +1,6 @@
 #ifndef DTYPES_H
 #define DTYPES_H
 
-#include <array>
 #include <stdint.h>
 
 typedef uint64_t uint64, qword;

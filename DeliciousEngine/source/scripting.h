@@ -1,6 +1,5 @@
 #ifndef DELICIOUS_SCRIPTING_H
 #define DELICIOUS_SCRIPTING_H
-#pragma once
 
 #include <sol.hpp>
 
@@ -9,8 +8,13 @@ public:
 	bool init();
 	void clean_exit();
 
+	bool load_start_script();
 private:
+	sol::state lua;
 
+	bool bind_systems();
+	bool bind_components();
+	bool bind_datatypes();
 };
 extern Scripting scripting;
 

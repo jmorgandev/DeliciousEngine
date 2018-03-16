@@ -21,7 +21,7 @@
 
 #define USE_SCRIPTING false
 
-/*========================== 0.0.8 CHANGELOG =========================
+/*============================ CHANGELOG =============================
 
  * Added ImGui Library (For "immediate-mode" style gui rendering)
 
@@ -39,7 +39,7 @@
 
  * Added coding style document to reflect the style of the source code
 
-  ====================================================================
+ *====================================================================
 */
 
 #endif
