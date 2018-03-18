@@ -9,6 +9,7 @@
 
 #include "console.h"
 
+//@Temp
 static auto mult_overloads = sol::overload(
 	[](const glm::vec3& v1, const glm::vec3& v2) -> glm::vec3 { return v1 * v2; },
 	[](const glm::vec3& v1, const float& f) -> glm::vec3 { return v1 * f; },
@@ -43,6 +44,16 @@ bool Scripting::init() {
 	return true;
 }
 
+void Scripting::lua_print(sol::object obj) {
+	sol::safe_function_result result = lua["tostring"](obj);
+	if (obj.valid()) {
+		sol::protected_function_result result = lua["tostring"](obj);
+		console.print(result.get<cstring>());
+	}
+	else
+		console.print("nil");
+}
+
 bool Scripting::bind_datatypes() {
 	//register glm
 	lua.new_usertype<glm::vec3>(
@@ -54,10 +65,12 @@ bool Scripting::bind_datatypes() {
 		sol::meta_function::addition, add_overloads
 		//sol::meta_function::length, [](const glm::vec3& v1) -> int { return 3; }
 	);
+	
 	//
 	//lua.new_usertype<glm::quat>(
 	//	
 	//)
+	
 	return true;
 }
 
@@ -68,7 +81,7 @@ bool Scripting::bind_components() {
 bool Scripting::bind_systems() {
 	//Console binds...
 
-	//lua.set_function("print", &Console::lua_print, &console);
+	lua.set_function("print", &Scripting::lua_print, this);
 
 	//sol::table console_bind = lua.create_named_table("Console");
 	//console_bind.set_function("Print", &Console::lua_print, &console);

@@ -90,13 +90,6 @@ void Console::printf(cstring format, ...) {
 	report_text.push_back(buffer);
 }
 
-void Console::lua_print(sol::object obj) {
-	if (obj.valid())
-		console.print(obj.as<cstring>());
-	else
-		console.print("nil");
-}
-
 //Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
 	assert(strlen(str) <= CON_INPUT_LENGTH);

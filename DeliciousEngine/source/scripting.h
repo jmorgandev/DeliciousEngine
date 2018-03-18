@@ -22,6 +22,8 @@ private:
 	bool bind_datatypes();
 	bool bind_components();
 	bool bind_systems();
+
+	void lua_print(sol::object obj);
 };
 extern Scripting scripting;
 

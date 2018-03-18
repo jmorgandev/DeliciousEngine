@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-#include <sol.hpp>
 #include <SDL_Events.h>
 
 #include "console_types.h"
@@ -24,7 +23,6 @@ public:
 
 	void print(std::string str) { report_text.push_back(str); }
 	void print(cstring str) { report_text.emplace_back(str); }
-	void lua_print(sol::object obj);
 	void printf(cstring format, ...);
 
 	void register_command(cstring name, CmdFunc callback);
