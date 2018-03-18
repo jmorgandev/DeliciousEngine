@@ -94,7 +94,7 @@ void Input::process_events() {
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
-			console.write_variable("eng_running", false);
+			console.set_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN: case SDL_KEYUP:
 			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);

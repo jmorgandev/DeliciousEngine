@@ -1,6 +1,9 @@
 #ifndef DELICIOUS_SCRIPTING_H
 #define DELICIOUS_SCRIPTING_H
 
+#define SOL_CHECK_ARGUMENTS
+#define SOL_SAFE_FUNCTIONS
+#define SOL_SAFE_REFERENCES
 #include <sol.hpp>
 
 #include "dtypes.h"
@@ -10,10 +13,7 @@ public:
 	bool init();
 	void clean_exit();
 
-	void execute_lua(cstring code);
-	void execute_lua_function(cstring name, std::vector<cstring> args) {
-		lua[name](sol::as_args(args));
-	}
+	void call_lua_function_with_args(cstring name, std::vector<cstring> args);
 
 	bool load_start_script();
 private:

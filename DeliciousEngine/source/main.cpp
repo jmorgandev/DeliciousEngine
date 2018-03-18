@@ -14,8 +14,8 @@ Input     input;
 Scripting scripting;
 World     world;
 
-system_var eng_running = false;
-system_var eng_strict = false;
+SystemVar eng_running = false;
+SystemVar eng_strict = false;
 
 static bool init_systems() {
 	if (!console.init()) return false;

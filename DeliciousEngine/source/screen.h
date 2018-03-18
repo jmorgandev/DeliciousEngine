@@ -47,11 +47,11 @@ private:
 
 	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_Count_];
 
-	system_var vid_width;
-	system_var vid_height;
-	system_var vid_fullscreen;
-	system_var vid_borderless;
-	system_var vid_fov;
+	SystemVar vid_width;
+	SystemVar vid_height;
+	SystemVar vid_fullscreen;
+	SystemVar vid_borderless;
+	SystemVar vid_fov;
 	
 	float near_plane;
 	float far_plane;

@@ -7,6 +7,9 @@
 #include "dstr.h"
 #include "cmds.h"
 
+//@Todo: Completely move away from global console command function definitions towards using member
+//       function definitions instead...
+
 ConsoleCommand(toggleconsole) {
 	console.display_toggle();
 }
@@ -16,7 +19,7 @@ ConsoleCommand(clear) {
 }
 ConsoleCommand(quit) {
 	//@Todo: Put this command in main.cpp to avoid write_variable overhead
-	console.write_variable("eng_running", false);
+	console.set_variable("eng_running", false);
 }
 
 bool Console::init() {
@@ -26,7 +29,7 @@ bool Console::init() {
 	//register_command("clear", cmd_clear);
 	//register_command("quit",  cmd_quit);
 
-	register_cmd("toggleconsole", cmd_toggleconsole);
+	register_command("toggleconsole", cmd_toggleconsole);
 
 	return true;
 }
@@ -87,6 +90,13 @@ void Console::printf(cstring format, ...) {
 	report_text.push_back(buffer);
 }
 
+void Console::lua_print(sol::object obj) {
+	if (obj.valid())
+		console.print(obj.as<cstring>());
+	else
+		console.print("nil");
+}
+
 //Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
 	assert(strlen(str) <= CON_INPUT_LENGTH);
@@ -97,10 +107,10 @@ void Console::write_to_input(cstring str) {
 Attempts to register a variable to the variable list. If one already
 exists with the same name, print an error to the console.
 */
-void Console::register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags) {
+void Console::register_variable(cstring name, SystemVar* ptr, CvarType t, uint16 access_flags) {
 	if (!find_variable(name)) {
 		assert(strlen(name) <= CON_MAX_NAME);
-		console_var new_cvar = { "", ref, type, access_flags };
+		ConsoleVar new_cvar = { "", ptr, t, access_flags };
 		strcpy(new_cvar.name, name);
 		variables.push_back(new_cvar);
 	}
@@ -111,33 +121,12 @@ void Console::register_variable(cstring name, system_var* ref, cvar_type type, u
 Attempts to register a command to the command list. If one already exists
 with the same name, print an error to the console.
 */
-void Console::register_command(cstring name, cmd_callback func) {
-	if (!find_command(name)) {
-		assert(strlen(name) <= CON_MAX_NAME);
-		console_cmd new_cmd = { "", func };
-		strcpy(new_cmd.name, name);
-		commands.push_back(new_cmd);
-	}
-	else printf("register_command: \"%s\" already exists!", name);
-}
-
-void Console::register_cmd(cstring name, CmdFunc func) {
+void Console::register_command(cstring name, CmdFunc func) {
 	if (!find_command(name)) {
 		assert(strlen(name) <= CON_MAX_NAME);
 		ConsoleCmd new_cmd = { "", func, CMD_CPP };
 		strcpy(new_cmd.name, name);
-		new_commands.push_back(new_cmd);
-	}
-	else printf("register_cmd: \"%s\" already exists.", name);
-}
-
-void Console::register_lua_cmd(cstring name) {
-	if (!find_command(name)) {
-		assert(strlen(name) <= CON_MAX_NAME);
-		ConsoleCmd new_cmd = { "", [=](std::vector<cstring> arg) {scripting.execute_lua_function(name, arg); } , CMD_LUA };
-		strcpy(new_cmd.name, name);
-		new_commands.push_back(new_cmd);
-		printf("Registered lua: %s", name);
+		commands.push_back(new_cmd);
 	}
 	else printf("register_cmd: \"%s\" already exists.", name);
 }
@@ -146,9 +135,10 @@ void Console::register_lua_cmd(cstring name) {
 Attempts to fetch the pointer of a registered variable. Only returns a
 valid pointer if the names match exactly.
 */
-console_var* Console::find_variable(cstring name) {
-	for (auto itr = variables.begin(); itr != variables.end(); itr++) {
-		if (strcmp(name, itr->name) == 0) return &(*itr);
+ConsoleVar* Console::find_variable(cstring name) {
+	using namespace std;
+	for (auto it = begin(variables); it != end(variables); it++) {
+		if (strcmp(name, it->name) == 0) return &(*it);
 	}
 	return nullptr;
 }
@@ -158,30 +148,22 @@ Attempts to fetch the pointer of a registered command. Only returns a
 valid pointer if the names match exactly.
 */
 ConsoleCmd* Console::find_command(cstring name) {
-	for (auto itr = new_commands.begin(); itr != new_commands.end(); itr++) {
-		if (strcmp(name, itr->name) == 0) return &(*itr);
+	using namespace std;
+	for (auto it = begin(commands); it != end(commands); it++) {
+		if (strcmp(name, it->name) == 0) return &(*it);
 	}
 	return nullptr;
 }
 
-system_var* Console::read_variable(cstring name) {
-	if (console_var* cvar = find_variable(name)) return cvar->value;
-	printf("read_variable: \"%\" does not exist!", name);
+SystemVar* Console::get_variable(cstring name) {
+	if (ConsoleVar* cvar = find_variable(name)) return cvar->data;
+	printf("get_variable: \"%s\" does not exist!", name);
 	return nullptr;
 }
 
-void Console::write_variable(cstring name, int value) {
-	write_variable(name, value, CVAR_INT);
-}
-void Console::write_variable(cstring name, float value) {
-	write_variable(name, value, CVAR_FLOAT);
-}
-void Console::write_variable(cstring name, bool value) {
-	write_variable(name, value, CVAR_BOOL);
-}
-void Console::write_variable(cstring name, system_var value, cvar_type type) {
-	if (console_var* cvar = find_variable(name)) {
-		if (cvar->type == type) *cvar->value = value;
+void Console::write_variable(cstring name, SystemVar var, CvarType t) {
+	if (ConsoleVar* cvar = find_variable(name)) {
+		if (cvar->type == t) *cvar->data = var;
 		else printf("write_variable: \"%s\" type mismatch!", name);
 	} 
 	else printf("write_variable: \"%s\" does not exist!", name);
@@ -219,25 +201,28 @@ void Console::execute_string(cstring cmd_str) {
 		dstr::split(args, ' ', argv);
 	}
 
-	if (console_var* cvar = find_variable(label)) {
+	if (ConsoleVar* cvar = find_variable(label)) {
 		if (argv.empty()) {
 			switch (cvar->type) {
 			case CVAR_INT:
-				printf("%s is %i", cvar->name, cvar->value->as_int);
+				printf("%s is %i", cvar->name, cvar->data->as_int);
 				break;
 			case CVAR_FLOAT:
-				printf("%s is %f", cvar->name, cvar->value->as_float);
+				printf("%s is %f", cvar->name, cvar->data->as_float);
 				break;
 			case CVAR_BOOL:
-				printf("%s is %i", cvar->name, cvar->value->as_bool);
+				printf("%s is %i", cvar->name, cvar->data->as_bool);
 				break;
 			}
 		}
-		else if (argv.size() == 1) set_variable(cvar, argv[0]);
+		else if (argv.size() == 1) assign_variable(cvar, argv[0]);
 		else printf("Set variable usage: <var> <value>");
 	}
-	else if (ConsoleCmd* cmd = find_command(label)) 
-		cmd->callback(argv);
+	else if (ConsoleCmd* cmd = find_command(label))
+		if (cmd->type == CMD_LUA) 
+			scripting.call_lua_function_with_args(cmd->name, argv);
+		else
+			cmd->callback(argv);
 	else 
 		printf("Unknown command/variable: \"%s\"", label);
 }
@@ -257,23 +242,23 @@ void Console::load_config() {
 	//@Todo: implement
 }
 
-void Console::set_variable(cstring name, cstring value) {
-	if (console_var* cvar = find_variable(name)) set_variable(cvar, value);
+void Console::assign_variable(cstring name, cstring value) {
+	if (ConsoleVar *cvar = find_variable(name)) assign_variable(cvar, value);
 	else printf("set_variable: \"%s\" does not exist!", name);
 }
 
-void Console::set_variable(console_var* cvar, cstring value) {
+void Console::assign_variable(ConsoleVar* cvar, cstring value) {
 	if (cvar->flags & CVAR_MUTABLE) {
 		switch (cvar->type) {
-		case CVAR_INT: 
-			cvar->value->as_int = std::atoi(value); 
+		case CVAR_INT:
+			cvar->data->as_int = std::atoi(value);
 			break;
-		case CVAR_FLOAT: 
-			cvar->value->as_float = (float)std::atof(value);
+		case CVAR_FLOAT:
+			cvar->data->as_float = (float)std::atof(value);
 			break;
 		case CVAR_BOOL:
-			if (value[0] == 't' || value[0] == 'T' || std::atoi(value) > 0) cvar->value->as_bool = true;
-			else cvar->value->as_bool = false;
+			if (value[0] == 't' || value[0] == 'T' || std::atoi(value) > 0) cvar->data->as_bool = true;
+			else cvar->data->as_bool = false;
 			break;
 		}
 	}

@@ -32,7 +32,7 @@
  * Small systems refactor (Engine is no longer a class, but this can be reverted)
 
  * Added stb_* libraries
-
+ 
  * Added support for stb_image in resource system
 
  * Restructered project directories to better reflect what is happening
@@ -41,5 +41,7 @@
 
  *====================================================================
 */
+
+//@Bug: Console scrolling does not work properly, clips strings too early...
 
 #endif

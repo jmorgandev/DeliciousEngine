@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+#include <sol.hpp>
 #include <SDL_Events.h>
 
 #include "console_types.h"
@@ -21,20 +22,25 @@ public:
 	void load_config();
 	void update_and_draw();
 
-	void print(cstring str) { report_text.push_back(str); }
+	void print(std::string str) { report_text.push_back(str); }
+	void print(cstring str) { report_text.emplace_back(str); }
+	void lua_print(sol::object obj);
 	void printf(cstring format, ...);
 
-	void register_variable(cstring name, system_var* ref, cvar_type type, uint16 access_flags);
-	void register_command(cstring name, cmd_callback func);
+	void register_command(cstring name, CmdFunc callback);
+	void register_variable(cstring name, SystemVar* ptr, CvarType t, uint16 access_flags);
 
-	void register_cmd(cstring name, CmdFunc callback);
-	void register_lua_cmd(cstring name);
-
-	system_var* read_variable(cstring name);
-	void write_variable(cstring name, int value);
-	void write_variable(cstring name, float value);
-	void write_variable(cstring name, bool value);
-	void write_variable(cstring name, system_var value, cvar_type type);
+	SystemVar* get_variable(cstring name);
+	void set_variable(cstring name, int i) {
+		write_variable(name, i, CVAR_INT);
+	}
+	void set_variable(cstring name, float f) {
+		write_variable(name, f, CVAR_FLOAT);
+	}
+	void set_variable(cstring name, bool b) {
+		write_variable(name, b, CVAR_BOOL);
+	}
+	void write_variable(cstring name, SystemVar var, CvarType t);
 
 	void execute_keybind(key_bind* kb);
 
@@ -52,17 +58,16 @@ private:
 	bool display_console;
 
 	//Console variable and command lists
-	std::vector<console_var> variables;
-	std::vector<console_cmd> commands;
+	std::vector<ConsoleVar> variables;
+	std::vector<ConsoleCmd> commands;
 
-	std::vector<ConsoleVar> new_variables;
-	std::vector<ConsoleCmd> new_commands;
-
-	console_var* find_variable(cstring name);
+	ConsoleVar* find_variable(cstring name);
 	ConsoleCmd* find_command(cstring name);
 
-	void set_variable(cstring name, cstring value);
-	void set_variable(console_var* cvar, cstring value);
+	//void set_variable(cstring name, cstring value);
+	//void set_variable(ConsoleVar* cvar, cstring value);
+	void assign_variable(cstring name, cstring value);
+	void assign_variable(ConsoleVar* cvar, cstring value);
 
 	void execute_string(cstring cmd_str);
 
