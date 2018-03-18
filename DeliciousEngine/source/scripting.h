@@ -19,9 +19,9 @@ public:
 private:
 	sol::state lua;
 
-	bool bind_systems();
-	bool bind_components();
 	bool bind_datatypes();
+	bool bind_components();
+	bool bind_systems();
 };
 extern Scripting scripting;
 

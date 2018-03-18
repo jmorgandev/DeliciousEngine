@@ -1,6 +1,9 @@
-print("something")
+local enemy = {}
 
-NukeWhale()
-print("AFTER")
+local function enemy:init()
+	mesh = Resources.Load("primitive.cube")
+	
+	material.SetTexture("diffuse", mesh)
+end
 
-Console.Print("Hello!!!!!")
+return enemy
