@@ -5,8 +5,8 @@
 
 //Main version declaration
 #define ENG_VER_MAJOR 0
-#define ENG_VER_MINOR 0
-#define ENG_VER_PATCH 8
+#define ENG_VER_MINOR 1
+#define ENG_VER_PATCH 0
 
 #define ENG_VERSION_STR \
 	TO_STR(ENG_VER_MAJOR) "." TO_STR(ENG_VER_MINOR) "." TO_STR(ENG_VER_PATCH)
@@ -23,21 +23,17 @@
 
 /*============================ CHANGELOG =============================
 
- * Added ImGui Library (For "immediate-mode" style gui rendering)
+ * Changed console command registering to support lua functions
 
- * Changed the console to use ImGui
+ * Scripting system can load a start script, and calls OnTick every update
 
- * Removed unnecessary gui renderers (BoxRenderer, FontRenderer)
+ * sol2 lua binds for glm types
 
- * Small systems refactor (Engine is no longer a class, but this can be reverted)
+ * sol2 lua binds for entities and components
 
- * Added stb_* libraries
- 
- * Added support for stb_image in resource system
+ * sol2 lua binds for resource loading
 
- * Restructered project directories to better reflect what is happening
-
- * Added coding style document to reflect the style of the source code
+ * Basic time keeping inside World system
 
  *====================================================================
 */

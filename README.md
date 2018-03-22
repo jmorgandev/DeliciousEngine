@@ -9,11 +9,11 @@ In the past, I have attempted to create an ECS (Entity-Component-System) based g
 Although I have plenty of experience developing in both Unity and Unreal, the rapid-prototyping nature of Unity seems to be slowing down with each new iteration in order to support more ambitious projects that AAA game studios participate in. Coupled with Unreal being built specifically for AAA game studios (Which typically leads to unnecessary features being automatically built in to a small project), I started to develop my own engine. Of which the focus would be towards small game projects, rapid-prototyping, and extensibility.
 
 ## Features
-This engine is being developed with modern graphics techniques (OpenGL 4.3+), and being designed for general use rather than being tailored for any one type of game development. This includes the ability to develop a game/prototype without having to modify the engine source code, by using Lua and AngelScript as an interface to engine functionality as well as to specify game-object behaviour.
+This engine is being developed with modern graphics techniques (OpenGL 4.3+), and being designed for general use rather than being tailored for any one type of game development. This includes the ability to develop a game/prototype without having to modify the engine source code, scripting various languages as interfaces to engine functionality as well as to specify game-object behaviour.
 
 The engine comes with a development console to allow inspection of the engine without having manually debug the C++ source code in Visual Studio. Whilst this doesn't and shouldn't replace normal debugging, it does grant the ability to identify solutions to simple problems or logic errors.
 
-The same way that the engine can be scripted with lua/angelscript, it can also be extended with lua/angelscript. If the engine doesn't support a file format (Which could be an asset, or a level), then the engine will subsequently search for a lua/angelscript file that tells the engine how to deal with that particular file format. As a result, the user can add support to any custom asset or level files that the engine doesn't know how to process.
+The same way that the engine can be scripted, it can also be extended. If the engine doesn't support a file format (Which could be an asset, or a level), then the engine will subsequently search for a script file that tells the engine how to deal with that particular file format. As a result, the user can add support to any custom asset or level files that the engine doesn't know how to process.
 
 ## Technologies Used/Planned
 - OpenGL 4.3+
@@ -21,25 +21,25 @@ The same way that the engine can be scripted with lua/angelscript, it can also b
 - SDL2
 - stb_image
 - SDL2_mixer (May change to FMod)
-- Lua 5.3+
-- Python 3+
+- Lua 5.3+ (Sol2)
+- Python 3+ (May change to chaiscript)
 
 ## Development Information
 
-### Current Version (0.0.8)
-- Added ImGui Library (For "immediate-mode" style gui rendering)
-- Changed the console to use ImGui
-- Remove unnecessary gui renderers (BoxRenderer, FontRenderer)
-- Small systems refactor (Engine is no longer a class, but this can be reverted)
-- Added stb_* libraries
-- Added support for stb_image in resource system
-- Restructured project directories
-- Added coding style document to reflect the style of the source code
+### Current Version (0.1)
+- Changed console command registering to support lua functions
+- Scripting system can load a start script, and calls OnTick every update
+- sol2 lua binds for glm types
+- sol2 lua binds for entities and components
+- sol2 lua binds for resource loading
+- Basic time keeping inside World system
 
-### Next Milestone (0.1.0)
-- [ ] Embedded scripting
-- [x] Game-object management
-- [ ] Scripting entry point
-- [x] Moving camera test
+### Next Milestone (0.2)
+- [ ] Load "levels" with script files
+- [ ] Individual entity script modules
+- [ ] Custom scripted file loaders
+- [ ] Scripted console commands & variables
+- [ ] Render lists & Alpha testing
+- [ ] Animation system groundwork
 
-Last updated: 07/03/2018
+Last updated: 22/03/2018
