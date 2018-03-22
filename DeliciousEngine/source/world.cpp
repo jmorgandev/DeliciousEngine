@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "input.h"
 #include "dmath.h"
+#include "scripting.h"
 #include "material.h"
 
 bool World::init() {
@@ -14,40 +15,12 @@ bool World::init() {
 
 //@Temp
 bool World::load_test() {
-	//Texture* default_texture = system.resources->load_texture("res/tile.tga");
-	Texture* default_texture = resources.load_texture("res/tile.png");
-
-	Texture* other_texture = resources.load_texture("res/consolas_32.tga", "tile");
-
-	Shader*  default_shader = resources.load_shader("res/default.glsl");
-	if (default_texture == nullptr || default_shader == nullptr) {
-		return false;
-	}
-	default_material = resources.make_material("default", default_shader);
-	default_material->set_vec4("diffuse_tint", 0.5f, 1.0f, 1.0f, 1.0f);
-	default_material->set_texture("diffuse", default_texture);
-	Mesh* cube = resources.fetch_mesh("primitive.cube");
-
-	other_material = resources.make_material("other", default_shader);
-	other_material->set_texture("diffuse", other_texture);
-
-	//Entity first, second;
-	Entity* first = create_entity("first");
-	first->get_renderer()
-		.set_mesh(cube)
-		.set_material(default_material);
-	first->get_transform().set_position(-1.0f, 0.0f, 0.0f);
-
-	Entity* second = clone_entity(first, { 1.0f, 0.0f, 0.0f });
-	second->get_renderer()
-		.set_mesh(cube)
-		.set_material(other_material);
-	second->set_name("second");
-
-	Entity* third = clone_entity(second, { 0.0f, 0.0f, 0.0f });
-	third->set_name("third");
-
+	
 	screen.get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
+	using namespace std::chrono;
+	load_time = steady_clock::now();
+	current_time = load_time;
+
 	return true;
 }
 
@@ -56,58 +29,37 @@ void World::clean_exit() {
 }
 
 void World::update() {
+	using namespace std::chrono;
+	current_time = steady_clock::now();
 	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
-	Entity* first = get_entity(0);
-	Entity* second = get_entity(1);
-
-	glm::vec3 axis = glm::normalize(glm::vec3(1.0f, 2.0f, 1.2f));
-	first->get_transform().rotate(0.5f, axis);
-	second->get_transform().rotate(1.0f, axis);
-	
-	static float t = 0;
-	t += 0.05f;
-	float off = -0.7f;
-	first->get_transform().set_position(0.0f, math::cosine(0.6f, t), 0.0f);
-	second->get_transform().set_position(math::sine(0.2f, t) + 1, math::cosine(0.2f, t), 0.0f);
-	//glUseProgram(default_material->shader->id);
-	//GLuint uniform_highlight = glGetUniformLocation(default_material->shader->id, "highlight");
-	//if (collision(first, second)) {
-	//	glUniform1f(uniform_highlight, 0.2f);
-	//}
-	//else {
-	//	glUniform1f(uniform_highlight, 0.0f);
-	//}
+	scripting.call_lua_function("OnTick");
 }
 
 void World::draw() {
 	//@Temp
-	Entity* first = get_entity(0);
-	Entity* second = get_entity(1);
-	Entity* third = get_entity(2);
-
+	//Entity* first = get_entity(0);
+	//Entity* second = get_entity(1);
+	//Entity* third = get_entity(2);
+	//
 	Camera* cam = screen.get_camera();
-	glm::mat4 transform_a = first->get_transform().get_matrix();
-	glm::mat4 transform_b = second->get_transform().get_matrix();
-	glm::mat4 transform_c = third->get_transform().get_matrix();
-
+	//glm::mat4 transform_a = first->get_transform().get_matrix();
+	//glm::mat4 transform_b = second->get_transform().get_matrix();
+	//glm::mat4 transform_c = third->get_transform().get_matrix();
+	//
+	//glm::mat4 projection = cam->projection_matrix();
+	//glm::mat4 view = cam->view_matrix();
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
-
-	default_material->set_matrix("projection", projection);
-	default_material->set_matrix("view", view);
-
-	//other_material->set_matrix("projection", projection);
-	//other_material->set_matrix("view", view);
-	//
-	//other_material->set_matrix("transform", transform_b);
-	//second->get_renderer()->draw();
-	//other_material->set_matrix("transform", transform_c);
-	//third->get_renderer()->draw();
-
-	default_material->set_matrix("transform", transform_a);
-	first->get_renderer().draw();
+	for (auto entity : entities) {
+		glm::mat4 transform = entity.get_transform().get_matrix();
+		Material* mat = entity.get_renderer().get_material();
+		mat->set_matrix("projection", projection);
+		mat->set_matrix("view", view);
+		mat->set_matrix("transform", transform);
+		entity.get_renderer().draw();
+	}
 }
 
 void World::do_camera() {

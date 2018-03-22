@@ -36,8 +36,14 @@ public:
 		rebuild_matrix = true;
 	}
 
-	void set_scale(const glm::vec3 scale) { 
+	void set_scale(const glm::vec3& scale) { 
 		this->scale = scale; 
+		rebuild_matrix = true;
+	}
+	void set_scale(const float& x, const float& y, const float& z) {
+		scale.x = x;
+		scale.y = y;
+		scale.z = z;
 		rebuild_matrix = true;
 	}
 

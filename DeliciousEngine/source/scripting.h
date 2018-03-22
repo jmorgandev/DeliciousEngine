@@ -13,6 +13,7 @@ public:
 	bool init();
 	void clean_exit();
 
+	void call_lua_function(cstring name);
 	void call_lua_function_with_args(cstring name, std::vector<cstring> args);
 
 	bool load_start_script();
@@ -24,6 +25,8 @@ private:
 	bool bind_systems();
 
 	void lua_print(sol::object obj);
+
+	bool okay = false;
 };
 extern Scripting scripting;
 

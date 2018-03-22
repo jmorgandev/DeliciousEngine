@@ -2,10 +2,14 @@
 #define DELICIOUS_WORLD_H
 
 #include <list>
+#include <chrono>
 
 #include "system_var.h"
 #include "entity.h"
 #include "dtypes.h"
+
+using time_point = std::chrono::time_point<std::chrono::steady_clock>;
+using duration = std::chrono::duration<double>;
 
 class World {
 public:
@@ -16,6 +20,10 @@ public:
 
 	void update();
 	void draw();
+
+	double get_time() {
+		return std::chrono::duration_cast<duration>(current_time - load_time).count();
+	}
 
 	Entity* get_entity(uint index);
 	
@@ -37,11 +45,10 @@ public:
 	bool collision(Entity* a, Entity* b);
 private:
 	std::list<Entity> entities;
-
+	time_point load_time;
+	time_point current_time;
 	//@Temp
 	void do_camera();
-	Material* default_material;
-	Material* other_material;
 };
 extern World world;
 

@@ -168,7 +168,7 @@ void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	}
 }
 
-void Material::set_texture(std::string name, Texture* tex) {
+void Material::set_texture(std::string name, const Texture* tex) {
 	auto it = sampler_list.find(name);
 	if (it != sampler_list.end()) {
 		it->second.texture = tex;
@@ -207,5 +207,12 @@ void Material::bind() {
 			//@Todo: Get the texture target from the texture object in future
 		}
 	}
+}
+
+void Material::set(std::string name, glm::vec4 value) {
+	set_vec4(name, value);
+}
+void Material::set(std::string name, const Texture* tex) {
+	set_texture(name, tex);
 }
 

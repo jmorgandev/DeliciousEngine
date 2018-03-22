@@ -10,6 +10,8 @@
 #include <vec3.hpp>
 #include <gtc/quaternion.hpp>
 
+#include <sol.hpp>
+
 //@Todo, @Speed: Consider SoA vs AoS. Data-oriented design
 // Should entities have individual MeshRenderers or just meshes that can be sent
 // to a global MeshRenderer?
@@ -27,12 +29,16 @@ public:
 
 	Transform& get_transform() { return transform; }
 	MeshRenderer& get_renderer() { return renderer; }
+
+
 protected:
 	Transform transform;
 	MeshRenderer renderer;
 
 	std::string name;
 	uint tag_index;
+
+	bool scripted;
 };
 
 #endif
