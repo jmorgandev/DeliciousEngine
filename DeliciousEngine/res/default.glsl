@@ -7,6 +7,7 @@ uniform mat4 transform;
 uniform material {
 	vec4 diffuse_tint;
 };
+uniform vec4 test;
 
 #scope vertex
 layout (location = 0) in vec3 position;
@@ -31,6 +32,6 @@ uniform sampler2D diffuse;
 void main(void) {
 	//color = mix(texture(diffuse, uv), final_tint, diffuse_tint.a * mult);
 	//color = diffuse_tint;
-	color = texture(diffuse, uv);
+	color = texture(diffuse, uv) * test;
 }
 

@@ -18,7 +18,7 @@
 
 class Entity {
 public:
-	Entity(std::string name = "new_entity", uint tag = 0) : name(name), tag_index(tag) {}
+	Entity(std::string name = "Entity", uint tag = 0) : name(name), tag_index(tag) {}
 	virtual ~Entity() {}
 
 	std::string get_name() const { return name; }
@@ -29,16 +29,18 @@ public:
 
 	Transform& get_transform() { return transform; }
 	MeshRenderer& get_renderer() { return renderer; }
-
-
+	
+	virtual void Load();
+	virtual void Begin();
+	virtual void Update();
+	virtual void End();
 protected:
 	Transform transform;
 	MeshRenderer renderer;
 
 	std::string name;
+	sol::table lua_ref;
 	uint tag_index;
-
-	bool scripted;
 };
 
 #endif

@@ -39,5 +39,6 @@
 */
 
 //@Bug: Console scrolling does not work properly, clips strings too early...
+//@Bug: Material uniform block does not update dynamically?
 
 #endif
