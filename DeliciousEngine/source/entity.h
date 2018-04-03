@@ -21,6 +21,8 @@ public:
 	Entity(std::string name = "Entity", uint tag = 0) : name(name), tag_index(tag) {}
 	virtual ~Entity() {}
 
+	void set_script(sol::this_state ts, sol::table script);
+
 	std::string get_name() const { return name; }
 	void set_name(const std::string& name) { this->name = name; }
 
@@ -30,17 +32,18 @@ public:
 	Transform& get_transform() { return transform; }
 	MeshRenderer& get_renderer() { return renderer; }
 	
-	virtual void Load();
-	virtual void Begin();
-	virtual void Update();
-	virtual void End();
+	virtual void load();
+	virtual void begin();
+	virtual void update();
+	virtual void end();
 protected:
 	Transform transform;
 	MeshRenderer renderer;
 
 	std::string name;
-	sol::table lua_ref;
 	uint tag_index;
+
+	sol::table lua_script;
 };
 
 #endif

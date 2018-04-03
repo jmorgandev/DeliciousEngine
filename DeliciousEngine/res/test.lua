@@ -1,25 +1,45 @@
-texture = Texture.Load("res/tile.png")
-shader = Shader.Load("res/default.glsl")
+local CubeTest = {}
 
-material = Material.Make("default", shader)
-material["diffuse_tint"] = {0.5, 1.0, 1.0, 1.0}
-material["diffuse"] = texture
+function CubeTest:load()
+	--[[
+	setmetatable(self, {
+		__index = self.entity,
+			if t.entity[k] then
+				t.entity[k] = v
+			else
+				rawset(t, k, v)
+			end
+		end
+	})
+	]]
+	print(self.entity)
 
-cube = Mesh.Load("primitive.cube")
+	print(self.name)
 
-entity = World.CreateEntity()
-entity.renderer.mesh = cube
-entity.renderer.material = material
-entity.transform.position = {-1.0, 0.0, 0.0}
+	texture = Resources.loadTexture("res/tile.png", "tex")
+	print("Texture is " .. str(texture))
+	shader = Resources.loadShader("res/default.glsl")
+	print("Shader is " .. str(shader))
 
-function Tick()
-	entity.transform.Rotate(0.0, 1.0, 0.0)
-	entity.transform.position = {0.0, Math.Cos(0.6, Time.time), 0.0}
+	material = Resources.makeMaterial("default", shader)
+	print("Material is " .. str(material))
+
+	material.diffuse = texture
+	print("Material.diffuse_tint is " .. str(material.diffuse_tint))
+	print("Material.diffuse is " .. str(material.diffuse))
+
+	cube = Resources.loadMesh("primitive.cube")
+	print("Cube is " .. str(cube))
+
+	self.renderer.mesh = cube
+	print("Renderer.mesh is " .. str(self.renderer.mesh))
+	self.renderer.material = material
+	print("Renderer.material is " .. str(self.renderer.material))
+	self.transform.position = vec3.new(0.0, 0.0, 0.0)
 end
 
-texture = Resources.Load("res/tile.png")
+function CubeTest:update()
+	self.transform:rotate(0.0, 1.0, 2.0)
+end
 
-material = Resources.New(AssetType.Material, "default")
-
-Assets.Load("res/tile.png")
-Resources.Load("res/tile.png")
+return CubeTest

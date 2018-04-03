@@ -7,6 +7,7 @@
 #include <sol.hpp>
 
 #include "dtypes.h"
+#include "entity.h"
 
 class Scripting {
 public:
@@ -25,6 +26,8 @@ private:
 	bool bind_systems();
 
 	void lua_print(sol::object obj);
+
+	Entity* lua_create_entity(sol::this_state ts);
 
 	bool okay = false;
 };

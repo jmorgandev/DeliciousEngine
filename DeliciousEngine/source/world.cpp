@@ -34,7 +34,9 @@ void World::update() {
 	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
-	scripting.call_lua_function("OnTick");
+	for (auto entity : entities) {
+		entity.update();
+	}
 }
 
 void World::draw() {
@@ -55,6 +57,7 @@ void World::draw() {
 	for (auto entity : entities) {
 		glm::mat4 transform = entity.get_transform().get_matrix();
 		Material* mat = entity.get_renderer().get_material();
+		if (mat == nullptr) continue;
 		mat->set_matrix("projection", projection);
 		mat->set_matrix("view", view);
 		mat->set_matrix("transform", transform);

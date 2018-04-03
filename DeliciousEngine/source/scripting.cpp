@@ -1,7 +1,5 @@
 #include "scripting.h"
 
-#include <functional>
-
 #include <vec3.hpp>
 #include <gtc/quaternion.hpp>
 #include <gtx/string_cast.hpp>
@@ -32,6 +30,18 @@ static auto set_overloads = sol::overload(
 	sol::resolve<void(std::string, const Texture* tex)>(&Material::set)
 );
 
+static auto entity_constructors = sol::overload(
+	[](std::string name) -> Entity* {
+		Entity* ent = world.create_entity(name);
+		return ent;
+	},
+	[](sol::this_state ts, std::string name, sol::table script) -> Entity* {
+		Entity* ent = world.create_entity(name);
+		ent->set_script(ts, script);
+		return ent;
+	}
+);
+
 static sol::protected_function_result error_handle(lua_State*, sol::protected_function_result pfr) {
 	sol::error err = pfr;
 	console.print(err.what());
@@ -45,11 +55,27 @@ inline void my_panic(sol::optional<std::string> msg) {
 }
 
 bool Scripting::init() {
-	lua.open_libraries(sol::lib::math);
+	lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::math, sol::lib::table);
 
 	if (!bind_datatypes()) return false;
 	if (!bind_components()) return false;
 	if (!bind_systems()) return false;
+	
+	//lua.do_string(R"(
+	//function script()
+	//	local new_table = {}
+	//	setmetatable(new_table, {
+	//		__index = new_table.entity,
+	//		__newindex = function(t, k, v)
+	//			if t.entity.k ~= nil then
+	//				t.entity.k = v
+	//			else
+	//				rawset(t, k, v)
+	//			end
+	//		end
+	//	})
+	//end
+	//)");
 
 	return true;
 }
@@ -117,9 +143,12 @@ bool Scripting::bind_datatypes() {
 	
 	lua.new_usertype<Entity>(
 		"Entity",
-		"new", sol::no_constructor,
+		"{}", sol::no_constructor,
+		"new", entity_constructors,
+		"script", sol::writeonly_property(&Entity::set_script),
 		"renderer", sol::readonly_property(&Entity::get_renderer),
-		"transform", sol::readonly_property(&Entity::get_transform)
+		"transform", sol::readonly_property(&Entity::get_transform),
+		"name", sol::property(&Entity::get_name, &Entity::set_name)
 	);
 
 	return true;
@@ -155,26 +184,17 @@ bool Scripting::bind_components() {
 }
 
 bool Scripting::bind_systems() {
-	//Console binds...
-
-	//auto test = [](std::string path, std::string id) -> Texture* {
-	//	return resources.load_texture(path, id);
-	//};
-
-	
-
 	lua.set_function("print", &Scripting::lua_print, this);
+	lua["str"] = lua["tostring"];
 	
 	sol::table resource_table = lua.create_named_table("Resources");
 
 	resource_table.set_function("loadTexture", sol::resolve<Texture*(std::string, std::string)>(&Resources::load_texture), &resources);
 	resource_table.set_function("loadShader", &Resources::load_shader, &resources);
-	//resource_table.set_function("LoadTexture", test);
 	resource_table.set_function("loadMesh", &Resources::fetch_mesh, &resources);
 	resource_table.set_function("makeMaterial", &Resources::make_material, &resources);
 	
 	sol::table world_table = lua.create_named_table("World");
-	world_table.set_function("createEntity", &World::create_entity, &world);
 	world_table.set_function("time", &World::get_time, &world);
 
 	return true;
@@ -188,11 +208,6 @@ void Scripting::call_lua_function(cstring name) {
 	catch (sol::error e) {
 		console.print(e.what());
 	}
-	//sol::protected_function_result result = lua[name]();
-	//if (!result.valid()) {
-	//	sol::error e = result;
-	//	console.print(e.what());
-	//}
 }
 
 void Scripting::call_lua_function_with_args(cstring name, std::vector<cstring> argv) {
@@ -203,11 +218,6 @@ void Scripting::call_lua_function_with_args(cstring name, std::vector<cstring> a
 	catch (sol::error e) {
 		console.print(e.what());
 	}
-	//sol::function_result result = lua[name](sol::as_args(argv));
-	//if (!result.valid()) {
-	//	sol::error e = result;
-	//	console.print(e.what());
-	//}
 }
 
 bool Scripting::load_start_script() {
@@ -217,9 +227,6 @@ bool Scripting::load_start_script() {
 	//
 	//This way of loading script files into the lua state seems to work for now, without the need to use
 	//try/catch.
-
-	//@Todo: Return protected_function_result and use to print error rather than passing in a custom handler,
-	//		 use sol::script_pass_on_error instead.
 
 	sol::protected_function_result result = lua.safe_script_file("res/start.lua", sol::script_pass_on_error);
 	if (result.valid()) {

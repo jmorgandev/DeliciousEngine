@@ -32,6 +32,6 @@ uniform sampler2D diffuse;
 void main(void) {
 	//color = mix(texture(diffuse, uv), final_tint, diffuse_tint.a * mult);
 	//color = diffuse_tint;
-	color = texture(diffuse, uv) * test;
+	color = texture(diffuse, uv);
 }
 
