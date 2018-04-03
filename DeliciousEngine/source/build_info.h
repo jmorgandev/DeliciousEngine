@@ -6,7 +6,7 @@
 //Main version declaration
 #define ENG_VER_MAJOR 0
 #define ENG_VER_MINOR 1
-#define ENG_VER_PATCH 0
+#define ENG_VER_PATCH 1
 
 #define ENG_VERSION_STR \
 	TO_STR(ENG_VER_MAJOR) "." TO_STR(ENG_VER_MINOR) "." TO_STR(ENG_VER_PATCH)
@@ -39,6 +39,8 @@
 */
 
 //@Bug: Console scrolling does not work properly, clips strings too early...
+//		This sometimes doesn't even happen, what gives?
+
 //@Bug: Material uniform block does not update dynamically?
 
 #endif

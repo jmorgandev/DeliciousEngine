@@ -36,10 +36,11 @@ The same way that the engine can be scripted, it can also be extended. If the en
 
 ### Next Milestone (0.2)
 - [ ] Load "levels" with script files
-- [ ] Individual entity script modules
+- [X] Individual entity script modules
 - [ ] Custom scripted file loaders
 - [ ] Scripted console commands & variables
+- [ ] Model loading (obj, maybe fbx?)
 - [ ] Render lists & Alpha testing
 - [ ] Animation system groundwork
 
-Last updated: 22/03/2018
+Last updated: 03/04/2018

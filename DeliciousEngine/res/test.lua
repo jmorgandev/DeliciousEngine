@@ -1,19 +1,7 @@
 local CubeTest = {}
 
 function CubeTest:load()
-	--[[
-	setmetatable(self, {
-		__index = self.entity,
-			if t.entity[k] then
-				t.entity[k] = v
-			else
-				rawset(t, k, v)
-			end
-		end
-	})
-	]]
 	print(self.entity)
-
 	print(self.name)
 
 	texture = Resources.loadTexture("res/tile.png", "tex")

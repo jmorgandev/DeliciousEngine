@@ -21,6 +21,7 @@ public:
 	Entity(std::string name = "Entity", uint tag = 0) : name(name), tag_index(tag) {}
 	virtual ~Entity() {}
 
+	sol::table get_script() { return lua_script; }
 	void set_script(sol::this_state ts, sol::table script);
 
 	std::string get_name() const { return name; }

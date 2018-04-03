@@ -3,7 +3,8 @@
 #include "console.h"
 
 void Entity::set_script(sol::this_state ts, sol::table script) {
-	//@Todo: use state_view to get access to create a metatable or something
+	if (lua_script.valid() && lua_script == script) return;
+
 	sol::state_view state(ts);
 	lua_script = script;
 	lua_script["entity"] = this;
@@ -16,7 +17,6 @@ void Entity::set_script(sol::this_state ts, sol::table script) {
 				t[k] = v;
 		}
 	);
-	console.print("before load");
 	load();
 	begin();
 }

@@ -60,22 +60,6 @@ bool Scripting::init() {
 	if (!bind_datatypes()) return false;
 	if (!bind_components()) return false;
 	if (!bind_systems()) return false;
-	
-	//lua.do_string(R"(
-	//function script()
-	//	local new_table = {}
-	//	setmetatable(new_table, {
-	//		__index = new_table.entity,
-	//		__newindex = function(t, k, v)
-	//			if t.entity.k ~= nil then
-	//				t.entity.k = v
-	//			else
-	//				rawset(t, k, v)
-	//			end
-	//		end
-	//	})
-	//end
-	//)");
 
 	return true;
 }
@@ -145,7 +129,7 @@ bool Scripting::bind_datatypes() {
 		"Entity",
 		"{}", sol::no_constructor,
 		"new", entity_constructors,
-		"script", sol::writeonly_property(&Entity::set_script),
+		"script", sol::property(&Entity::get_script, &Entity::set_script),
 		"renderer", sol::readonly_property(&Entity::get_renderer),
 		"transform", sol::readonly_property(&Entity::get_transform),
 		"name", sol::property(&Entity::get_name, &Entity::set_name)
