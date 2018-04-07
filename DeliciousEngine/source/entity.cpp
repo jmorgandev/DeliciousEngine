@@ -8,14 +8,8 @@ void Entity::set_script(sol::this_state ts, sol::table script) {
 	sol::state_view state(ts);
 	lua_script = script;
 	lua_script["entity"] = this;
-	sol::table meta = lua_script[sol::metatable_key] = state.create_table_with(
-		"__index", lua_script["entity"],
-		"__newindex", [](sol::table t, sol::object k, sol::object v) {
-			if (t["entity"][k].valid())
-				t["entity"][k] = v;
-			else
-				t[k] = v;
-		}
+	lua_script[sol::metatable_key] = state.create_table_with(
+		"__index", lua_script["entity"]
 	);
 	load();
 	begin();

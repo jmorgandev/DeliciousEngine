@@ -1,8 +1,20 @@
 local CubeTest = {}
 
 function CubeTest:load()
+	
+	--[[setmetatable(self, {
+		__index = self.entity,
+		__newindex = function(t, k, v)
+			if t.entity[k] then
+				t.entity.k = v
+			else
+				rawset(t, k, v)
+			end
+		end
+		}
+	)]]
+	print(self)
 	print(self.entity)
-	print(self.name)
 
 	texture = Resources.loadTexture("res/tile.png", "tex")
 	print("Texture is " .. str(texture))
@@ -24,10 +36,15 @@ function CubeTest:load()
 	self.renderer.material = material
 	print("Renderer.material is " .. str(self.renderer.material))
 	self.transform.position = vec3.new(0.0, 0.0, 0.0)
+
+	self.thing = 120
+	print(self.thing)
+	print(self.entity.thing)
 end
 
 function CubeTest:update()
-	self.transform:rotate(0.0, 1.0, 2.0)
+	--self.transform:rotate(0.0, 1.0, 2.0)
+	--if self.thing then print(self.thing) end
 end
 
 return CubeTest
