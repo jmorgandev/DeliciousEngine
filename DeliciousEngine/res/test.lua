@@ -1,18 +1,6 @@
 local CubeTest = {}
 
 function CubeTest:load()
-	
-	--[[setmetatable(self, {
-		__index = self.entity,
-		__newindex = function(t, k, v)
-			if t.entity[k] then
-				t.entity.k = v
-			else
-				rawset(t, k, v)
-			end
-		end
-		}
-	)]]
 	print(self)
 	print(self.entity)
 
@@ -39,12 +27,10 @@ function CubeTest:load()
 
 	self.thing = 120
 	print(self.thing)
-	print(self.entity.thing)
 end
 
 function CubeTest:update()
-	--self.transform:rotate(0.0, 1.0, 2.0)
-	--if self.thing then print(self.thing) end
+	self.transform:rotate(0.0, 1.0, 2.0)
 end
 
 return CubeTest

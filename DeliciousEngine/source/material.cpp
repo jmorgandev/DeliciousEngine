@@ -204,8 +204,10 @@ void Material::bind() {
 		for (auto item : sampler_list) {
 			const SamplerMeta& sampler = item.second;
 			glActiveTexture(GL_TEXTURE0 + sampler.binding);
-			if (item.second.texture == nullptr) glBindTexture(sampler.type, NULL);
-			else glBindTexture(GL_TEXTURE_2D, sampler.texture->id);
+			if (item.second.texture == nullptr) 
+				glBindTexture(sampler.type, NULL);
+			else 
+				glBindTexture(GL_TEXTURE_2D, sampler.texture->id);
 			//@Todo: Get the texture target from the texture object in future
 		}
 	}

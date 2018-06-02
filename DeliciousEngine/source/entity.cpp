@@ -4,19 +4,22 @@
 
 void Entity::set_script(sol::this_state ts, sol::table script) {
 	if (lua_script.valid() && lua_script == script) return;
-
 	sol::state_view state(ts);
+
 	lua_script = script;
 	lua_script["entity"] = this;
-	lua_script[sol::metatable_key] = state.create_table_with(
-		"__index", lua_script["entity"]
-	);
+
+	if (!lua_script[sol::metatable_key].valid())
+		lua_script[sol::metatable_key] = state.create_table_with("__index", lua_script["entity"]);
+
+
+
 	load();
 	begin();
 }
 
 void Entity::load() {
-	if (lua_script["load"].valid()) {
+	if (lua_script && lua_script["load"].valid()) {
 		try {
 			lua_script["load"](lua_script);
 		}
@@ -26,7 +29,7 @@ void Entity::load() {
 	}
 }
 void Entity::begin() {
-	if (lua_script["begin"].valid()) {
+	if (lua_script && lua_script["begin"].valid()) {
 		try {
 			lua_script["begin"](lua_script);
 		}
@@ -46,7 +49,7 @@ void Entity::update() {
 	}
 }
 void Entity::end() {
-	if (lua_script["end"].valid()) {
+	if (lua_script && lua_script["end"].valid()) {
 		try {
 			lua_script["end"](lua_script);
 		}

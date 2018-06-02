@@ -21,6 +21,7 @@ public:
 private:
 	std::vector<key_bind>   key_binds;
 	std::vector<key_record> key_records;
+
 	bool mouse_buttons[5];
 	glm::vec2 mouse_motion;
 

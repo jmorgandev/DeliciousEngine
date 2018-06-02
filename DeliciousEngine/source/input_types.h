@@ -1,6 +1,8 @@
 #ifndef DELICIOUS_INPUT_TYPES_H
 #define DELICIOUS_INPUT_TYPES_H
 
+#include <map>
+
 #include <SDL_keycode.h>
 #include "console_types.h"
 #include "dtypes.h"

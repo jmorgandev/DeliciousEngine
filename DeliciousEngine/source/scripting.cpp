@@ -6,6 +6,7 @@
 #include <mat4x4.hpp>
 
 #include "console.h"
+#include "input.h"
 #include "texture.h"
 #include "shader.h"
 #include "transform.h"
@@ -180,6 +181,11 @@ bool Scripting::bind_systems() {
 	
 	sol::table world_table = lua.create_named_table("World");
 	world_table.set_function("time", &World::get_time, &world);
+
+	sol::table input_table = lua.create_named_table("Input");
+	input_table.set_function("getKey", &Input::get_key, &input);
+	
+
 
 	return true;
 }

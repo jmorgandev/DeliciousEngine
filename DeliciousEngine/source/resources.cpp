@@ -72,7 +72,7 @@ Texture* Resources::load_texture(std::string filepath) {
 	return &texture_catalog[filepath];
 }
 
-[[deprecated]] Texture* Resources::load_texture(std::string filename, std::string id) {
+Texture* Resources::load_texture(std::string filename, std::string id) {
 	//int x, y, channels, desired channels
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);
