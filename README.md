@@ -16,11 +16,12 @@ The engine comes with a development console to allow inspection of the engine wi
 The same way that the engine can be scripted, it can also be extended. If the engine doesn't support a file format (Which could be an asset, or a level), then the engine will subsequently search for a script file that tells the engine how to deal with that particular file format. As a result, the user can add support to any custom asset or level files that the engine doesn't know how to process.
 
 ## Technologies Used/Planned
-- OpenGL 4.3+
-- glew
+- OpenGL 4.3
+- glew (May change to glad)
+- glm
 - SDL2
 - stb_image
-- SDL2_mixer (May change to FMod)
+- FMOD
 - Lua 5.3+ (Sol2)
 - Python 3+ (May change to chaiscript)
 
@@ -37,10 +38,10 @@ The same way that the engine can be scripted, it can also be extended. If the en
 ### Next Milestone (0.2)
 - [ ] Load "levels" with script files
 - [X] Individual entity script modules
-- [ ] Custom scripted file loaders
 - [ ] Scripted console commands & variables
 - [ ] Model loading (obj, maybe fbx?)
 - [ ] Render lists & Alpha testing
 - [ ] Animation system groundwork
+- [ ] Basic audio system
 
-Last updated: 03/04/2018
+Last updated: 02/06/2018
