@@ -29,8 +29,8 @@ static bool init_systems() {
 static bool startup() {
 	if (!screen.create_window()) return false;
 	if (!resources.load_default_resources()) return false;
-	scripting.load_start_script();
 	if (!world.load_test()) return false;
+	scripting.load_start_script();
 
 	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
 	console.register_variable("eng_strict",  &eng_strict,  CVAR_BOOL, CVAR_USER);

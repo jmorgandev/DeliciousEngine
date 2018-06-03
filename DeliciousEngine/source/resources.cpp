@@ -20,8 +20,6 @@ bool Resources::init() {
 }
 
 void Resources::clean_exit() {
-	font_catalog.clear();
-
 	for (auto& item : mesh_catalog) {
 		glDeleteBuffers(ATTRIBUTE_COUNT, item.second.vbo);
 		glDeleteVertexArrays(1, &item.second.vao);

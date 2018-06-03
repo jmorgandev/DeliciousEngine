@@ -10,7 +10,6 @@
 #include "texture.h"
 #include "material.h"
 #include "mesh.h"
-#include "font.h"
 #include "asset_loader.h"
 
 class Resources {
@@ -37,7 +36,6 @@ public:
 private:
 	std::unordered_map<std::string, Texture>  texture_catalog;
 	std::unordered_map<std::string, Shader>   shader_catalog;
-	std::unordered_map<std::string, Font>     font_catalog;
 	std::unordered_map<std::string, Mesh>     mesh_catalog;
 	std::unordered_map<std::string, Material> material_catalog;
 };

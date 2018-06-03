@@ -105,9 +105,6 @@
     <ClInclude Include="source\entity.h">
       <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="source\font.h">
-      <Filter>Source\objects</Filter>
-    </ClInclude>
     <ClInclude Include="source\material.h">
       <Filter>Source\objects</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="source\default_shader.h">
       <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

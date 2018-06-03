@@ -105,7 +105,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;fmod64_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,7 +117,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;fmod64_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,7 +133,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;fmod64_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,7 +149,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;glew32s.lib;opengl32.lib;lua5.3s.lib;fmod64_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -187,7 +187,6 @@
     <ClInclude Include="source\dstr.h" />
     <ClInclude Include="source\dtypes.h" />
     <ClInclude Include="source\entity.h" />
-    <ClInclude Include="source\font.h" />
     <ClInclude Include="source\help_pages.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\input_types.h" />
@@ -201,6 +200,7 @@
     <ClInclude Include="source\screen_types.h" />
     <ClInclude Include="source\scripting.h" />
     <ClInclude Include="source\shader.h" />
+    <ClInclude Include="source\audio.h" />
     <ClInclude Include="source\system_var.h" />
     <ClInclude Include="source\texture.h" />
     <ClInclude Include="source\transform.h" />
