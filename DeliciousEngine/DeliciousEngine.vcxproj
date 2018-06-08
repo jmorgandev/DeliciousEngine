@@ -69,14 +69,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(ProjectDir)thirdparty\fmod;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(ProjectDir)thirdparty\fmod;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
@@ -85,14 +85,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(ProjectDir)thirdparty\fmod;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)thirdparty\glew;$(ProjectDir)thirdparty\glm;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\lua;$(ProjectDir)thirdparty\SDL;$(ProjectDir)thirdparty\stb;$(ProjectDir)thirdparty\fmod;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)library;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
