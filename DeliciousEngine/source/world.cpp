@@ -6,18 +6,34 @@
 #include "screen.h"
 #include "input.h"
 #include "dmath.h"
-#include "scripting.h"
 #include "material.h"
 
-bool World::init() {
-	std::memset(entity_flag, false, sizeof(bool) * MAX_ENTITIES);
+bool World::load() {
+	std::memset(entity_flags, false, sizeof(bool) * MAX_ENTITIES);
+	return true;
+}
 
+bool World::start() {
+	return load_test();
+}
+
+bool World::free() {
 	return true;
 }
 
 //@Temp
 bool World::load_test() {
 	
+	Entity* cube = make_entity("cube");
+	Mesh* m = resources.fetch_mesh("primitive.cube");
+	Texture * tex = resources.load_texture("res/tile.png", "tex");
+	Shader * s = resources.load_shader("res/default.glsl");
+	Material * mat = resources.make_material("default", s);
+	mat->set_texture("diffuse", tex);
+	cube->get_renderer().set_mesh(m);
+	cube->get_renderer().set_material(mat);
+	cube->set_logic([](Entity* e) {e->get_transform().rotate(0.0, 1.0, 2.0); });
+
 	screen.get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 	using namespace std::chrono;
 	load_time = steady_clock::now();
@@ -26,15 +42,11 @@ bool World::load_test() {
 	return true;
 }
 
-void World::clean_exit() {
-
-}
-
 Entity* World::make_entity(std::string name) {
 	for (int i = 0; i < MAX_ENTITIES; i++) {
-		if (!entity_flag[i]) {
+		if (!entity_flags[i]) {
 			entity_pool[i] = Entity(name);
-			entity_flag[i] = true;
+			entity_flags[i] = true;
 			return &entity_pool[i];
 		}
 	}
@@ -48,7 +60,7 @@ void World::update() {
 	do_camera();
 
 	for (int i = 0; i < MAX_ENTITIES; i++) {
-		if (entity_flag[i])
+		if (entity_flags[i])
 			entity_pool[i].update();
 	}
 }
@@ -69,7 +81,7 @@ void World::draw() {
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
 	for (int i = 0; i < MAX_ENTITIES; i++) {
-		if (!entity_flag[i])
+		if (!entity_flags[i])
 			continue;
 
 		Entity& entity = entity_pool[i];

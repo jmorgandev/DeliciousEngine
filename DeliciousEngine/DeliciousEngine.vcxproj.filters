@@ -61,9 +61,6 @@
     <ClCompile Include="source\screen.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
-    <ClCompile Include="source\scripting.cpp">
-      <Filter>Source\systems</Filter>
-    </ClCompile>
     <ClCompile Include="source\world.cpp">
       <Filter>Source\systems</Filter>
     </ClCompile>
@@ -147,9 +144,6 @@
     <ClInclude Include="source\screen.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
-    <ClInclude Include="source\scripting.h">
-      <Filter>Source\systems</Filter>
-    </ClInclude>
     <ClInclude Include="source\world.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
@@ -191,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="source\build_settings.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\system.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

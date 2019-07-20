@@ -47,6 +47,8 @@ void Entity::update() {
 			console.print(e.what());
 		}
 	}
+
+	if (logic) logic(this);
 }
 void Entity::end() {
 	if (lua_script && lua_script["end"].valid()) {

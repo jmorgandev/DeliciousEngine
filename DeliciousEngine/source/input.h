@@ -5,12 +5,13 @@
 #include <vec2.hpp>
 
 #include "input_types.h"
+#include "system.h"
 
-class Input {
+class Input : public System {
 public:
 	Input();
-	bool init();
-	void clean_exit();
+	bool load() override;
+	bool free() override;
 
 	void process_events();
 

@@ -4,14 +4,12 @@
 #include "screen.h"
 #include "resources.h"
 #include "input.h"
-#include "scripting.h"
 #include "world.h"
 
 Console   console;
 Screen    screen;
 Resources resources;
 Input     input;
-Scripting scripting;
 World     world;
 
 SystemVar eng_running = false;
@@ -41,19 +39,17 @@ static void exit_fmod() {
 }
 
 static bool init_systems() {
-	if (!console.init()) return false;
-	if (!screen.init()) return false;
-	if (!resources.init()) return false;
-	if (!input.init()) return false;
-	if (!scripting.init()) return false;
-	if (!world.init()) return false;
+	if (!console.load()) return false;
+	if (!screen.load()) return false;
+	if (!resources.load()) return false;
+	if (!input.load()) return false;
+	if (!world.load()) return false;
 	return true;
 }
 static bool startup() {
-	if (!screen.create_window()) return false;
-	if (!resources.load_default_resources()) return false;
-	if (!world.load_test()) return false;
-	scripting.load_start_script();
+	if (!screen.start()) return false;
+	if (!resources.start()) return false;
+	if (!world.start()) return false;
 
 	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
 	console.register_variable("eng_strict",  &eng_strict,  CVAR_BOOL, CVAR_USER);
@@ -61,12 +57,11 @@ static bool startup() {
 	return true;
 }
 static void shutdown() {
-	world.clean_exit();
-	scripting.clean_exit();
-	input.clean_exit();
-	resources.clean_exit();
-	screen.clean_exit();
-	console.clean_exit();
+	world.free();
+	input.free();
+	resources.free();
+	screen.free();
+	console.free();
 }
 
 int main(char** argv, int argc) {

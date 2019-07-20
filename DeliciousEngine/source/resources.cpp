@@ -12,14 +12,14 @@
 #include "dgl.h"
 #include "default_mesh.h"
 
-bool Resources::init() {
+bool Resources::load() {
 	//@Deprecated: We are no longer using SDL_Image for loading textures
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
 
 	return true;
 }
 
-void Resources::clean_exit() {
+bool Resources::free() {
 	for (auto& item : mesh_catalog) {
 		glDeleteBuffers(ATTRIBUTE_COUNT, item.second.vbo);
 		glDeleteVertexArrays(1, &item.second.vao);
@@ -35,6 +35,8 @@ void Resources::clean_exit() {
 		glDeleteTextures(1, &item.second.id);
 	}
 	texture_catalog.clear();
+
+	return true;
 }
 
 Texture* Resources::load_texture(std::string filepath) {

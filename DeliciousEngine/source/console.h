@@ -9,14 +9,16 @@
 #include "console_types.h"
 #include "input_types.h"
 
+#include "system.h"
+
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
 #define CON_HISTORY_SIZE 32
 
-class Console {
+class Console : public System {
 public:
-	bool init();
-	void clean_exit();
+	bool load() override;
+	bool free() override;
 
 	void load_config();
 	void update_and_draw();

@@ -4,6 +4,7 @@
 #include <SDL_mouse.h>
 #include <glew.h>
 
+#include "system.h"
 #include "system_var.h"
 #include "camera.h"
 #include "build_info.h"
@@ -13,11 +14,12 @@
 #define NEAR_PLANE 0.1f
 #define FAR_PLANE 1000.0f
 
-class Screen {
+class Screen : public System {
 public:
 	Screen();
-	bool init();
-	void clean_exit();
+	bool load() override;
+	bool start() override { return create_window(); }
+	bool free() override;
 
 	void render_frame();
 	

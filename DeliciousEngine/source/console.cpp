@@ -3,7 +3,6 @@
 #include <imgui.h>
 
 #include "screen.h"
-#include "scripting.h"
 #include "dstr.h"
 #include "cmds.h"
 
@@ -22,7 +21,7 @@ ConsoleCommand(quit) {
 	console.set_variable("eng_running", false);
 }
 
-bool Console::init() {
+bool Console::load() {
 	display_console = false;
 
 	//register_command("toggleconsole", cmd_toggleconsole);
@@ -34,10 +33,11 @@ bool Console::init() {
 	return true;
 }
 
-void Console::clean_exit() {
+bool Console::free() {
 	//@Todo: Write CVars to config file.
 	variables.clear();
 	commands.clear();
+	return true;
 }
 
 static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
@@ -212,9 +212,6 @@ void Console::execute_string(cstring cmd_str) {
 		else printf("Set variable usage: <var> <value>");
 	}
 	else if (ConsoleCmd* cmd = find_command(label))
-		if (cmd->type == CMD_LUA) 
-			scripting.call_lua_function_with_args(cmd->name, argv);
-		else
 			cmd->callback(argv);
 	else 
 		printf("Unknown command/variable: \"%s\"", label);

@@ -148,7 +148,7 @@ Input::Input() {
 	
 }
 
-bool Input::init() {
+bool Input::load() {
 	key_records.reserve(10);
 	setup_gui_bindings();
 	SDL_StartTextInput();
@@ -189,9 +189,10 @@ void Input::setup_gui_bindings() {
 	io.IniFilename = NULL;
 }
 
-void Input::clean_exit() {
+bool Input::free() {
 	SDL_StopTextInput();
 	//@Todo: Dump keybinds to config files.
+	return true;
 }
 
 void Input::bind(SDL_Keycode keycode, cstring command) {

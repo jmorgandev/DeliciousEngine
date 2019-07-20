@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include "system.h"
 
 #include "dtypes.h"
 #include "mesh_data.h"
@@ -12,10 +13,11 @@
 #include "mesh.h"
 #include "asset_loader.h"
 
-class Resources {
+class Resources : public System {
 public:
-	bool init();
-	void clean_exit();
+	bool load() override;
+	bool start() override { return load_default_resources(); }
+	bool free() override;
 
 	bool load_default_resources();
 

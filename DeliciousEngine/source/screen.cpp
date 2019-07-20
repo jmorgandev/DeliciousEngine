@@ -32,7 +32,7 @@ Screen::Screen() {
 	std::memset(gui_cursors, NULL, sizeof(gui_cursors));
 }
 
-bool Screen::init() {
+bool Screen::load() {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		console.printf("SDL could not be initialised: %s", SDL_GetError());
 		return false;
@@ -72,7 +72,7 @@ bool Screen::init() {
 	return true;
 }
 
-void Screen::clean_exit() {
+bool Screen::free() {
 	for (auto cursor : gui_cursors) {
 		SDL_FreeCursor(cursor);
 	}
@@ -81,6 +81,7 @@ void Screen::clean_exit() {
 	SDL_GL_DeleteContext(gl_context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+	return true;
 }
 
 bool Screen::create_window() {

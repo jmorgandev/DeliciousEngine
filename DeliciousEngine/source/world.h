@@ -1,22 +1,24 @@
 #ifndef DELICIOUS_WORLD_H
 #define DELICIOUS_WORLD_H
 
+#include <vector>
+#include <array>
+#include "system.h"
 #include <list>
 #include <chrono>
 #include "build_settings.h"
 #include "system_var.h"
-#include "entity.h"
 #include "dtypes.h"
+#include "entity.h"
 
 using time_point = std::chrono::time_point<std::chrono::steady_clock>;
 using duration = std::chrono::duration<double>;
 
-class World {
+class World : public System {
 public:
-	bool init();
-	void clean_exit();
-
-	bool load_test();
+	bool load() override;
+	bool start() override;
+	bool free() override;
 
 	void update();
 	void draw();
@@ -28,11 +30,12 @@ public:
 	Entity* make_entity(std::string name = "entity");
 private:
 	Entity entity_pool[MAX_ENTITIES];
-	bool   entity_flag[MAX_ENTITIES];
+	bool  entity_flags[MAX_ENTITIES];
 	time_point load_time;
 	time_point current_time;
 	//@Temp
 	void do_camera();
+	bool load_test();
 };
 extern World world;
 
