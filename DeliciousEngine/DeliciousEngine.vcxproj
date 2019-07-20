@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="source\asset_loader.h" />
     <ClInclude Include="source\build_info.h" />
+    <ClInclude Include="source\build_settings.h" />
     <ClInclude Include="source\camera.h" />
     <ClInclude Include="source\cmds.h" />
     <ClInclude Include="source\console.h" />

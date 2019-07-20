@@ -189,6 +189,9 @@
     <ClInclude Include="source\audio.h">
       <Filter>Source\systems</Filter>
     </ClInclude>
+    <ClInclude Include="source\build_settings.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="notes.txt">

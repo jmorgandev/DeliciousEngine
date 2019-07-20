@@ -3,7 +3,7 @@
 
 #include <list>
 #include <chrono>
-
+#include "build_settings.h"
 #include "system_var.h"
 #include "entity.h"
 #include "dtypes.h"
@@ -25,26 +25,10 @@ public:
 		return std::chrono::duration_cast<duration>(current_time - load_time).count();
 	}
 
-	Entity* get_entity(uint index);
-	
-	Entity* find_entity(std::string name);
-	Entity* find_entities(std::string name);
-
-	Entity* create_entity(std::string name = "NewEntity");
-
-	Entity* copy_entity(Entity* ent);
-
-	Entity* clone_entity(Entity* ent, glm::vec3 pos);
-	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot);
-	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::vec3 scale);
-	Entity* clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot, glm::vec3 scale);
-	Entity* clone_entity(Entity* ent, Transform tfm);
-
-	void destroy_entity(Entity* ent);
-
-	bool collision(Entity* a, Entity* b);
+	Entity* make_entity(std::string name = "entity");
 private:
-	std::list<Entity> entities;
+	Entity entity_pool[MAX_ENTITIES];
+	bool   entity_flag[MAX_ENTITIES];
 	time_point load_time;
 	time_point current_time;
 	//@Temp

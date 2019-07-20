@@ -10,6 +10,8 @@
 #include "material.h"
 
 bool World::init() {
+	std::memset(entity_flag, false, sizeof(bool) * MAX_ENTITIES);
+
 	return true;
 }
 
@@ -28,14 +30,26 @@ void World::clean_exit() {
 
 }
 
+Entity* World::make_entity(std::string name) {
+	for (int i = 0; i < MAX_ENTITIES; i++) {
+		if (!entity_flag[i]) {
+			entity_pool[i] = Entity(name);
+			entity_flag[i] = true;
+			return &entity_pool[i];
+		}
+	}
+	return nullptr;
+}
+
 void World::update() {
 	using namespace std::chrono;
 	current_time = steady_clock::now();
 	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 
-	for (auto entity : entities) {
-		entity.update();
+	for (int i = 0; i < MAX_ENTITIES; i++) {
+		if (entity_flag[i])
+			entity_pool[i].update();
 	}
 }
 
@@ -54,7 +68,11 @@ void World::draw() {
 	//glm::mat4 view = cam->view_matrix();
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
-	for (auto entity : entities) {
+	for (int i = 0; i < MAX_ENTITIES; i++) {
+		if (!entity_flag[i])
+			continue;
+
+		Entity& entity = entity_pool[i];
 		glm::mat4 transform = entity.get_transform().get_matrix();
 		Material* mat = entity.get_renderer().get_material();
 		if (mat == nullptr) continue;
@@ -85,66 +103,4 @@ void World::do_camera() {
 
 	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
 	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
-}
-
-Entity* World::get_entity(uint index) {
-	if (index < entities.size()) {
-		auto it = entities.begin();
-		std::advance(it, index);
-		return &(*it);
-	}
-	return nullptr;
-}
-
-Entity* World::create_entity(std::string name) {
-	entities.emplace_back(name);
-	return &entities.back();
-}
-
-Entity* World::copy_entity(Entity* ent) {
-	entities.emplace_back(*ent);
-	return &entities.back();
-}
-
-Entity* World::clone_entity(Entity* ent, glm::vec3 pos) {
-	entities.emplace_back(*ent);
-	entities.back().get_transform().set_position(pos);
-	return &entities.back();
-}
-Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot) {
-	entities.emplace_back(*ent);
-	Transform& t = entities.back().get_transform();
-	t.set_position(pos);
-	t.set_rotation(rot);
-	return &entities.back();
-}
-Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::vec3 scale) {
-	entities.emplace_back(*ent);
-	Transform& t = entities.back().get_transform();
-	t.set_position(pos);
-	t.set_scale(scale);
-	return &entities.back();
-}
-Entity* World::clone_entity(Entity* ent, glm::vec3 pos, glm::quat rot, glm::vec3 scale) {
-	entities.emplace_back(*ent);
-	Transform& t = entities.back().get_transform();
-	t.set_position(pos);
-	t.set_rotation(rot);
-	t.set_scale(scale);
-	return &entities.back();
-}
-Entity* World::clone_entity(Entity* ent, Transform tfm) {
-	entities.emplace_back(*ent);
-	entities.back().get_transform() = tfm;
-	return &entities.back();
-}
-
-void World::destroy_entity(Entity* ent) {
-	for (auto it = entities.begin(); it != entities.end();) {
-		if (ent == &(*it)) {
-			entities.erase(it);
-			return;
-		}
-		else ++it;
-	}
 }

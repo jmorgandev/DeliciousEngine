@@ -33,11 +33,11 @@ static auto set_overloads = sol::overload(
 
 static auto entity_constructors = sol::overload(
 	[](std::string name) -> Entity* {
-		Entity* ent = world.create_entity(name);
+		Entity* ent = world.make_entity(name);
 		return ent;
 	},
 	[](sol::this_state ts, std::string name, sol::table script) -> Entity* {
-		Entity* ent = world.create_entity(name);
+		Entity* ent = world.make_entity(name);
 		ent->set_script(ts, script);
 		return ent;
 	}
