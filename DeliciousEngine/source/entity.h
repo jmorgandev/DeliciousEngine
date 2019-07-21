@@ -9,8 +9,7 @@
 #include <mat4x4.hpp>
 #include <vec3.hpp>
 #include <gtc/quaternion.hpp>
-
-#include <sol.hpp>
+#include <functional>
 
 //@Todo, @Speed: Consider SoA vs AoS. Data-oriented design
 // Should entities have individual MeshRenderers or just meshes that can be sent
@@ -20,9 +19,6 @@ class Entity {
 public:
 	Entity(std::string name = "Entity", uint tag = 0) : name(name), tag_index(tag) {}
 	virtual ~Entity() {}
-
-	sol::table get_script() { return lua_script; }
-	void set_script(sol::this_state ts, sol::table script);
 
 	std::string get_name() const { return name; }
 	void set_name(const std::string& name) { this->name = name; }
@@ -46,8 +42,6 @@ protected:
 
 	std::string name;
 	uint tag_index;
-
-	sol::table lua_script;
 };
 
 #endif

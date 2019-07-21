@@ -12,8 +12,6 @@
 #include "shader.h"
 #include "texture.h"
 
-#include <sol.hpp>
-
 //@Todo: Auto-generate global uniform block for standard engine assigned uniforms e.g:
 // - matrix_mvp (Computed before sending to GPU)
 // - matrix_view
@@ -43,11 +41,6 @@ public:
 	void set_floatv(std::string name, GLfloat* values, GLuint size);
 
 	void set_texture(std::string name, const Texture* tex);
-
-	void set_vec4(std::string name, sol::stack_object val) {
-		glm::vec4 value = val.as<glm::vec4>();
-		set_vec4(name, value);
-	}
 
 	void set(std::string name, glm::vec4 value);
 	void set(std::string name, const Texture* tex);
