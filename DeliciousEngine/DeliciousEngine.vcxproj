@@ -187,6 +187,7 @@
     <ClInclude Include="source\dstr.h" />
     <ClInclude Include="source\dtypes.h" />
     <ClInclude Include="source\entity.h" />
+    <ClInclude Include="source\game.h" />
     <ClInclude Include="source\help_pages.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\input_types.h" />
