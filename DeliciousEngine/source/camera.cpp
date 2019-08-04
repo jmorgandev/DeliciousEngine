@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "engine.h"
 #include "screen.h"
 #include <gtc/matrix_transform.hpp>
 
@@ -10,11 +11,11 @@ Camera::Camera() {
 	ortho = false;
 }
 
-void Camera::update_projection() {
+void Camera::update_projection(float scr_w, float scr_h, float scr_aspect) {
 	if (ortho)
-		projection = glm::ortho(0.0f, (float)screen.width(), (float)screen.height(), 0.0f);
+		projection = glm::ortho(0.0f, scr_w, scr_h, 0.0f);
 	else
-		projection = glm::perspective(glm::radians(fov), screen.aspect_ratio(), nearclip, farclip);
+		projection = glm::perspective(glm::radians(fov), scr_aspect, nearclip, farclip);
 	view = glm::inverse(transform);
 }
 

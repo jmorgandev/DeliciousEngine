@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <iostream>
+#include "engine.h"
 #include "console.h"
 #include "world.h"
 #include "build_info.h"
@@ -15,7 +16,7 @@
 //@Temp
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
-Screen::Screen() {
+Screen::Screen(DeliciousEngine& engine) : System(engine) {
 	window     = nullptr;
 	gl_context = nullptr;
 
@@ -33,6 +34,7 @@ Screen::Screen() {
 }
 
 bool Screen::load() {
+	auto console = engine.get<Console>();
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		console.printf("SDL could not be initialised: %s", SDL_GetError());
 		return false;
@@ -85,6 +87,7 @@ bool Screen::free() {
 }
 
 bool Screen::create_window() {
+	auto console = engine.get<Console>();
 	//@Todo: Deprecate full fullscreen acquisition of GPU, instead use borderless fullscreen...
 	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
 	//		 and then display that as a scaled fullscreen quad.
@@ -168,7 +171,10 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
-	camera.update_projection();
+	auto world = engine.get<World>();
+	auto console = engine.get<Console>();
+	auto screen = engine.get<Screen>();
+	camera.update_projection(screen.width(), screen.height(), screen.aspect_ratio());
 	world.draw();
 	console.update_and_draw();
 

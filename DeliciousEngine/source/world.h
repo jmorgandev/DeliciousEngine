@@ -16,6 +16,9 @@ using duration = std::chrono::duration<double>;
 
 class World : public System {
 public:
+	World(DeliciousEngine& engine) : System(engine) {}
+	World() = delete;
+
 	bool load() override;
 	bool start() override;
 	bool free() override;
@@ -37,6 +40,5 @@ private:
 	void do_camera();
 	bool load_test();
 };
-extern World world;
 
 #endif

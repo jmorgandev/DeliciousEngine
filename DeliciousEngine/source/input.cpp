@@ -1,5 +1,7 @@
 #include "input.h"
 
+#include "engine.h"
+
 #include <algorithm>
 #include <unordered_map>
 
@@ -144,10 +146,6 @@ static std::unordered_map<std::string, SDL_Keycode> keynames = {
 	make_pair("printscr", SDLK_PRINTSCREEN)
 };
 
-Input::Input() {
-	
-}
-
 bool Input::load() {
 	key_records.reserve(10);
 	setup_gui_bindings();
@@ -224,7 +222,7 @@ void Input::process_events() {
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_QUIT:
-			console.set_variable("eng_running", false);
+			engine.get<Console>().set_variable("eng_running", false);
 			break;
 		case SDL_KEYDOWN: case SDL_KEYUP:
 			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
@@ -238,7 +236,7 @@ void Input::process_events() {
 					record->state = KEY_HOLD;
 				else {
 					if (key_bind* bind = find_bind(event.key.keysym.sym))
-						console.execute_keybind(bind);
+						engine.get<Console>().execute_keybind(bind);
 					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
 				}
 			}

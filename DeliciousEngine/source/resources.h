@@ -13,8 +13,13 @@
 #include "mesh.h"
 #include "asset_loader.h"
 
+class DeliciousEngine;
+
 class Resources : public System {
 public:
+	Resources(DeliciousEngine& engine) : System(engine) {}
+	Resources() = delete;
+
 	bool load() override;
 	bool start() override { return load_default_resources(); }
 	bool free() override;
@@ -41,6 +46,5 @@ private:
 	std::unordered_map<std::string, Mesh>     mesh_catalog;
 	std::unordered_map<std::string, Material> material_catalog;
 };
-extern Resources resources;
 
 #endif

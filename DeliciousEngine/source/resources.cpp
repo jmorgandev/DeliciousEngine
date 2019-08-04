@@ -11,6 +11,8 @@
 
 #include "dgl.h"
 #include "default_mesh.h"
+#include "engine.h"
+#include "console.h"
 
 bool Resources::load() {
 	//@Deprecated: We are no longer using SDL_Image for loading textures
@@ -73,6 +75,7 @@ Texture* Resources::load_texture(std::string filepath) {
 }
 
 Texture* Resources::load_texture(std::string filename, std::string id) {
+	auto console = engine.get<Console>();
 	//int x, y, channels, desired channels
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);

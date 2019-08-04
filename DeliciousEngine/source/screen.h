@@ -14,9 +14,13 @@
 #define NEAR_PLANE 0.1f
 #define FAR_PLANE 1000.0f
 
+class DeliciousEngine;
+
 class Screen : public System {
 public:
-	Screen();
+	Screen(DeliciousEngine& engine);
+	Screen() = delete;
+
 	bool load() override;
 	bool start() override { return create_window(); }
 	bool free() override;
@@ -78,6 +82,5 @@ private:
 
 	glm::mat4 ortho_matrix;
 };
-extern Screen screen;
 
 #endif

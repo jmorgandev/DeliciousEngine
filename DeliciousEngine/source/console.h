@@ -15,8 +15,13 @@
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
 #define CON_HISTORY_SIZE 32
 
+class DeliciousEngine;
+
 class Console : public System {
 public:
+	Console(DeliciousEngine& engine) : System(engine) {}
+	Console() = delete;
+
 	bool load() override;
 	bool free() override;
 
@@ -76,6 +81,5 @@ private:
 	void execute_input(bool user_input);
 	void clear_input();
 };
-extern Console console;
 
 #endif

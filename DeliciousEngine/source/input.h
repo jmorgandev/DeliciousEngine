@@ -7,9 +7,13 @@
 #include "input_types.h"
 #include "system.h"
 
+class DeliciousEngine;
+
 class Input : public System {
 public:
-	Input();
+	Input(DeliciousEngine& engine) : System(engine) {}
+	Input() = delete;
+
 	bool load() override;
 	bool free() override;
 
@@ -32,6 +36,5 @@ private:
 	void update_records();
 	void setup_gui_bindings();
 };
-extern Input input;
 
 #endif

@@ -5,25 +5,27 @@
 #include "resources.h"
 #include "input.h"
 #include "world.h"
+#include "engine.h"
 
-Console   console;
-Screen    screen;
-Resources resources;
-Input     input;
-World     world;
+static DeliciousEngine engine;
+static Console   console(engine);
+static Screen    screen(engine);
+static Resources resources(engine);
+static Input     input(engine);
+static World     world(engine);
 
 SystemVar eng_running = false;
 SystemVar eng_strict = false;
 
 #include <fmod.hpp>
 
-FMOD::System* fmod_system = nullptr;
-FMOD::Sound* sound = nullptr;
-FMOD::Channel* chan = nullptr;
+static FMOD::System* fmod_system = nullptr;
+static FMOD::Sound* sound = nullptr;
+static FMOD::Channel* chan = nullptr;
 
 static void do_fmod() {
 	FMOD_RESULT result;
-	
+
 	result = FMOD::System_Create(&fmod_system);
 	result = fmod_system->init(8, FMOD_INIT_NORMAL, nullptr);
 

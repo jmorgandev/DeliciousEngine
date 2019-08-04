@@ -90,7 +90,7 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 }
 
 void Material::set_vec4(std::string name, glm::vec4 value) {
-	console.printf("Set %s to %s", name.c_str(), glm::to_string(value).c_str());
+	//console.printf("Set %s to %s", name.c_str(), glm::to_string(value).c_str());
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const UniformMeta& uniform = it->second;

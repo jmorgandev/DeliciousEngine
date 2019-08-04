@@ -9,7 +9,7 @@ public:
 	enum Mode { Perspective, Orthographic };
 
 	Camera();
-	void update_projection();
+	void update_projection(float scr_w, float scr_h, float scr_aspect);
 	void look_at(glm::vec3 pos);
 
 	float get_fov() const { return fov; }

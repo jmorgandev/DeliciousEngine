@@ -88,6 +88,9 @@
     <ClCompile Include="source\dstr.cpp">
       <Filter>Source\toolbox</Filter>
     </ClCompile>
+    <ClCompile Include="source\engine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\camera.h">
@@ -194,6 +197,9 @@
     </ClInclude>
     <ClInclude Include="source\game.h">
       <Filter>Source\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

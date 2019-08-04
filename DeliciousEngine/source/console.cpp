@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "engine.h"
 #include "screen.h"
 #include "dstr.h"
 #include "cmds.h"
@@ -10,7 +11,7 @@
 //       function definitions instead...
 
 ConsoleCommand(toggleconsole) {
-	console.display_toggle();
+	//console.display_toggle();
 }
 
 ConsoleCommand(clear) {
@@ -18,7 +19,7 @@ ConsoleCommand(clear) {
 }
 ConsoleCommand(quit) {
 	//@Todo: Put this command in main.cpp to avoid write_variable overhead
-	console.set_variable("eng_running", false);
+	//console.set_variable("eng_running", false);
 }
 
 bool Console::load() {
@@ -43,6 +44,7 @@ bool Console::free() {
 static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
 							   ImGuiWindowFlags_NoSavedSettings);
 void Console::update_and_draw() {
+	auto screen = engine.get<Screen>();
 	if (display_console) {
 		ImGui::SetNextWindowPos(screen.imgui_center(), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(screen.imgui_size(0.75f), ImGuiCond_Once);
