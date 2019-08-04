@@ -35,6 +35,9 @@
     <Filter Include="Source\interface">
       <UniqueIdentifier>{ebbb8b01-439a-40d5-aa22-3c40c3f82436}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThirdParty\glad">
+      <UniqueIdentifier>{48e49e6e-fccb-4e24-80a3-77659cf3e6f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\camera.cpp">
@@ -90,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="source\engine.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\glad\glad.c">
+      <Filter>ThirdParty\glad</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

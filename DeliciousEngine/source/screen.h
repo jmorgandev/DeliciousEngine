@@ -2,7 +2,7 @@
 #define DELICIOUS_SCREEN_H
 #include <SDL_video.h>
 #include <SDL_mouse.h>
-#include <glew.h>
+#include <glad.h>
 
 #include "system.h"
 #include "system_var.h"

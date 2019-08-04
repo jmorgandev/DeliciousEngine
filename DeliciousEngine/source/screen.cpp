@@ -34,7 +34,7 @@ Screen::Screen(DeliciousEngine& engine) : System(engine) {
 }
 
 bool Screen::load() {
-	auto console = engine.get<Console>();
+	auto& console = engine.get<Console>();
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		console.printf("SDL could not be initialised: %s", SDL_GetError());
 		return false;
@@ -87,7 +87,7 @@ bool Screen::free() {
 }
 
 bool Screen::create_window() {
-	auto console = engine.get<Console>();
+	auto& console = engine.get<Console>();
 	//@Todo: Deprecate full fullscreen acquisition of GPU, instead use borderless fullscreen...
 	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
 	//		 and then display that as a scaled fullscreen quad.
@@ -140,10 +140,7 @@ bool Screen::create_window() {
 		}
 	}
 
-	glewExperimental = true;
-	GLenum status = glewInit();
-	if (status != GLEW_OK) {
-		console.printf("GLEW could not be initialised: %s", glewGetErrorString(status));
+	if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
 		return false;
 	}
 
@@ -171,9 +168,9 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
-	auto world = engine.get<World>();
-	auto console = engine.get<Console>();
-	auto screen = engine.get<Screen>();
+	auto& world = engine.get<World>();
+	auto& console = engine.get<Console>();
+	auto& screen = engine.get<Screen>();
 	camera.update_projection(screen.width(), screen.height(), screen.aspect_ratio());
 	world.draw();
 	console.update_and_draw();

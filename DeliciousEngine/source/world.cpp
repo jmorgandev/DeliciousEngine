@@ -24,8 +24,8 @@ bool World::free() {
 
 //@Temp
 bool World::load_test() {
-	auto resources = engine.get<Resources>();
-	auto screen = engine.get<Screen>();
+	auto& resources = engine.get<Resources>();
+	auto& screen = engine.get<Screen>();
 
 	Entity* cube = make_entity("cube");
 	Mesh* m = resources.fetch_mesh("primitive.cube");
@@ -69,7 +69,7 @@ void World::update() {
 }
 
 void World::draw() {
-	auto screen = engine.get<Screen>();
+	auto& screen = engine.get<Screen>();
 	//@Temp
 	//Entity* first = get_entity(0);
 	//Entity* second = get_entity(1);
@@ -101,8 +101,8 @@ void World::draw() {
 
 void World::do_camera() {
 	//@Temp: Until scripting
-	auto screen = engine.get<Screen>();
-	auto input = engine.get<Input>();
+	auto& screen = engine.get<Screen>();
+	auto& input = engine.get<Input>();
 
 	Camera* cam = screen.get_camera();
 

@@ -44,7 +44,7 @@ bool Console::free() {
 static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
 							   ImGuiWindowFlags_NoSavedSettings);
 void Console::update_and_draw() {
-	auto screen = engine.get<Screen>();
+	auto& screen = engine.get<Screen>();
 	if (display_console) {
 		ImGui::SetNextWindowPos(screen.imgui_center(), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(screen.imgui_size(0.75f), ImGuiCond_Once);

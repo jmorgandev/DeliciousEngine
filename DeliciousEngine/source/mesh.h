@@ -1,7 +1,7 @@
 #ifndef DELICIOUS_MESH_H
 #define DELICIOUS_MESH_H
 
-#include <glew.h>
+#include <glad.h>
 
 #include "dtypes.h"
 

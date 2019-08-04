@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include <SDL_image.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
 #include <vec4.hpp>
 #include <vec3.hpp>
 #include <mat4x4.hpp>
@@ -15,9 +15,6 @@
 #include "console.h"
 
 bool Resources::load() {
-	//@Deprecated: We are no longer using SDL_Image for loading textures
-	IMG_Init(IMG_INIT_PNG | IMG_INIT_TIF);
-
 	return true;
 }
 
@@ -41,41 +38,8 @@ bool Resources::free() {
 	return true;
 }
 
-Texture* Resources::load_texture(std::string filepath) {
-	//@Deprecated: Use stb_image instead of SDL_Image
-	Texture new_texture = {};
-
-	SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
-
-	if (temp_surface == nullptr) {
-		//Error, extension not supported by SDL_Image
-		return nullptr;
-	}
-	//Otherwise we have the surface
-	int bpp = temp_surface->format->BytesPerPixel;
-
-	GLuint texture_object;
-	glGenTextures(1, &texture_object);
-	glBindTexture(GL_TEXTURE_2D, texture_object);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, temp_surface->w, temp_surface->h);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, temp_surface->w, temp_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, (byte*)temp_surface->pixels);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	//@Todo: Have some way of specifying the texture parameters outside this function
-	
-	new_texture.id = texture_object;
-	new_texture.width = temp_surface->w;
-	new_texture.height = temp_surface->h;
-	new_texture.bytes_per_pixel = temp_surface->format->BytesPerPixel;
-
-	SDL_FreeSurface(temp_surface);
-
-	texture_catalog[filepath] = new_texture;
-	return &texture_catalog[filepath];
-}
-
 Texture* Resources::load_texture(std::string filename, std::string id) {
-	auto console = engine.get<Console>();
+	auto& console = engine.get<Console>();
 	//int x, y, channels, desired channels
 	int w, h, channels;
 	byte* pixel_data = stbi_load(filename.c_str(), &w, &h, &channels, NULL);

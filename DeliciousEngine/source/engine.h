@@ -22,6 +22,7 @@ private:
 	void add_default_systems();
 
 	std::unordered_map<std::type_index, System*> systems;
+	std::vector<std::type_index> system_load_order;
 
 	bool running;
 };
@@ -36,6 +37,7 @@ template <typename T>
 void DeliciousEngine::add() {
 	assert(systems.find(typeid(T)) == systems.end());
 	systems[typeid(T)] = new T(*this);
+	system_load_order.emplace_back(typeid(T));
 }
 
 #endif

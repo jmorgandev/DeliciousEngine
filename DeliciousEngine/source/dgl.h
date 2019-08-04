@@ -1,7 +1,7 @@
 #ifndef DELICIOUS_DGL_H
 #define DELICIOUS_DGL_H
 
-#include <glew.h>
+#include <glad.h>
 #include <string>
 #include "mesh_data.h"
 

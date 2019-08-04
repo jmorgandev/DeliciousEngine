@@ -1,5 +1,5 @@
 #include "mesh_renderer.h"
-#include <glew.h>
+#include <glad.h>
 #include "material.h"
 #include "mesh.h"
 

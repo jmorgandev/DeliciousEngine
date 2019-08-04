@@ -1,7 +1,0 @@
-event [load]:
-	load mesh [primitive.cube]
-	load texture [res/tile.png]
-	make material [diffuse, texture]
-
-event [update]:
-	rotate [0,1,2]

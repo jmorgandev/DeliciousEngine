@@ -1,7 +1,7 @@
 #ifndef DELICIOUS_SHADER_H
 #define DELICIOUS_SHADER_H
 
-#include <glew.h>
+#include <glad.h>
 
 //@Todo: Move material meta data (uniforms, samplers) to here instead.
 // -Enabled attributes

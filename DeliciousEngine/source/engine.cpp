@@ -93,13 +93,13 @@ bool DeliciousEngine::load() {
 
 	add_default_systems();
 
-	for (auto system : systems) {
-		if (!system.second->load()) 
+	for (auto id : system_load_order) {
+		if (!systems[id]->load())
 			return false;
 	}
 
-	for (auto system : systems) {
-		if (!system.second->start())
+	for (auto id : system_load_order) {
+		if (!systems[id]->start())
 			return false;
 	}
 
@@ -115,9 +115,9 @@ void DeliciousEngine::add_default_systems() {
 }
 
 DeliciousEngine::~DeliciousEngine() {
-	for (auto system : systems) {
-		system.second->free();
-		delete system.second;
+	for (auto itr = system_load_order.rbegin(); itr != system_load_order.rend(); itr++) {
+		systems[*itr]->free();
+		delete systems[*itr];
 	}
 	systems.clear();
 }

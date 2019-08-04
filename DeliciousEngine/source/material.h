@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 
-#include <glew.h>
+#include <glad.h>
 #include <vec3.hpp>
 #include <mat4x4.hpp>
 

@@ -1,7 +1,7 @@
 #ifndef DELICIOUS_TEXTURE_H
 #define DELICIOUS_TEXTURE_H
 
-#include <glew.h>
+#include <glad.h>
 
 #include "dtypes.h"
 
