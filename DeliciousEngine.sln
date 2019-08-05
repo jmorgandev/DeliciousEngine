@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeliciousEngine", "DeliciousEngine\DeliciousEngine.vcxproj", "{4967B559-3C54-4DE7-A41B-7D802E11E33C}"
 EndProject
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D5940EB5-6650-442D-A12C-86EAC72CD562}
+		SolutionGuid = {7C775C8D-0C75-4256-8C16-E10D9A0E7855}
 	EndGlobalSection
 EndGlobal

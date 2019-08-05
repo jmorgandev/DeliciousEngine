@@ -19,27 +19,6 @@ SystemVar eng_strict = false;
 
 #include <fmod.hpp>
 
-static FMOD::System* fmod_system = nullptr;
-static FMOD::Sound* sound = nullptr;
-static FMOD::Channel* chan = nullptr;
-
-static void do_fmod() {
-	FMOD_RESULT result;
-
-	result = FMOD::System_Create(&fmod_system);
-	result = fmod_system->init(8, FMOD_INIT_NORMAL, nullptr);
-
-	fmod_system->createSound("res/swish.wav", FMOD_DEFAULT, nullptr, &sound);
-	sound->setMode(FMOD_LOOP_BIDI);
-
-	fmod_system->playSound(sound, nullptr, false, &chan);
-}
-static void exit_fmod() {
-	chan->stop();
-	sound->release();
-	fmod_system->release();
-}
-
 static bool init_systems() {
 	if (!console.load()) return false;
 	if (!screen.load()) return false;
@@ -67,14 +46,14 @@ static void shutdown() {
 }
 
 int main(char** argv, int argc) {
-	do_fmod();
+	//do_fmod();
 	if (!init_systems()) return 1;
 	if (startup()) {
 		eng_running = true;
 		const uint max_timestep = 1000 / 60;
 		uint acc = 0;
 		uint last_time = SDL_GetTicks();
-		fmod_system->update();
+		//fmod_system->update();
 		while (eng_running.as_bool) {
 			const uint current_time = SDL_GetTicks();
 			acc += (current_time - last_time);
@@ -90,7 +69,7 @@ int main(char** argv, int argc) {
 		}
 
 	}
-	exit_fmod();
+	//exit_fmod();
 	shutdown();
 
 	return 0;
