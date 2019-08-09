@@ -5,13 +5,13 @@
 #include <vec2.hpp>
 
 #include "input_types.h"
-#include "system.h"
+#include "module.h"
 
 class DeliciousEngine;
 
-class Input : public System {
+class Input : public Module {
 public:
-	Input(DeliciousEngine& engine) : System(engine) {}
+	Input(DeliciousEngine& engine) : Module(engine) {}
 	Input() = delete;
 
 	bool load() override;

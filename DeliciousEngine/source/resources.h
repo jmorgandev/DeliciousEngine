@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "system.h"
+#include "module.h"
 
 #include "dtypes.h"
 #include "mesh_data.h"
@@ -15,9 +15,9 @@
 
 class DeliciousEngine;
 
-class Resources : public System {
+class Resources : public Module {
 public:
-	Resources(DeliciousEngine& engine) : System(engine) {}
+	Resources(DeliciousEngine& engine) : Module(engine) {}
 	Resources() = delete;
 
 	bool load() override;

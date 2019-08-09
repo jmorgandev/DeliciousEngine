@@ -242,7 +242,7 @@
     <ClInclude Include="source\screen_types.h" />
     <ClInclude Include="source\shader.h" />
     <ClInclude Include="source\audio.h" />
-    <ClInclude Include="source\system.h" />
+    <ClInclude Include="source\module.h" />
     <ClInclude Include="source\system_var.h" />
     <ClInclude Include="source\texture.h" />
     <ClInclude Include="source\transform.h" />

@@ -2,12 +2,12 @@
 #define DELICIOUS_SYSTEM_H
 
 class DeliciousEngine;
-class System {
+class Module {
 public:
-	System(DeliciousEngine& engine_ref) : engine(engine_ref) {}
-	System(System const &) = delete;
-	System& operator=(System const &) = delete;
-	virtual ~System() = default;
+	Module(DeliciousEngine& engine_ref) : engine(engine_ref) {}
+	Module(Module const &) = delete;
+	Module& operator=(Module const &) = delete;
+	virtual ~Module() = default;
 
 	virtual bool load() = 0;
 	virtual bool start() { return true; }

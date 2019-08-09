@@ -6,7 +6,7 @@
 #include <assert.h>
 
 class Game;
-class System;
+class Module;
 
 class DeliciousEngine {
 public:
@@ -19,25 +19,25 @@ private:
 
 	bool load();
 
-	void add_default_systems();
+	void add_default_modules();
 
-	std::unordered_map<std::type_index, System*> systems;
-	std::vector<std::type_index> system_load_order;
+	std::unordered_map<std::type_index, Module*> modules;
+	std::vector<std::type_index> module_load_order;
 
 	bool running;
 };
 
 template <typename T>
 T& DeliciousEngine::get() {
-	assert(systems.find(typeid(T)) != systems.end());
-	return *static_cast<T*>(systems[typeid(T)]);
+	assert(modules.find(typeid(T)) != modules.end());
+	return *static_cast<T*>(modules[typeid(T)]);
 }
 
 template <typename T>
 void DeliciousEngine::add() {
-	assert(systems.find(typeid(T)) == systems.end());
-	systems[typeid(T)] = new T(*this);
-	system_load_order.emplace_back(typeid(T));
+	assert(modules.find(typeid(T)) == modules.end());
+	modules[typeid(T)] = new T(*this);
+	module_load_order.emplace_back(typeid(T));
 }
 
 #endif

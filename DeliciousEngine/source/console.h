@@ -9,7 +9,7 @@
 #include "console_types.h"
 #include "input_types.h"
 
-#include "system.h"
+#include "module.h"
 
 #define CON_INPUT_SIZE 128
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
@@ -17,9 +17,9 @@
 
 class DeliciousEngine;
 
-class Console : public System {
+class Console : public Module {
 public:
-	Console(DeliciousEngine& engine) : System(engine) {}
+	Console(DeliciousEngine& engine) : Module(engine) {}
 	Console() = delete;
 
 	bool load() override;

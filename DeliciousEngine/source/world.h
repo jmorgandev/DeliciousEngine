@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <array>
-#include "system.h"
+#include "module.h"
 #include <list>
 #include <chrono>
 #include "build_settings.h"
@@ -14,9 +14,9 @@
 using time_point = std::chrono::time_point<std::chrono::steady_clock>;
 using duration = std::chrono::duration<double>;
 
-class World : public System {
+class World : public Module {
 public:
-	World(DeliciousEngine& engine) : System(engine) {}
+	World(DeliciousEngine& engine) : Module(engine) {}
 	World() = delete;
 
 	bool load() override;

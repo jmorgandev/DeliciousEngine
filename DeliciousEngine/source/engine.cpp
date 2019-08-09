@@ -91,22 +91,22 @@ int DeliciousEngine::run(int argc, char** argv) {
 
 bool DeliciousEngine::load() {
 
-	add_default_systems();
+	add_default_modules();
 
-	for (auto id : system_load_order) {
-		if (!systems[id]->load())
+	for (auto id : module_load_order) {
+		if (!modules[id]->load())
 			return false;
 	}
 
-	for (auto id : system_load_order) {
-		if (!systems[id]->start())
+	for (auto id : module_load_order) {
+		if (!modules[id]->start())
 			return false;
 	}
 
 	return true;
 }
 
-void DeliciousEngine::add_default_systems() {
+void DeliciousEngine::add_default_modules() {
 	add<Console>();
 	add<Screen>();
 	add<Resources>();
@@ -115,9 +115,9 @@ void DeliciousEngine::add_default_systems() {
 }
 
 DeliciousEngine::~DeliciousEngine() {
-	for (auto itr = system_load_order.rbegin(); itr != system_load_order.rend(); itr++) {
-		systems[*itr]->free();
-		delete systems[*itr];
+	for (auto itr = module_load_order.rbegin(); itr != module_load_order.rend(); itr++) {
+		modules[*itr]->free();
+		delete modules[*itr];
 	}
-	systems.clear();
+	modules.clear();
 }

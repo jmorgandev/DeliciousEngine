@@ -198,14 +198,14 @@
     <ClInclude Include="source\build_settings.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="source\system.h">
-      <Filter>Source\systems</Filter>
-    </ClInclude>
     <ClInclude Include="source\game.h">
       <Filter>Source\interface</Filter>
     </ClInclude>
     <ClInclude Include="source\engine.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\module.h">
+      <Filter>Source\systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

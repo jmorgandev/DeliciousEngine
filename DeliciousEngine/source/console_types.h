@@ -29,4 +29,9 @@ struct ConsoleCmd {
 	CmdType type;
 };
 
+class ConsoleVariable {
+private:
+	void* address;
+};
+
 #endif

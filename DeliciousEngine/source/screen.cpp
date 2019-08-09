@@ -16,7 +16,7 @@
 //@Temp
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
-Screen::Screen(DeliciousEngine& engine) : System(engine) {
+Screen::Screen(DeliciousEngine& engine) : Module(engine) {
 	window     = nullptr;
 	gl_context = nullptr;
 

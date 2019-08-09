@@ -4,7 +4,7 @@
 #include <SDL_mouse.h>
 #include <glad.h>
 
-#include "system.h"
+#include "module.h"
 #include "system_var.h"
 #include "camera.h"
 #include "build_info.h"
@@ -16,7 +16,7 @@
 
 class DeliciousEngine;
 
-class Screen : public System {
+class Screen : public Module {
 public:
 	Screen(DeliciousEngine& engine);
 	Screen() = delete;
