@@ -25,19 +25,12 @@ ConsoleCommand(quit) {
 bool Console::load() {
 	display_console = false;
 
-	//register_command("toggleconsole", cmd_toggleconsole);
-	//register_command("clear", cmd_clear);
-	//register_command("quit",  cmd_quit);
-
-	register_command("toggleconsole", cmd_toggleconsole);
-
 	return true;
 }
 
 bool Console::free() {
 	//@Todo: Write CVars to config file.
 	variables.clear();
-	commands.clear();
 	return true;
 }
 
@@ -102,67 +95,51 @@ void Console::write_to_input(cstring str) {
 Attempts to register a variable to the variable list. If one already
 exists with the same name, print an error to the console.
 */
-void Console::register_variable(cstring name, SystemVar* ptr, CvarType t, uint16 access_flags) {
-	if (!find_variable(name)) {
-		assert(strlen(name) <= CON_MAX_NAME);
-		ConsoleVar new_cvar = { "", ptr, t, access_flags };
-		strcpy(new_cvar.name, name);
-		variables.push_back(new_cvar);
+//void Console::register_variable(cstring name, SystemVar* ptr, CvarType t, uint16 access_flags) {
+//	if (!find_variable(name)) {
+//		assert(strlen(name) <= CON_MAX_NAME);
+//		ConsoleVar new_cvar = { "", ptr, t, access_flags };
+//		strcpy(new_cvar.name, name);
+//		variables.push_back(new_cvar);
+//	}
+//	else printf("register_variable: \"%s\" already exists!", name);
+//}
+
+template <> 
+constexpr ConsoleVariable::Type Console::type_enum<bool>() { return ConsoleVariable::BOOL; }
+template <>
+constexpr ConsoleVariable::Type Console::type_enum<int>() { return ConsoleVariable::INT; }
+template <>
+constexpr ConsoleVariable::Type Console::type_enum<float>() { return ConsoleVariable::FLOAT; }
+template <>
+constexpr ConsoleVariable::Type Console::type_enum<console_symbol>() { return ConsoleVariable::SYM; }
+
+template <typename T>
+bool Console::register_variable(std::string name, T* variable) {
+	return register_variable(name, variable, type_enum<T>());
+}
+template bool Console::register_variable(std::string, bool*);
+template bool Console::register_variable(std::string, int*);
+template bool Console::register_variable(std::string, float*);
+template bool Console::register_variable(std::string, console_symbol*);
+
+bool Console::register_variable(std::string name, void* data, ConsoleVariable::Type type) {
+	if (variables.find(name) == variables.end()) {
+		variables[name] = {data, type};
+		return true;
 	}
-	else printf("register_variable: \"%s\" already exists!", name);
+	return false;
 }
 
-/*
-Attempts to register a command to the command list. If one already exists
-with the same name, print an error to the console.
-*/
-void Console::register_command(cstring name, CmdFunc func) {
-	if (!find_command(name)) {
-		assert(strlen(name) <= CON_MAX_NAME);
-		ConsoleCmd new_cmd = { "", func, CMD_CPP };
-		strcpy(new_cmd.name, name);
-		commands.push_back(new_cmd);
-	}
-	else printf("register_cmd: \"%s\" already exists.", name);
-}
-
-/*
-Attempts to fetch the pointer of a registered variable. Only returns a
-valid pointer if the names match exactly.
-*/
-ConsoleVar* Console::find_variable(cstring name) {
-	using namespace std;
-	for (auto it = begin(variables); it != end(variables); it++) {
-		if (strcmp(name, it->name) == 0) return &(*it);
-	}
-	return nullptr;
-}
-
-/*
-Attempts to fetch the pointer of a registered command. Only returns a
-valid pointer if the names match exactly.
-*/
-ConsoleCmd* Console::find_command(cstring name) {
-	using namespace std;
-	for (auto it = begin(commands); it != end(commands); it++) {
-		if (strcmp(name, it->name) == 0) return &(*it);
+template <typename T>
+T* Console::get_variable(std::string name) {
+	auto itr = variables.find(name);
+	if (itr != variables.end() && type_to_enum<T>() == itr->second.type) {
+		return (T*)itr->second.data;
 	}
 	return nullptr;
 }
 
-SystemVar* Console::get_variable(cstring name) {
-	if (ConsoleVar* cvar = find_variable(name)) return cvar->data;
-	printf("get_variable: \"%s\" does not exist!", name);
-	return nullptr;
-}
-
-void Console::write_variable(cstring name, SystemVar var, CvarType t) {
-	if (ConsoleVar* cvar = find_variable(name)) {
-		if (cvar->type == t) *cvar->data = var;
-		else printf("write_variable: \"%s\" type mismatch!", name);
-	} 
-	else printf("write_variable: \"%s\" does not exist!", name);
-}
 
 /*
 Separates the input buffer into tokens and attempts to execute the corresponding
@@ -196,27 +173,27 @@ void Console::execute_string(cstring cmd_str) {
 		dstr::split(args, ' ', argv);
 	}
 
-	if (ConsoleVar* cvar = find_variable(label)) {
-		if (argv.empty()) {
-			switch (cvar->type) {
-			case CVAR_INT:
-				printf("%s is %i", cvar->name, cvar->data->as_int);
-				break;
-			case CVAR_FLOAT:
-				printf("%s is %f", cvar->name, cvar->data->as_float);
-				break;
-			case CVAR_BOOL:
-				printf("%s is %i", cvar->name, cvar->data->as_bool);
-				break;
-			}
-		}
-		else if (argv.size() == 1) assign_variable(cvar, argv[0]);
-		else printf("Set variable usage: <var> <value>");
-	}
-	else if (ConsoleCmd* cmd = find_command(label))
-			cmd->callback(argv);
-	else 
-		printf("Unknown command/variable: \"%s\"", label);
+	//if (ConsoleVar* cvar = find_variable(label)) {
+	//	if (argv.empty()) {
+	//		switch (cvar->type) {
+	//		case CVAR_INT:
+	//			printf("%s is %i", cvar->name, cvar->data->as_int);
+	//			break;
+	//		case CVAR_FLOAT:
+	//			printf("%s is %f", cvar->name, cvar->data->as_float);
+	//			break;
+	//		case CVAR_BOOL:
+	//			printf("%s is %i", cvar->name, cvar->data->as_bool);
+	//			break;
+	//		}
+	//	}
+	//	else if (argv.size() == 1) assign_variable(cvar, argv[0]);
+	//	else printf("Set variable usage: <var> <value>");
+	//}
+	//else if (ConsoleCmd* cmd = find_command(label))
+	//		cmd->callback(argv);
+	//else 
+	//	printf("Unknown command/variable: \"%s\"", label);
 }
 
 /*
@@ -232,29 +209,6 @@ bool Console::is_open() {
 
 void Console::load_config() {
 	//@Todo: implement
-}
-
-void Console::assign_variable(cstring name, cstring value) {
-	if (ConsoleVar *cvar = find_variable(name)) assign_variable(cvar, value);
-	else printf("set_variable: \"%s\" does not exist!", name);
-}
-
-void Console::assign_variable(ConsoleVar* cvar, cstring value) {
-	if (cvar->flags & CVAR_MUTABLE) {
-		switch (cvar->type) {
-		case CVAR_INT:
-			cvar->data->as_int = std::atoi(value);
-			break;
-		case CVAR_FLOAT:
-			cvar->data->as_float = (float)std::atof(value);
-			break;
-		case CVAR_BOOL:
-			if (value[0] == 't' || value[0] == 'T' || std::atoi(value) > 0) cvar->data->as_bool = true;
-			else cvar->data->as_bool = false;
-			break;
-		}
-	}
-	else printf("%s is read-only.", cvar->name);
 }
 
 void Console::display(bool d) {

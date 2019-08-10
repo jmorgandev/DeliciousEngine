@@ -51,11 +51,11 @@ bool Screen::load() {
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,  32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
-	console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
-	console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
+	//console.register_variable("vid_width",      &vid_width,      CVAR_INT,   CVAR_CONFIG);
+	//console.register_variable("vid_height",     &vid_height,     CVAR_INT,   CVAR_CONFIG);
+	//console.register_variable("vid_fullscreen", &vid_fullscreen, CVAR_BOOL,  CVAR_CONFIG);
+	//console.register_variable("vid_borderless", &vid_borderless, CVAR_BOOL,  CVAR_CONFIG);
+	//console.register_variable("vid_fov",		&vid_fov,		 CVAR_FLOAT, CVAR_USER  );
 
 	//camera.init(&field_of_view, &aspect_ratio);
 

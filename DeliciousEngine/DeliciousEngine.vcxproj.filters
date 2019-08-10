@@ -5,9 +5,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source\systems">
-      <UniqueIdentifier>{d3a3fbbe-0139-448c-a928-64b84bf7b9b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\objects">
       <UniqueIdentifier>{d3ca0e7d-5350-4dc0-97f2-7332fa6ab297}</UniqueIdentifier>
     </Filter>
@@ -38,6 +35,9 @@
     <Filter Include="ThirdParty\glad">
       <UniqueIdentifier>{48e49e6e-fccb-4e24-80a3-77659cf3e6f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\modules">
+      <UniqueIdentifier>{d3a3fbbe-0139-448c-a928-64b84bf7b9b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\camera.cpp">
@@ -56,19 +56,19 @@
       <Filter>Source\objects</Filter>
     </ClCompile>
     <ClCompile Include="source\console.cpp">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClCompile>
     <ClCompile Include="source\input.cpp">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClCompile>
     <ClCompile Include="source\resources.cpp">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClCompile>
     <ClCompile Include="source\screen.cpp">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClCompile>
     <ClCompile Include="source\world.cpp">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClCompile>
     <ClCompile Include="source\dff.cpp">
       <Filter>Source\toolbox</Filter>
@@ -145,19 +145,19 @@
       <Filter>Source\types</Filter>
     </ClInclude>
     <ClInclude Include="source\console.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\input.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\resources.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\screen.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\world.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\dcm.h">
       <Filter>Source\toolbox</Filter>
@@ -193,7 +193,7 @@
       <Filter>Source\defaults</Filter>
     </ClInclude>
     <ClInclude Include="source\audio.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
     <ClInclude Include="source\build_settings.h">
       <Filter>Source</Filter>
@@ -205,7 +205,7 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="source\module.h">
-      <Filter>Source\systems</Filter>
+      <Filter>Source\modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -32,9 +32,6 @@ static bool startup() {
 	if (!resources.start()) return false;
 	if (!world.start()) return false;
 
-	console.register_variable("eng_running", &eng_running, CVAR_BOOL, CVAR_SYSTEM);
-	console.register_variable("eng_strict",  &eng_strict,  CVAR_BOOL, CVAR_USER);
-
 	return true;
 }
 static void shutdown() {
