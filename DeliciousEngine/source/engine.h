@@ -14,6 +14,8 @@ public:
 	~DeliciousEngine();
 
 	template <typename T> T& get();
+
+	void quit() { running = false; }
 private:
 	template <typename T> void add();
 

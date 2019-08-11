@@ -91,20 +91,6 @@ void Console::write_to_input(cstring str) {
 	strcpy(input_buffer, str);
 }
 
-/*
-Attempts to register a variable to the variable list. If one already
-exists with the same name, print an error to the console.
-*/
-//void Console::register_variable(cstring name, SystemVar* ptr, CvarType t, uint16 access_flags) {
-//	if (!find_variable(name)) {
-//		assert(strlen(name) <= CON_MAX_NAME);
-//		ConsoleVar new_cvar = { "", ptr, t, access_flags };
-//		strcpy(new_cvar.name, name);
-//		variables.push_back(new_cvar);
-//	}
-//	else printf("register_variable: \"%s\" already exists!", name);
-//}
-
 template <> 
 constexpr ConsoleVariable::Type Console::type_enum<bool>() { return ConsoleVariable::BOOL; }
 template <>
@@ -159,41 +145,7 @@ void Console::execute_keybind(key_bind* kb) {
 }
 
 void Console::execute_string(cstring cmd_str) {
-	//@Todo: implement command chaining with ';'
-	char buffer[CON_INPUT_SIZE];
-	strcpy(buffer, cmd_str);
-	char* label = dstr::trim(buffer);
-	dstr::cut_extra_spaces(label);
-
-	std::vector<cstring> argv;
-
-	char* args = strchr(label, ' ');
-	if (args != nullptr) {
-		*(args++) = 0;
-		dstr::split(args, ' ', argv);
-	}
-
-	//if (ConsoleVar* cvar = find_variable(label)) {
-	//	if (argv.empty()) {
-	//		switch (cvar->type) {
-	//		case CVAR_INT:
-	//			printf("%s is %i", cvar->name, cvar->data->as_int);
-	//			break;
-	//		case CVAR_FLOAT:
-	//			printf("%s is %f", cvar->name, cvar->data->as_float);
-	//			break;
-	//		case CVAR_BOOL:
-	//			printf("%s is %i", cvar->name, cvar->data->as_bool);
-	//			break;
-	//		}
-	//	}
-	//	else if (argv.size() == 1) assign_variable(cvar, argv[0]);
-	//	else printf("Set variable usage: <var> <value>");
-	//}
-	//else if (ConsoleCmd* cmd = find_command(label))
-	//		cmd->callback(argv);
-	//else 
-	//	printf("Unknown command/variable: \"%s\"", label);
+	
 }
 
 /*
