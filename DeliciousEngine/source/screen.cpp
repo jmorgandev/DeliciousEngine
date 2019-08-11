@@ -17,14 +17,13 @@
 GLfloat bg_color[] = { 0.2f, 0.1f, 0.3f, 1.0f };
 
 Screen::Screen(DeliciousEngine& engine) : Module(engine) {
-	window     = nullptr;
+	window = nullptr;
 	gl_context = nullptr;
 
-	vid_width         = 800;
-	vid_height        = 600;
-	vid_fullscreen    = false;
-	vid_borderless    = false;
-	vid_fov = 60.0f;
+	window_width = 800;
+	window_height = 600;
+	fullscreen = false;
+	borderless = false;
 
 	gui_vao = gui_vbo = gui_ebo = 0;
 	gui_shader_handle = 0;
@@ -92,34 +91,27 @@ bool Screen::create_window() {
 	//@Todo: Don't destroy gl context when changing resolution, instead render to framebuffer texture
 	//		 and then display that as a scaled fullscreen quad.
 	uint32 sdl_flags = SDL_WINDOW_OPENGL;
-	if (vid_fullscreen.as_bool == true && vid_borderless.as_bool == true) {
+	if (fullscreen && borderless ) {
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) == 0) {
-			vid_width.as_int  = dm.w;
-			vid_height.as_int = dm.h;
+			window_width = dm.w;
+			window_height = dm.h;
 			sdl_flags |= SDL_WINDOW_BORDERLESS;
 		}
 		else {
 			console.print("Cannot detect native resolution for borderless fullscreen, reverting to windowed mode.");
-			vid_fullscreen = false;
-			vid_borderless = false;
+			fullscreen = false;
+			borderless = false;
 		}
 	}
-	else if (vid_fullscreen.as_bool == true) {
+	else if (fullscreen) {
 		sdl_flags |= SDL_WINDOW_FULLSCREEN;
 	}
-	else if (vid_borderless.as_bool == true) {
+	else if (borderless) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
 
-	window = SDL_CreateWindow(
-		DEFAULT_WIN_TITLE,
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		vid_width.as_int,
-		vid_height.as_int,
-		sdl_flags
-	);
+	window = SDL_CreateWindow(DEFAULT_WIN_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, sdl_flags);
 	if (window == nullptr) {
 		console.printf("SDL window could not be created: %s", SDL_GetError());
 		return false;
@@ -130,7 +122,7 @@ bool Screen::create_window() {
 			console.printf("Could not attach existing GL context to SDL window: %s", SDL_GetError());
 			return false;
 		}
-		glViewport(0, 0, vid_width.as_int, vid_height.as_int);
+		glViewport(0, 0, window_width, window_height);
 	}
 	else {
 		gl_context = SDL_GL_CreateContext(window);
@@ -153,7 +145,7 @@ bool Screen::create_window() {
 
 	create_gui_objects();
 
-	ortho_matrix = glm::ortho(0.0f, (float)vid_width.as_int, (float)vid_height.as_int, 0.0f);
+	ortho_matrix = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f);
 
 	return true;
 }
@@ -170,8 +162,7 @@ bool Screen::reload_window() {
 void Screen::render_frame() {
 	auto& world = engine.get<World>();
 	auto& console = engine.get<Console>();
-	auto& screen = engine.get<Screen>();
-	camera.update_projection(screen.width(), screen.height(), screen.aspect_ratio());
+	camera.update_projection(window_width, window_height, aspect_ratio());
 	world.draw();
 	console.update_and_draw();
 
@@ -182,15 +173,15 @@ void Screen::render_frame() {
 }
 
 void Screen::resize(int new_width, int new_height) {
-	vid_width = new_width;
-	vid_height = new_height;
+	window_width = new_width;
+	window_height = new_height;
 	reload_window();
 }
 
 void Screen::begin_gui() {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize.x = vid_width.as_int;
-	io.DisplaySize.y = vid_height.as_int;
+	io.DisplaySize.x = (float)window_width;
+	io.DisplaySize.y = (float)window_height;
 
 	auto cursor = ImGui::GetMouseCursor();
 	if (io.MouseDrawCursor || cursor == ImGuiMouseCursor_None) {
@@ -247,7 +238,7 @@ void Screen::draw_imgui() {
 			else {
 				glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 				glScissor((int)pcmd->ClipRect.x,
-						  (int)(vid_height.as_int - pcmd->ClipRect.w),
+						  (int)((float)window_height - pcmd->ClipRect.w),
 						  (int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
 						  (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 				glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount,

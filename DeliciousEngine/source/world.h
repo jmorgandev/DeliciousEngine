@@ -7,7 +7,6 @@
 #include <list>
 #include <chrono>
 #include "build_settings.h"
-#include "system_var.h"
 #include "dtypes.h"
 #include "entity.h"
 

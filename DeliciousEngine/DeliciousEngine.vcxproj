@@ -136,7 +136,7 @@
       <AdditionalDependencies>fmod64_vc.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /y $(ProjectDir)dll\*.dll $(SolutionDir)build\$(Platform)\$(Configuration)\</Command>
+      <Command>xcopy /y /d $(ProjectDir)dll\*.dll $(SolutionDir)build\$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -187,7 +187,7 @@
       <AdditionalDependencies>fmod64_vc.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /y $(ProjectDir)dll\*.dll $(SolutionDir)build\$(Platform)\$(Configuration)\</Command>
+      <Command>xcopy /y /d $(ProjectDir)dll\*.dll $(SolutionDir)build\$(Platform)\$(Configuration)\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -200,7 +200,6 @@
     <ClCompile Include="source\dstr.cpp" />
     <ClCompile Include="source\entity.cpp" />
     <ClCompile Include="source\input.cpp" />
-    <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\material.cpp" />
     <ClCompile Include="source\mesh_renderer.cpp" />
     <ClCompile Include="source\resources.cpp" />
@@ -243,7 +242,6 @@
     <ClInclude Include="source\shader.h" />
     <ClInclude Include="source\audio.h" />
     <ClInclude Include="source\module.h" />
-    <ClInclude Include="source\system_var.h" />
     <ClInclude Include="source\texture.h" />
     <ClInclude Include="source\transform.h" />
     <ClInclude Include="source\world.h" />

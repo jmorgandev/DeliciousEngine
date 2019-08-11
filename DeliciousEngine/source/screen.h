@@ -5,7 +5,6 @@
 #include <glad.h>
 
 #include "module.h"
-#include "system_var.h"
 #include "camera.h"
 #include "build_info.h"
 #include <imgui.h>
@@ -30,16 +29,17 @@ public:
 	bool create_window();
 	bool reload_window();
 
-	int width() { return vid_width.as_int; }
-	int height() { return vid_height.as_int; }
+	int width() { return window_width; }
+	int height() { return window_height; }
+
 	float aspect_ratio() {
-		return (float)vid_width.as_int / (float)vid_height.as_int;
+		return (float)window_width / (float)window_height;
 	}
 	ImVec2 imgui_size(float scale = 1.0f) {
-		return ImVec2((float)vid_width.as_int * scale, (float)vid_height.as_int * scale);
+		return ImVec2((float)window_width * scale, (float)window_height * scale);
 	}
 	ImVec2 imgui_center() {
-		return ImVec2((float)vid_width.as_int / 2, (float)vid_height.as_int / 2);
+		return ImVec2((float)window_width / 2, (float)window_height / 2);
 	}
 
 	void resize(int width, int height);
@@ -53,11 +53,8 @@ private:
 
 	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_Count_];
 
-	SystemVar vid_width;
-	SystemVar vid_height;
-	SystemVar vid_fullscreen;
-	SystemVar vid_borderless;
-	SystemVar vid_fov;
+	int window_width, window_height;
+	bool fullscreen, borderless;
 	
 	float near_plane;
 	float far_plane;

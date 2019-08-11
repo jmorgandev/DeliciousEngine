@@ -85,9 +85,6 @@
     <ClCompile Include="thirdparty\imgui\imgui_draw.cpp">
       <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="source\main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="source\dstr.cpp">
       <Filter>Source\toolbox</Filter>
     </ClCompile>
@@ -139,9 +136,6 @@
       <Filter>Source\types</Filter>
     </ClInclude>
     <ClInclude Include="source\screen_types.h">
-      <Filter>Source\types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\system_var.h">
       <Filter>Source\types</Filter>
     </ClInclude>
     <ClInclude Include="source\console.h">

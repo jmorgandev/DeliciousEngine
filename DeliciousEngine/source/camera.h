@@ -1,7 +1,6 @@
 #ifndef DELICIOUS_CAMERA_H
 #define DELICIOUS_CAMERA_H
 
-#include "system_var.h"
 #include <mat4x4.hpp>
 
 class Camera {
