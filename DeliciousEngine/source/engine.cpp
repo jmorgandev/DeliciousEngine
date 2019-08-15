@@ -70,7 +70,7 @@ int DeliciousEngine::run(int argc, char** argv) {
 	uint acc = 0;
 	uint last_time = SDL_GetTicks();
 
-	do_fmod();
+	//do_fmod();
 	while (running) {
 		const uint current_time = SDL_GetTicks();
 		acc += (current_time - last_time);
@@ -84,7 +84,7 @@ int DeliciousEngine::run(int argc, char** argv) {
 		}
 		get<Screen>().render_frame();
 	}
-	exit_fmod();
+	//exit_fmod();
 
 	return 0;
 }

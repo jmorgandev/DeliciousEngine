@@ -126,7 +126,7 @@ static std::unordered_map<std::string, SDL_Keycode> keynames = {
 	make_pair("question", SDLK_QUESTION),
 	make_pair("at", SDLK_AT),
 	make_pair("leftParen", SDLK_LEFTPAREN),
-	make_pair("rightParent", SDLK_RIGHTPAREN),
+	make_pair("rightParen", SDLK_RIGHTPAREN),
 	make_pair("leftBracket", SDLK_LEFTBRACKET),
 	make_pair("rightBracket", SDLK_RIGHTBRACKET),
 	make_pair("caret", SDLK_CARET),
@@ -150,8 +150,6 @@ bool Input::load() {
 	key_records.reserve(10);
 	setup_gui_bindings();
 	SDL_StartTextInput();
-
-	bind(SDLK_BACKQUOTE, "toggleconsole");
 
 	return true;
 }
@@ -193,16 +191,14 @@ bool Input::free() {
 	return true;
 }
 
-void Input::bind(SDL_Keycode keycode, cstring command) {
+void Input::bind(SDL_Keycode keycode, std::function<void(void)> lambda) {
 	for (auto bind : key_binds) {
 		if (bind.keycode == keycode) {
-			strcpy(bind.command, command);
+			bind.lambda = lambda;
 			return;
 		}
 	}
-	key_bind new_binding = { keycode, "" };
-	strcpy(new_binding.command, command);
-	key_binds.push_back(new_binding);
+	key_binds.push_back({ keycode, lambda });
 }
 
 void Input::unbind(SDL_Keycode keycode) {
@@ -236,7 +232,7 @@ void Input::process_events() {
 					record->state = KEY_HOLD;
 				else {
 					if (key_bind* bind = find_bind(event.key.keysym.sym))
-						engine.get<Console>().execute_keybind(bind);
+						bind->lambda();
 					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
 				}
 			}
@@ -292,12 +288,10 @@ key_record* Input::find_record(SDL_Keycode key) {
 }
 
 void Input::update_records() {
-	for (auto it = key_records.begin(); it != key_records.end();) {
-		if (it->state == KEY_RELEASED) {
-			it = key_records.erase(it);
-		}
-		else it++;
-	}
+	auto it = std::remove_if(key_records.begin(), key_records.end(),
+							 [](key_record& r) {return r.state == KEY_RELEASED; });
+	if (it != key_records.end())
+		key_records.erase(it);
 }
 
 bool Input::get_key(SDL_Keycode keycode) {

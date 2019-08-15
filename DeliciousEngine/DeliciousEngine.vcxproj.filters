@@ -94,6 +94,9 @@
     <ClCompile Include="thirdparty\glad\glad.c">
       <Filter>ThirdParty\glad</Filter>
     </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp">
+      <Filter>ThirdParty\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\camera.h">
@@ -200,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="source\module.h">
       <Filter>Source\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imstb_textedit.h">
+      <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

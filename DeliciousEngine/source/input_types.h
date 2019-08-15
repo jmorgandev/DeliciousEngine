@@ -1,10 +1,9 @@
 #ifndef DELICIOUS_INPUT_TYPES_H
 #define DELICIOUS_INPUT_TYPES_H
 
-#include <map>
+#include <functional>
 
 #include <SDL_keycode.h>
-#include "console_types.h"
 #include "dtypes.h"
 
 enum key_state {
@@ -19,7 +18,7 @@ struct key_record {
 
 struct key_bind {
 	SDL_Keycode keycode;
-	char command[CON_MAX_NAME];
+	std::function<void(void)> lambda;
 };
 
 //@Todo: User defined buttons

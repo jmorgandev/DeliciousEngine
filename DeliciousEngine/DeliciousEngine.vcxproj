@@ -209,6 +209,7 @@
     <ClCompile Include="thirdparty\glad\glad.c" />
     <ClCompile Include="thirdparty\imgui\imgui.cpp" />
     <ClCompile Include="thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\asset_loader.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="source\transform.h" />
     <ClInclude Include="source\world.h" />
     <ClInclude Include="thirdparty\imgui\imconfig.h" />
+    <ClInclude Include="thirdparty\imgui\imstb_textedit.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="notes.txt" />

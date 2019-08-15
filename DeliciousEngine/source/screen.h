@@ -51,7 +51,7 @@ private:
 	SDL_Window*   window;
 	SDL_GLContext gl_context;
 
-	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_Count_];
+	SDL_Cursor*   gui_cursors[ImGuiMouseCursor_COUNT];
 
 	int window_width, window_height;
 	bool fullscreen, borderless;

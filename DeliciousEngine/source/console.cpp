@@ -6,6 +6,7 @@
 #include "screen.h"
 #include "dstr.h"
 #include "cmds.h"
+#include "input.h"
 
 //@Todo: Completely move away from global console command function definitions towards using member
 //       function definitions instead...
@@ -25,6 +26,11 @@ ConsoleCommand(quit) {
 bool Console::load() {
 	display_console = false;
 
+	return true;
+}
+
+bool Console::start() {
+	engine.get<Input>().bind(SDLK_BACKQUOTE, [this]() { display_toggle(); });
 	return true;
 }
 
@@ -54,13 +60,14 @@ void Console::update_and_draw() {
 			}
 		}
 		if (scroll_to_bottom) {
-			ImGui::SetScrollHere();
+			ImGui::SetScrollHereY();
 			scroll_to_bottom = false;
 		}
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 		ImGui::Separator();
 		ImGui::PushItemWidth(-1);
+
 		if (ImGui::InputText("##console-input", input_buffer, CON_INPUT_LENGTH, ImGuiInputTextFlags_EnterReturnsTrue)) {
 			if (strlen(input_buffer) > 0) {
 				execute_input(true);
@@ -141,7 +148,7 @@ void Console::execute_input(bool user_input) {
 }
 
 void Console::execute_keybind(key_bind* kb) {
-	execute_string(kb->command);
+	//execute_string(kb->command);
 }
 
 void Console::execute_string(cstring cmd_str) {

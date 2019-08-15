@@ -25,6 +25,7 @@ public:
 	Console() = delete;
 
 	bool load() override;
+	bool start() override;
 	bool free() override;
 
 	void load_config();
