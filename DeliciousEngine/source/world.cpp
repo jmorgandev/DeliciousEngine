@@ -38,9 +38,6 @@ bool World::load_test() {
 	cube->set_logic([](Entity* e) {e->get_transform().rotate(0.0, 1.0, 2.0); });
 
 	screen.get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
-	using namespace std::chrono;
-	load_time = steady_clock::now();
-	current_time = load_time;
 
 	return true;
 }
@@ -57,8 +54,6 @@ Entity* World::make_entity(std::string name) {
 }
 
 void World::update() {
-	using namespace std::chrono;
-	current_time = steady_clock::now();
 	//@Temp: Should just be iterating through entities and calling scripts, this is just test logic for now...
 	do_camera();
 

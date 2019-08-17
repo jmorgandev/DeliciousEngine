@@ -147,6 +147,8 @@ bool Screen::create_window() {
 
 	ortho_matrix = glm::ortho(0.0f, (float)window_width, (float)window_height, 0.0f);
 
+	last_time = SDL_GetPerformanceCounter();
+
 	return true;
 }
 
@@ -160,10 +162,18 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
+	auto freq = SDL_GetPerformanceFrequency();
+	auto current_time = SDL_GetPerformanceCounter();
+
+	ImGui::GetIO().DeltaTime = (float)((double)(current_time - last_time) / freq);
+
+	last_time = current_time;
+
 	auto& world = engine.get<World>();
 	auto& console = engine.get<Console>();
 	camera.update_projection(window_width, window_height, aspect_ratio());
 	world.draw();
+
 	console.update_and_draw();
 
 	draw_imgui();

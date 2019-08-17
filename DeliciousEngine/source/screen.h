@@ -1,5 +1,6 @@
 #ifndef DELICIOUS_SCREEN_H
 #define DELICIOUS_SCREEN_H
+
 #include <SDL_video.h>
 #include <SDL_mouse.h>
 #include <glad.h>
@@ -78,6 +79,8 @@ private:
 	void invalidate_gui_objects();
 
 	glm::mat4 ortho_matrix;
+
+	Uint64 last_time;
 };
 
 #endif
