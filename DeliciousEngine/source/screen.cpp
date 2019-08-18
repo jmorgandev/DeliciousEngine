@@ -149,6 +149,9 @@ bool Screen::create_window() {
 
 	last_time = SDL_GetPerformanceCounter();
 
+	//SDL_GL_SetSwapInterval(0);
+
+	begin_gui();
 	return true;
 }
 
@@ -162,12 +165,7 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
-	auto freq = SDL_GetPerformanceFrequency();
-	auto current_time = SDL_GetPerformanceCounter();
-
-	ImGui::GetIO().DeltaTime = (float)((double)(current_time - last_time) / freq);
-
-	last_time = current_time;
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	auto& world = engine.get<World>();
 	auto& console = engine.get<Console>();
@@ -179,7 +177,8 @@ void Screen::render_frame() {
 	draw_imgui();
 
 	SDL_GL_SwapWindow(window);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+	begin_gui();
 }
 
 void Screen::resize(int new_width, int new_height) {
@@ -201,6 +200,14 @@ void Screen::begin_gui() {
 		SDL_SetCursor(gui_cursors[cursor]);
 		SDL_ShowCursor(1);
 	}
+	
+	auto current_time = SDL_GetPerformanceCounter();
+	auto freq = SDL_GetPerformanceFrequency();
+
+	io.DeltaTime = (float)((double)(current_time - last_time) / freq);
+
+	last_time = current_time;
+
 	ImGui::NewFrame();
 }
 

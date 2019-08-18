@@ -11,7 +11,7 @@ public:
 
 	virtual bool load() = 0;
 	virtual bool start() { return true; }
-	virtual void tick() {}
+	virtual void update() {}
 	virtual bool free() = 0;
 protected:
 	DeliciousEngine& engine;

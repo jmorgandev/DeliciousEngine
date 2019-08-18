@@ -23,6 +23,7 @@ public:
 
 	bool load() override;
 	bool start() override { return create_window(); }
+	void update() override { render_frame(); }
 	bool free() override;
 
 	void render_frame();

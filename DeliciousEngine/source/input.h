@@ -19,6 +19,7 @@ public:
 	Input() = delete;
 
 	bool load() override;
+	void update() override { process_events(); }
 	bool free() override;
 
 	void process_events();

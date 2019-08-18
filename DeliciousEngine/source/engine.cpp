@@ -76,13 +76,12 @@ int DeliciousEngine::run(int argc, char** argv) {
 		acc += (current_time - last_time);
 		last_time = current_time;
 
-		get<Input>().process_events();
-		get<Screen>().begin_gui();
+		get<Input>().update();
 		while (acc >= max_timestep) {
 			get<World>().update();
 			acc -= max_timestep;
 		}
-		get<Screen>().render_frame();
+		get<Screen>().update();
 	}
 	//exit_fmod();
 
@@ -115,6 +114,7 @@ void DeliciousEngine::add_default_modules() {
 }
 
 DeliciousEngine::~DeliciousEngine() {
+	// Unload modules in reverse order
 	for (auto itr = module_load_order.rbegin(); itr != module_load_order.rend(); itr++) {
 		modules[*itr]->free();
 		delete modules[*itr];
