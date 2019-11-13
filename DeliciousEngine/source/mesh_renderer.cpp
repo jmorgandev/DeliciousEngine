@@ -11,9 +11,14 @@ MeshRenderer::MeshRenderer() {
 
 void MeshRenderer::draw() {
 	glEnable(GL_DEPTH_TEST);
-	if (mesh != nullptr && material->get_shader() != nullptr && visible) {
-		material->bind();
-		glBindVertexArray(mesh->vao);
+	//if (mesh != nullptr && material->get_shader() != nullptr && visible) {
+	//	material->bind();
+	//	glBindVertexArray(mesh->vao);
+	//	glDrawArrays(GL_TRIANGLES, 0, mesh->vertex_count);
+	//}
+
+	if (mesh != nullptr && visible)	{
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
 		glDrawArrays(GL_TRIANGLES, 0, mesh->vertex_count);
 	}
 }

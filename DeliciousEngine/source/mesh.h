@@ -5,18 +5,10 @@
 
 #include "dtypes.h"
 
-enum MeshAttribute {
-	VERTICES,
-	NORMALS,
-	TEXCOORDS,
-	COLORS,
-	ATTRIBUTE_COUNT
-};
 struct Mesh {
-	GLuint vao;
-	GLuint vbo[ATTRIBUTE_COUNT];
+	GLuint vbo;
+	int stride;
 	uint32 vertex_count;
-	uint32 triangle_count;
 };
 
 #endif

@@ -142,6 +142,50 @@ Mesh* Resources::fetch_mesh(std::string filename) {
 Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	Mesh new_mesh = {};
 
+	// Create VBO
+	glGenBuffers(1, &new_mesh.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo);
+
+	// Calculate VBO size and request immutable storage on GPU
+	int element_count = data.vertices.size();
+
+	std::vector<Vertex_VNCT> buffer_data(element_count);
+
+	// Regularize Mesh to conform to VNCT format (Vertex,Normal,Color,Texcoord)
+	if (data.normals.size() != element_count) {
+		data.normals.clear();
+		data.normals.resize(element_count, glm::vec3{ 0.0f });
+	}
+	if (data.texcoords.size() != element_count) {
+		data.texcoords.clear();
+		data.texcoords.resize(element_count, glm::vec2{ 0.0f });
+	}
+	std::vector<glm::vec4> colors(element_count, glm::vec4{ 1.0f }); // Temp colors
+
+	// Transfer MeshData to CPU buffer (interleaved) (e.g. VNCTVNCT instead of VVNNCCTT)
+	for (int i = 0; i < element_count; i++) {
+		buffer_data[i].vertex = data.vertices[i];
+		buffer_data[i].normal = data.normals[i];
+		buffer_data[i].color = colors[i];
+		buffer_data[i].texcoord = data.texcoords[i];
+	}
+
+	// Upload CPU buffer to GPU VBO
+	glBufferStorage(GL_ARRAY_BUFFER, sizeof(Vertex_VNCT) * element_count, buffer_data.data(), NULL);
+
+	new_mesh.vertex_count = element_count;
+	new_mesh.stride = sizeof(Vertex_VNCT);
+	mesh_catalog[name] = new_mesh;
+	return &mesh_catalog[name];
+}
+
+/*
+Mesh* Resources::make_mesh(std::string name, MeshData data) {
+	//@Todo: VAOs should be for vertex attrib formatting, not PER mesh
+	//@Todo: Store multiple data per VBO? VBO per Mesh?
+	//@Todo: Auto fill mesh with dummy information to make compatible with VAO format
+	Mesh new_mesh = {};
+
 	//Create VAO
 	glGenVertexArrays(1, &new_mesh.vao);
 	glBindVertexArray(new_mesh.vao);
