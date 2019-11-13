@@ -77,6 +77,7 @@ int DeliciousEngine::run(int argc, char** argv) {
 		last_time = current_time;
 
 		get<Input>().update();
+		get<Console>().update();
 		while (acc >= max_timestep) {
 			get<World>().update();
 			acc -= max_timestep;
