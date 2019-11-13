@@ -17,15 +17,13 @@
 #define CON_INPUT_LENGTH CON_INPUT_SIZE - 1
 #define CON_HISTORY_SIZE 32
 
-class DeliciousEngine;
-
 class Console : public Module {
 public:
-	Console(DeliciousEngine& engine) : Module(engine) {}
-	Console() = delete;
+	using Module::Module;
 
 	bool load() override;
 	bool start() override;
+	void update() override;
 	bool free() override;
 
 	void load_config();

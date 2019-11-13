@@ -11,12 +11,9 @@
 #include "module.h"
 
 
-class DeliciousEngine;
-
 class Input : public Module {
 public:
-	Input(DeliciousEngine& engine) : Module(engine) {}
-	Input() = delete;
+	using Module::Module;
 
 	bool load() override;
 	void update() override { process_events(); }

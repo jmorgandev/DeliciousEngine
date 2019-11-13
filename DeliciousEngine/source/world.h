@@ -11,8 +11,7 @@
 
 class World : public Module {
 public:
-	World(DeliciousEngine& engine) : Module(engine) {}
-	World() = delete;
+	using Module::Module;
 
 	bool load() override;
 	bool start() override;

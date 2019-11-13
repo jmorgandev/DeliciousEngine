@@ -13,12 +13,9 @@
 #include "mesh.h"
 #include "asset_loader.h"
 
-class DeliciousEngine;
-
 class Resources : public Module {
 public:
-	Resources(DeliciousEngine& engine) : Module(engine) {}
-	Resources() = delete;
+	using Module::Module;
 
 	bool load() override;
 	bool start() override { return load_default_resources(); }
