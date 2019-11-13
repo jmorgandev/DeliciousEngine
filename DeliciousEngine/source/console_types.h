@@ -5,7 +5,6 @@
 
 #include "dtypes.h"
 #include <vector>
-#include "build_settings.h"
 
 typedef unsigned int console_symbol;
 

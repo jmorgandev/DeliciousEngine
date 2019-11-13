@@ -20,6 +20,12 @@ bool Console::start() {
 	return true;
 }
 
+void Console::update() {
+	if (engine.get<Input>().key_pressed(SDLK_BACKQUOTE)) {
+		display_toggle();
+	}
+}
+
 bool Console::free() {
 	//@Todo: Write CVars to config file.
 	variables.clear();
