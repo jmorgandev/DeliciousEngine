@@ -1,6 +1,8 @@
 #ifndef DELICIOUS_SYSTEM_H
 #define DELICIOUS_SYSTEM_H
 
+#include "dtypes.h"
+
 class DeliciousEngine;
 class Module {
 public:
