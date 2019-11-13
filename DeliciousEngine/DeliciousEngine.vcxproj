@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -200,7 +200,7 @@
     <ClCompile Include="source\dstr.cpp" />
     <ClCompile Include="source\entity.cpp" />
     <ClCompile Include="source\input.cpp" />
-    <ClCompile Include="source\material.cpp" />
+    <ClCompile Include="source\material_ubo.cpp" />
     <ClCompile Include="source\mesh_renderer.cpp" />
     <ClCompile Include="source\resources.cpp" />
     <ClCompile Include="source\screen.cpp" />
@@ -222,6 +222,7 @@
     <ClInclude Include="source\console.h" />
     <ClInclude Include="source\console_types.h" />
     <ClInclude Include="source\dcm.h" />
+    <ClInclude Include="source\sdl_keynames.h" />
     <ClInclude Include="source\default_shader.h" />
     <ClInclude Include="source\engine.h" />
     <ClInclude Include="source\dff.h" />
@@ -234,7 +235,7 @@
     <ClInclude Include="source\help_pages.h" />
     <ClInclude Include="source\input.h" />
     <ClInclude Include="source\input_types.h" />
-    <ClInclude Include="source\material.h" />
+    <ClInclude Include="source\material_ubo.h" />
     <ClInclude Include="source\mesh.h" />
     <ClInclude Include="source\mesh_data.h" />
     <ClInclude Include="source\mesh_renderer.h" />

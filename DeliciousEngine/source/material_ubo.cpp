@@ -1,4 +1,4 @@
-#include "material.h"
+#include "material_ubo.h"
 #include <gtc/type_ptr.hpp>
 #include <gtx/string_cast.hpp>
 #include "dgl.h"
@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "console.h"
 
-Material::Material(Shader* shader_program, std::string user_block) {
+MaterialUBO::MaterialUBO(Shader* shader_program, std::string user_block) {
 	userblock_index = GL_INVALID_INDEX;
 	userblock_buffer = nullptr;
 	update_buffer = false;
@@ -16,14 +16,14 @@ Material::Material(Shader* shader_program, std::string user_block) {
 	identify_userblock(user_block);
 }
 
-Material::~Material() {
+MaterialUBO::~MaterialUBO() {
 	if (userblock_buffer != nullptr) {
 		std::free(userblock_buffer);
 		userblock_buffer = nullptr;
 	}
 }
 
-void Material::identify_uniforms() {
+void MaterialUBO::identify_uniforms() {
 	GLint uniform_count = 0;
 	glGetProgramInterfaceiv(shader->id, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniform_count);
 	const GLenum query[4] = { GL_LOCATION, GL_OFFSET, GL_TYPE, GL_BLOCK_INDEX };
@@ -47,7 +47,7 @@ void Material::identify_uniforms() {
 	}
 }
 
-void Material::identify_userblock(std::string blockname) {
+void MaterialUBO::identify_userblock(std::string blockname) {
 	userblock_index = glGetProgramResourceIndex(shader->id, GL_UNIFORM_BLOCK, blockname.c_str());
 	if (userblock_index != GL_INVALID_INDEX) {
 		glGetActiveUniformBlockiv(shader->id, userblock_index, GL_UNIFORM_BLOCK_DATA_SIZE, &userblock_size);
@@ -56,7 +56,7 @@ void Material::identify_userblock(std::string blockname) {
 		// buffer updating with glBufferSubData / glBufferData. Probably not necessary...
 		userblock_buffer = new GLubyte[userblock_size];
 
-		//@Todo: Offload UBO to Shader object? Only update buffer from Material?
+		//@Todo: Offload UBO to Shader object? Only update buffer from MaterialUBO?
 		glGenBuffers(1, &userblock_ubo);
 		glBindBuffer(GL_UNIFORM_BUFFER, userblock_ubo);
 		glBufferData(GL_UNIFORM_BUFFER, userblock_size, userblock_buffer, GL_DYNAMIC_DRAW);
@@ -67,11 +67,11 @@ void Material::identify_userblock(std::string blockname) {
 	}
 }
 
-Shader* Material::get_shader() {
+Shader* MaterialUBO::get_shader() {
 	return shader;
 }
 
-void Material::set_matrix(std::string name, glm::mat4 value) {
+void MaterialUBO::set_matrix(std::string name, glm::mat4 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const UniformMeta& uniform = it->second;
@@ -89,7 +89,7 @@ void Material::set_matrix(std::string name, glm::mat4 value) {
 	}	
 }
 
-void Material::set_vec4(std::string name, glm::vec4 value) {
+void MaterialUBO::set_vec4(std::string name, glm::vec4 value) {
 	//console.printf("Set %s to %s", name.c_str(), glm::to_string(value).c_str());
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
@@ -107,12 +107,12 @@ void Material::set_vec4(std::string name, glm::vec4 value) {
 		//ERROR, attempted to access non-existant/non-active uniform
 	}
 }
-void Material::set_vec4(std::string name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+void MaterialUBO::set_vec4(std::string name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
 	GLfloat tmp[4] = { x, y, z, w };
 	set_floatv(name, tmp, 4);
 }
 
-void Material::set_vec3(std::string name, glm::vec3 value) {
+void MaterialUBO::set_vec3(std::string name, glm::vec3 value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const UniformMeta& uniform = it->second;
@@ -129,12 +129,12 @@ void Material::set_vec3(std::string name, glm::vec3 value) {
 		//ERROR, attempted to access non-existant/non-active uniform
 	}
 }
-void Material::set_vec3(std::string name, GLfloat x, GLfloat y, GLfloat z) {
+void MaterialUBO::set_vec3(std::string name, GLfloat x, GLfloat y, GLfloat z) {
 	GLfloat tmp[3] = { x, y, z };
 	set_floatv(name, tmp, 3);
 }
 
-void Material::set_float(std::string name, GLfloat value) {
+void MaterialUBO::set_float(std::string name, GLfloat value) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const UniformMeta& uniform = it->second;
@@ -152,7 +152,7 @@ void Material::set_float(std::string name, GLfloat value) {
 	}
 }
 
-void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
+void MaterialUBO::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	auto it = uniform_list.find(name);
 	if (it != uniform_list.end()) {
 		const UniformMeta& uniform = it->second;
@@ -170,7 +170,7 @@ void Material::set_floatv(std::string name, GLfloat* values, GLuint size) {
 	}
 }
 
-void Material::set_texture(std::string name, const Texture* tex) {
+void MaterialUBO::set_texture(std::string name, const Texture* tex) {
 	auto it = sampler_list.find(name);
 	if (it != sampler_list.end()) {
 		it->second.texture = tex;
@@ -180,10 +180,10 @@ void Material::set_texture(std::string name, const Texture* tex) {
 	}
 }
 
-void Material::bind() {
+void MaterialUBO::bind() {
 	//@Speed: Get buffer block binding point, bind program AND stream buffer data to
 	// GPU. In future, group renderable objects by shader program so that
-	// buffer binding point remains the same throughout all material instance binds
+	// buffer binding point remains the same throughout all MaterialUBO instance binds
 	// so that only the data needs to be streamed.
 
 	//@Speed: glBufferData, glBufferSubData, glMapBuffer, glBindBufferRange.
@@ -213,10 +213,10 @@ void Material::bind() {
 	}
 }
 
-void Material::set(std::string name, glm::vec4 value) {
+void MaterialUBO::set(std::string name, glm::vec4 value) {
 	set_vec4(name, value);
 }
-void Material::set(std::string name, const Texture* tex) {
+void MaterialUBO::set(std::string name, const Texture* tex) {
 	set_texture(name, tex);
 }
 

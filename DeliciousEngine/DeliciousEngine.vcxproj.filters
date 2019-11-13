@@ -52,9 +52,6 @@
     <ClCompile Include="source\entity.cpp">
       <Filter>Source\objects</Filter>
     </ClCompile>
-    <ClCompile Include="source\material.cpp">
-      <Filter>Source\objects</Filter>
-    </ClCompile>
     <ClCompile Include="source\console.cpp">
       <Filter>Source\modules</Filter>
     </ClCompile>
@@ -100,6 +97,9 @@
     <ClCompile Include="thirdparty\imgui\imgui_demo.cpp">
       <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="source\material_ubo.cpp">
+      <Filter>Source\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\camera.h">
@@ -115,9 +115,6 @@
       <Filter>Source\intermediate</Filter>
     </ClInclude>
     <ClInclude Include="source\entity.h">
-      <Filter>Source\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\material.h">
       <Filter>Source\objects</Filter>
     </ClInclude>
     <ClInclude Include="source\mesh.h">
@@ -209,6 +206,15 @@
     </ClInclude>
     <ClInclude Include="thirdparty\imgui\imstb_textedit.h">
       <Filter>ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\material_ubo.h">
+      <Filter>Source\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Source\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sdl_keynames.h">
+      <Filter>Source\defaults</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
