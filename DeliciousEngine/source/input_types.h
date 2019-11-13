@@ -6,19 +6,20 @@
 #include <SDL_keycode.h>
 #include "dtypes.h"
 
-enum key_state {
+enum KeyState {
 	KEY_PRESSED,
 	KEY_RELEASED,
-	KEY_HOLD
+	KEY_HELD
 };
-struct key_record {
+
+struct KeyRecord {
 	SDL_Keycode keycode;
-	key_state state;
+	KeyState state;
 };
 
 struct key_bind {
 	SDL_Keycode keycode;
-	std::function<void(void)> lambda;
+	std::function<void(void)> callback;
 };
 
 //@Todo: User defined buttons
