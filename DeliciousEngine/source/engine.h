@@ -14,6 +14,7 @@ public:
 	~DeliciousEngine();
 
 	template <typename T> T& get();
+	template <typename T> T* find();
 
 	void quit() { running = false; }
 private:
@@ -33,6 +34,14 @@ template <typename T>
 T& DeliciousEngine::get() {
 	assert(modules.find(typeid(T)) != modules.end());
 	return *static_cast<T*>(modules[typeid(T)]);
+}
+
+template <typename T>
+T* DeliciousEngine::find() {
+	if (modules.find(typeid(T) != modules.end()))
+		return static_cast<T*>(modules[typeid(T)]);
+	else
+		return nullptr;
 }
 
 template <typename T>
