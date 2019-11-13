@@ -37,11 +37,14 @@ public:
 	Material* fetch_material(std::string filename);
 	//@Temp
 	Material* make_material(std::string name, Shader* shader);
+
 private:
 	std::unordered_map<std::string, Texture>  texture_catalog;
 	std::unordered_map<std::string, Shader>   shader_catalog;
 	std::unordered_map<std::string, Mesh>     mesh_catalog;
 	std::unordered_map<std::string, Material> material_catalog;
+
+	GLuint default_vao;
 };
 
 #endif

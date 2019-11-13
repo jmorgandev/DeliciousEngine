@@ -20,10 +20,11 @@ bool Resources::load() {
 
 bool Resources::free() {
 	for (auto& item : mesh_catalog) {
-		glDeleteBuffers(ATTRIBUTE_COUNT, item.second.vbo);
-		glDeleteVertexArrays(1, &item.second.vao);
+		glDeleteBuffers(1, &item.second.vbo);
 	}
 	mesh_catalog.clear();
+
+	glDeleteVertexArrays(1, &default_vao);
 
 	for (auto& item : shader_catalog) {
 		glDeleteShader(item.second.id);
@@ -217,9 +218,10 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 	mesh_catalog[name] = new_mesh;
 	return &mesh_catalog[name];
 }
+*/
 
 Material* Resources::make_material(std::string name, Shader* shader) {
-	material_catalog.emplace(name, shader);
+	//material_catalog.emplace(name, shader);
 	return &material_catalog[name];
 }
 
@@ -236,5 +238,20 @@ Material* Resources::fetch_material(std::string filename) {
 bool Resources::load_default_resources() {
 	make_mesh("primitive.quad", default_quad_mesh);
 	make_mesh("primitive.cube", default_cube_mesh);
+
+	glGenVertexArrays(1, &default_vao);
+	glBindVertexArray(default_vao);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex_VNCT), 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, false, sizeof(Vertex_VNCT), (void*)(sizeof(GLfloat) * 3));
+	glVertexAttribPointer(2, 4, GL_FLOAT, false, sizeof(Vertex_VNCT), (void*)(sizeof(GLfloat) * 6));
+	glVertexAttribPointer(3, 2, GL_FLOAT, false, sizeof(Vertex_VNCT), (void*)(sizeof(GLfloat) * 10));
+
+	//default (v:0,n:1,c:2,t:3)
+
 	return true;
 }
