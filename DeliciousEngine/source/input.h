@@ -3,6 +3,8 @@
 
 #include <functional>
 #include <vector>
+#include <string>
+#include <unordered_map>
 
 #include <SDL_keycode.h>
 #include <vec2.hpp>
@@ -22,20 +24,20 @@ public:
 	void process_events();
 
 	bool get_key(SDL_Keycode keycode);
-
-	void bind(SDL_Keycode keycode, std::function<void(void)> lambda);
-	void unbind(SDL_Keycode keycode);
+	bool key_pressed(SDL_Keycode keycode);
+	bool key_held(SDL_Keycode keycode);
+	bool key_released(SDL_Keycode keycode);
 private:
-	std::vector<key_bind> key_binds;
-	std::vector<key_record> key_records;
+	std::vector<KeyRecord> records;
+	std::unordered_map<std::string, SDL_Keycode> buttons;
 
 	bool mouse_buttons[5];
 	glm::vec2 mouse_motion;
 
-	key_bind* find_bind(SDL_Keycode key);
-	key_record* find_record(SDL_Keycode key);
+	KeyRecord* find_record(SDL_Keycode key);
+	bool check_key_state(SDL_Keycode key, KeyState state);
 
-	void update_records();
+	void flush();
 	void setup_gui_bindings();
 };
 

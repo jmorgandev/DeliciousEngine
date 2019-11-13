@@ -147,7 +147,7 @@ static std::unordered_map<std::string, SDL_Keycode> keynames = {
 };
 
 bool Input::load() {
-	key_records.reserve(10);
+	records.reserve(10);
 	setup_gui_bindings();
 	SDL_StartTextInput();
 
@@ -191,27 +191,8 @@ bool Input::free() {
 	return true;
 }
 
-void Input::bind(SDL_Keycode keycode, std::function<void(void)> lambda) {
-	for (auto bind : key_binds) {
-		if (bind.keycode == keycode) {
-			bind.lambda = lambda;
-			return;
-		}
-	}
-	key_binds.push_back({ keycode, lambda });
-}
-
-void Input::unbind(SDL_Keycode keycode) {
-	for (auto it = key_binds.begin(); it != key_binds.end(); it++) {
-		if (it->keycode == keycode) {
-			key_binds.erase(it);
-			break;
-		}
-	}
-}
-
 void Input::process_events() {
-	update_records();
+	flush();
 
 	SDL_Event event;
 	ImGuiIO& io = ImGui::GetIO();
@@ -221,24 +202,22 @@ void Input::process_events() {
 			engine.quit();
 			break;
 		case SDL_KEYDOWN: case SDL_KEYUP:
-			io.KeysDown[event.key.keysym.scancode] = (event.type == SDL_KEYDOWN);
-			io.KeyShift = event.key.keysym.mod & KMOD_SHIFT;
-			io.KeyCtrl  = event.key.keysym.mod & KMOD_CTRL;
-			io.KeyAlt   = event.key.keysym.mod & KMOD_ALT;
-			io.KeySuper = event.key.keysym.mod & KMOD_GUI;
-			
+			auto keysym = event.key.keysym;
+			io.KeysDown[keysym.scancode] = (event.type == SDL_KEYDOWN);
+			io.KeyShift = keysym.mod & KMOD_SHIFT;
+			io.KeyCtrl  = keysym.mod & KMOD_CTRL;
+			io.KeyAlt   = keysym.mod & KMOD_ALT;
+			io.KeySuper = keysym.mod & KMOD_GUI;
+
 			if (event.type == SDL_KEYDOWN && !io.WantCaptureKeyboard) {
-				if (key_record* record = find_record(event.key.keysym.sym))
-					record->state = KEY_HOLD;
-				else {
-					if (key_bind* bind = find_bind(event.key.keysym.sym))
-						bind->lambda();
-					key_records.push_back({ event.key.keysym.sym, KEY_PRESSED });
+				if (!find_record(keysym.sym)) {
+					records.push_back({keysym.sym, KEY_PRESSED});
 				}
 			}
-			if (event.type == SDL_KEYUP) {
-				if (key_record* record = find_record(event.key.keysym.sym))
+			else if (event.type == SDL_KEYUP && !io.WantCaptureKeyboard) {
+				if (KeyRecord* record = find_record(keysym.sym)) {
 					record->state = KEY_RELEASED;
+				}
 			}
 			break;
 		case SDL_TEXTINPUT:
@@ -268,32 +247,45 @@ void Input::process_events() {
 	}
 }
 
-key_bind* Input::find_bind(SDL_Keycode key) {
-	for (auto it = key_binds.begin(); it != key_binds.end(); it++) {
-		if (it->keycode == key) {
-			return &(*it);
-		}
+KeyRecord* Input::find_record(SDL_Keycode key) {
+	for (auto& record : records) {
+		if (record.keycode == key)
+			return &record;
 	}
 	return nullptr;
 }
 
-key_record* Input::find_record(SDL_Keycode key) {
-	auto it = key_records.begin();
-	for (auto it = key_records.begin(); it != key_records.end(); it++) {
-		if (it->keycode == key) {
-			return &(*it);
-		}
-	}
-	return nullptr;
-}
 
-void Input::update_records() {
-	auto it = std::remove_if(key_records.begin(), key_records.end(),
-							 [](key_record& r) {return r.state == KEY_RELEASED; });
-	if (it != key_records.end())
-		key_records.erase(it);
+static bool flush_predicate(const KeyRecord & r) { return r.state == KEY_RELEASED; }
+static KeyRecord hold_transform(KeyRecord r) { if (r.state == KEY_PRESSED) { r.state = KEY_HELD; } return r; }
+void Input::flush() {
+	std::transform(begin(records), end(records), begin(records), hold_transform);
+	auto it = remove_if(begin(records), end(records), flush_predicate);
+
+	if (it != end(records)) {
+		records.erase(it);
+	}
 }
 
 bool Input::get_key(SDL_Keycode keycode) {
 	return (find_record(keycode) != nullptr);
+}
+
+bool Input::check_key_state(SDL_Keycode keycode, KeyState state) {
+	if (auto record = find_record(keycode)) {
+		return record->state == state;
+	}
+	return false;
+}
+
+bool Input::key_pressed(SDL_Keycode keycode) {
+	return check_key_state(keycode, KEY_PRESSED);
+}
+
+bool Input::key_held(SDL_Keycode keycode) {
+	return check_key_state(keycode, KEY_HELD);
+}
+
+bool Input::key_released(SDL_Keycode keycode) {
+	return check_key_state(keycode, KEY_RELEASED);
 }
