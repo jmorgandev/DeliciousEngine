@@ -8,21 +8,6 @@
 #include "cmds.h"
 #include "input.h"
 
-//@Todo: Completely move away from global console command function definitions towards using member
-//       function definitions instead...
-
-ConsoleCommand(toggleconsole) {
-	//console.display_toggle();
-}
-
-ConsoleCommand(clear) {
-	//@Todo: just clear the vector of strings...
-}
-ConsoleCommand(quit) {
-	//@Todo: Put this command in main.cpp to avoid write_variable overhead
-	//console.set_variable("eng_running", false);
-}
-
 bool Console::load() {
 	display_console = false;
 
@@ -30,7 +15,8 @@ bool Console::load() {
 }
 
 bool Console::start() {
-	engine.get<Input>().bind(SDLK_BACKQUOTE, [this]() { display_toggle(); });
+	//engine.get<Input>().bind(SDLK_BACKQUOTE, [this]() { display_toggle(); });
+	
 	return true;
 }
 
@@ -40,9 +26,10 @@ bool Console::free() {
 	return true;
 }
 
-static const uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse|
-							   ImGuiWindowFlags_NoSavedSettings);
 void Console::update_and_draw() {
+	constexpr uint WIN_FLAGS = (ImGuiWindowFlags_NoCollapse | 
+								ImGuiWindowFlags_NoSavedSettings);
+
 	auto& screen = engine.get<Screen>();
 	if (display_console) {
 		ImGui::SetNextWindowPos(screen.imgui_center(), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
@@ -92,52 +79,16 @@ void Console::printf(cstring format, ...) {
 	report_text.push_back(buffer);
 }
 
-//Copies a string directly to the input buffer
+// Copies a string directly to the input buffer
 void Console::write_to_input(cstring str) {
 	assert(strlen(str) <= CON_INPUT_LENGTH);
 	strcpy(input_buffer, str);
 }
 
-template <> 
-constexpr ConsoleVariable::Type Console::type_enum<bool>() { return ConsoleVariable::BOOL; }
-template <>
-constexpr ConsoleVariable::Type Console::type_enum<int>() { return ConsoleVariable::INT; }
-template <>
-constexpr ConsoleVariable::Type Console::type_enum<float>() { return ConsoleVariable::FLOAT; }
-template <>
-constexpr ConsoleVariable::Type Console::type_enum<console_symbol>() { return ConsoleVariable::SYM; }
-
-template <typename T>
-bool Console::register_variable(std::string name, T* variable) {
-	return register_variable(name, variable, type_enum<T>());
-}
-template bool Console::register_variable(std::string, bool*);
-template bool Console::register_variable(std::string, int*);
-template bool Console::register_variable(std::string, float*);
-template bool Console::register_variable(std::string, console_symbol*);
-
-bool Console::register_variable(std::string name, void* data, ConsoleVariable::Type type) {
-	if (variables.find(name) == variables.end()) {
-		variables[name] = {data, type};
-		return true;
-	}
-	return false;
-}
-
-template <typename T>
-T* Console::get_variable(std::string name) {
-	auto itr = variables.find(name);
-	if (itr != variables.end() && type_to_enum<T>() == itr->second.type) {
-		return (T*)itr->second.data;
-	}
-	return nullptr;
-}
-
-
 /*
-Separates the input buffer into tokens and attempts to execute the corresponding
-command / variable assignment. Echos the input to the message box if it was entered
-by the user (With the return key).
+   Separates the input buffer into tokens and attempts to execute the corresponding
+   command / variable assignment. Echos the input to the message box if it was entered
+   by the user (With the return key).
 */
 void Console::execute_input(bool user_input) {
 	if (user_input) {
@@ -156,7 +107,7 @@ void Console::execute_string(cstring cmd_str) {
 }
 
 /*
-Wipes the input buffer with null characters and resets the input index.
+   Wipes the input buffer with null characters and resets the input index.
 */
 void Console::clear_input() {
 	*input_buffer = 0;
