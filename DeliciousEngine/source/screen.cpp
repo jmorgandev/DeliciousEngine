@@ -165,7 +165,7 @@ bool Screen::reload_window() {
 }
 
 void Screen::render_frame() {
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	auto& world = engine.get<World>();
 	auto& console = engine.get<Console>();
@@ -204,7 +204,7 @@ void Screen::begin_gui() {
 	auto current_time = SDL_GetPerformanceCounter();
 	auto freq = SDL_GetPerformanceFrequency();
 
-	io.DeltaTime = (float)((double)(current_time - last_time) / freq);
+	io.DeltaTime = (float)((float)(current_time - last_time) / freq);
 
 	last_time = current_time;
 
@@ -320,7 +320,7 @@ void Screen::create_gui_objects() {
 	unsigned char* pixels;
 	int width, height;
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-
+	
 	glGenTextures(1, &gui_texture_handle);
 	glBindTexture(GL_TEXTURE_2D, gui_texture_handle);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
