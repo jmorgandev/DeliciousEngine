@@ -29,13 +29,14 @@ bool World::load_test() {
 
 	Entity* cube = make_entity("cube");
 	Mesh* m = resources.fetch_mesh("primitive.cube");
-	Texture * tex = resources.load_texture("res/tile.png", "tex");
-	Shader * s = resources.load_shader("res/default.glsl");
-	Material * mat = resources.make_material("default", s);
+	Texture* tex = resources.load_texture("res/tile.png", "tex");
+	m->texture = tex->id;
+	Shader* s = resources.load_shader("res/default2.glsl");
+	Material* mat = resources.make_material("default", s);
 	mat->set_texture("diffuse", tex);
 	cube->get_renderer().set_mesh(m);
 	cube->get_renderer().set_material(mat);
-	cube->set_logic([](Entity* e) {e->get_transform().rotate(0.0, 1.0, 2.0); });
+	cube->get_transform().rotate(45.0f, 45.0f, 45.0f);
 
 	screen.get_camera()->transform_matrix() = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 2.0f });
 
@@ -65,23 +66,13 @@ void World::update() {
 
 void World::draw() {
 	auto& screen = engine.get<Screen>();
-	//@Temp
-	//Entity* first = get_entity(0);
-	//Entity* second = get_entity(1);
-	//Entity* third = get_entity(2);
-	//
+
 	Camera* cam = screen.get_camera();
-	//glm::mat4 transform_a = first->get_transform().get_matrix();
-	//glm::mat4 transform_b = second->get_transform().get_matrix();
-	//glm::mat4 transform_c = third->get_transform().get_matrix();
-	//
-	//glm::mat4 projection = cam->projection_matrix();
-	//glm::mat4 view = cam->view_matrix();
+
 	glm::mat4 projection = cam->projection_matrix();
 	glm::mat4 view = cam->view_matrix();
 	for (int i = 0; i < MAX_ENTITIES; i++) {
-		if (!entity_flags[i])
-			continue;
+		if (!entity_flags[i]) continue;
 
 		Entity& entity = entity_pool[i];
 		glm::mat4 transform = entity.get_transform().get_matrix();
@@ -115,5 +106,5 @@ void World::do_camera() {
 	}
 
 	cam->transform_matrix() = glm::translate(cam->transform_matrix(), cam_direction * 0.05f);
-	cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
+	//cam->transform_matrix() = glm::rotate(cam->transform_matrix(), -glm::radians(cam_angle), cam_axis);
 }

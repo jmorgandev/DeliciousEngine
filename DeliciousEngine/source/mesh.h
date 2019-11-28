@@ -8,6 +8,7 @@
 struct Mesh {
 	GLuint vbo;
 	int stride;
+	uint texture;
 	uint32 vertex_count;
 };
 
