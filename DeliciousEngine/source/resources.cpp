@@ -13,6 +13,7 @@
 #include "default_mesh.h"
 #include "engine.h"
 #include "console.h"
+#include "screen.h"
 
 bool Resources::load() {
 	return true;
@@ -23,8 +24,6 @@ bool Resources::free() {
 		glDeleteBuffers(1, &item.second.vbo);
 	}
 	mesh_catalog.clear();
-
-	glDeleteVertexArrays(1, &default_vao);
 
 	for (auto& item : shader_catalog) {
 		glDeleteShader(item.second.id);
@@ -171,57 +170,27 @@ Mesh* Resources::make_mesh(std::string name, MeshData data) {
 		buffer_data[i].texcoord = data.texcoords[i];
 	}
 
+	std::vector<float> actual_data;
+	for (auto & v : buffer_data)
+	{
+		actual_data.push_back(v.vertex.x); actual_data.push_back(v.vertex.y); actual_data.push_back(v.vertex.z);
+		actual_data.push_back(v.normal.x); actual_data.push_back(v.normal.y); actual_data.push_back(v.normal.z);
+		actual_data.push_back(v.color.b); actual_data.push_back(v.color.g); actual_data.push_back(v.color.r); actual_data.push_back(v.color.a);
+		actual_data.push_back(v.texcoord.x); actual_data.push_back(v.texcoord.y);
+	}
+
 	// Upload CPU buffer to GPU VBO
-	glBufferStorage(GL_ARRAY_BUFFER, sizeof(Vertex_VNCT) * element_count, buffer_data.data(), NULL);
+	//glBufferStorage(GL_ARRAY_BUFFER, sizeof(Vertex_VNCT) * element_count, buffer_data.data(), NULL);
+	glBufferStorage(GL_ARRAY_BUFFER, sizeof(GLfloat) * actual_data.size(), actual_data.data(), NULL);
 
 	new_mesh.vertex_count = element_count;
-	new_mesh.stride = sizeof(Vertex_VNCT);
+	new_mesh.stride = sizeof(GLfloat) * 12;
 	mesh_catalog[name] = new_mesh;
 	return &mesh_catalog[name];
 }
-
-/*
-Mesh* Resources::make_mesh(std::string name, MeshData data) {
-	//@Todo: VAOs should be for vertex attrib formatting, not PER mesh
-	//@Todo: Store multiple data per VBO? VBO per Mesh?
-	//@Todo: Auto fill mesh with dummy information to make compatible with VAO format
-	Mesh new_mesh = {};
-
-	//Create VAO
-	glGenVertexArrays(1, &new_mesh.vao);
-	glBindVertexArray(new_mesh.vao);
-
-	//Create VBOs
-	glGenBuffers(ATTRIBUTE_COUNT, new_mesh.vbo);
-
-	// VERTICES
-	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[VERTICES]);
-	glBufferData(GL_ARRAY_BUFFER, data.vertices.size() * sizeof(glm::vec3), &data.vertices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
-
-	// NORMALS
-	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[NORMALS]);
-	glBufferData(GL_ARRAY_BUFFER, data.normals.size() * sizeof(glm::vec3), &data.normals[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	
-	// TEXCOORDS
-	glBindBuffer(GL_ARRAY_BUFFER, new_mesh.vbo[TEXCOORDS]);
-	glBufferData(GL_ARRAY_BUFFER, data.texcoords.size() * sizeof(glm::vec2), &data.texcoords[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(2);
-
-	new_mesh.vertex_count = (uint32)data.vertices.size();
-	new_mesh.triangle_count = new_mesh.vertex_count / 3;
-	
-	mesh_catalog[name] = new_mesh;
-	return &mesh_catalog[name];
-}
-*/
 
 Material* Resources::make_material(std::string name, Shader* shader) {
-	//material_catalog.emplace(name, shader);
+	material_catalog.emplace(name, shader);
 	return &material_catalog[name];
 }
 
@@ -239,6 +208,8 @@ bool Resources::load_default_resources() {
 	make_mesh("primitive.quad", default_quad_mesh);
 	make_mesh("primitive.cube", default_cube_mesh);
 
+	GLuint default_vao;
+
 	glGenVertexArrays(1, &default_vao);
 	glBindVertexArray(default_vao);
 	glEnableVertexAttribArray(0);
@@ -252,6 +223,7 @@ bool Resources::load_default_resources() {
 	glVertexAttribPointer(3, 2, GL_FLOAT, false, sizeof(Vertex_VNCT), (void*)(sizeof(GLfloat) * 10));
 
 	//default (v:0,n:1,c:2,t:3)
+	engine.get<Screen>().set_default_vao(default_vao);
 
 	return true;
 }

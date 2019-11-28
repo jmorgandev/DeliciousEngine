@@ -46,6 +46,8 @@ public:
 
 	void begin_gui();
 
+	void set_default_vao(GLuint vao) { default_vao = vao; }
+
 	Camera* get_camera() { return &camera; }
 private:
 	SDL_Window*   window;
@@ -73,6 +75,8 @@ private:
 	GLint  gui_pos_attrib;
 	GLint  gui_texcoord_attrib;
 	GLint  gui_color_attrib;
+
+	GLuint default_vao;
 
 	void create_gui_objects();
 	void invalidate_gui_objects();

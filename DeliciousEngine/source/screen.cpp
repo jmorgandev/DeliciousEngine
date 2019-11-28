@@ -167,6 +167,8 @@ bool Screen::reload_window() {
 void Screen::render_frame() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glBindVertexArray(default_vao);
+
 	auto& world = engine.get<World>();
 	auto& console = engine.get<Console>();
 	camera.update_projection(window_width, window_height, aspect_ratio());
