@@ -78,30 +78,52 @@ Shader* Resources::load_shader(std::string filepath) {
 	if (shader_src.empty()) {
 		return nullptr;
 	}
-	std::string vertex_src = dff::get_glsl_region(shader_src, "vertex");
-	std::string fragment_src = dff::get_glsl_region(shader_src, "fragment");
-	if (vertex_src.empty() || fragment_src.empty()) {
-		return nullptr;
-	}
-	std::string header_src = dff::get_glsl_header(shader_src);
 
+	// vertex shader
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	if (!vertex_shader || !fragment_shader) {
-		return nullptr;
-	}
-	if (!dgl::compile(vertex_shader, header_src + vertex_src)) {
+	std::string vertex_source = (std::string("#define VERTEX\n") + shader_src);
+	if (!dgl::compile(vertex_shader, vertex_source)) {
 		GLchar buffer[1024];
 		glGetShaderInfoLog(vertex_shader, 1024, NULL, buffer);
 		std::cout << buffer << "\n";
 		return nullptr;
 	}
-	if (!dgl::compile(fragment_shader, header_src + fragment_src)) {
+
+	// frag
+	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	std::string frag_source = std::string("#define FRAGMENT\n") + shader_src;
+	if (!dgl::compile(fragment_shader, frag_source)) {
 		GLchar buffer[1024];
 		glGetShaderInfoLog(fragment_shader, 1024, NULL, buffer);
 		std::cout << buffer << "\n";
 		return nullptr;
 	}
+
+	//std::string vertex_src = dff::get_glsl_region(shader_src, "vertex");
+	//std::string fragment_src = dff::get_glsl_region(shader_src, "fragment");
+	//if (vertex_src.empty() || fragment_src.empty()) {
+	//	return nullptr;
+	//}
+	//std::string header_src = dff::get_glsl_header(shader_src);
+	//
+	//GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	//GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	//if (!vertex_shader || !fragment_shader) {
+	//	return nullptr;
+	//}
+	//if (!dgl::compile(vertex_shader, header_src + vertex_src)) {
+	//	GLchar buffer[1024];
+	//	glGetShaderInfoLog(vertex_shader, 1024, NULL, buffer);
+	//	std::cout << buffer << "\n";
+	//	return nullptr;
+	//}
+	//if (!dgl::compile(fragment_shader, header_src + fragment_src)) {
+	//	GLchar buffer[1024];
+	//	glGetShaderInfoLog(fragment_shader, 1024, NULL, buffer);
+	//	std::cout << buffer << "\n";
+	//	return nullptr;
+	//}
+
 	GLuint shader_program = glCreateProgram();
 	if (!shader_program) {
 		return nullptr;

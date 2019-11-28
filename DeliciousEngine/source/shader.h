@@ -2,6 +2,8 @@
 #define DELICIOUS_SHADER_H
 
 #include <glad.h>
+#include <string>
+#include <unordered_map>
 
 //@Todo: Move material meta data (uniforms, samplers) to here instead.
 // -Enabled attributes
@@ -10,9 +12,7 @@
 
 struct Shader {
 	GLuint id;
-
-	GLint attribute_count;
-	GLint uniform_count;
+	std::unordered_map<std::string, GLint> uniform_map;
 };
 
 #endif
