@@ -100,6 +100,9 @@
     <ClCompile Include="source\material_ubo.cpp">
       <Filter>Source\objects</Filter>
     </ClCompile>
+    <ClCompile Include="source\material.cpp">
+      <Filter>Source\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\camera.h">
@@ -210,11 +213,11 @@
     <ClInclude Include="source\material_ubo.h">
       <Filter>Source\objects</Filter>
     </ClInclude>
-    <ClInclude Include="material.h">
-      <Filter>Source\objects</Filter>
-    </ClInclude>
     <ClInclude Include="source\sdl_keynames.h">
       <Filter>Source\defaults</Filter>
+    </ClInclude>
+    <ClInclude Include="source\material.h">
+      <Filter>Source\objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
