@@ -18,7 +18,6 @@ void MeshRenderer::draw() {
 	//}
 
 	if (mesh != nullptr && visible)	{
-		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mesh->texture);
 		material->bind();
 		glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);

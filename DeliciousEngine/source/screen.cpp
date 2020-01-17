@@ -141,6 +141,7 @@ bool Screen::create_window() {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
+	glActiveTexture(GL_TEXTURE0);
 	//current_camera.calculate_projection(vid_fov.as_float, get_aspect_ratio());
 
 	create_gui_objects();

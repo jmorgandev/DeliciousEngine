@@ -17,6 +17,8 @@
 
 #define CON_MAX_NAME 32
 
-#define USE_SCRIPTING 0
+//#define USE_SCRIPTING
+
+#define MAX_SHADER_TEXTURES 2
 
 #endif

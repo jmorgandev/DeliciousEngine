@@ -34,9 +34,7 @@ public:
 	virtual void update();
 	virtual void end();
 
-	void set_logic(std::function<void(Entity*)> logic) { this->logic = logic; }
 protected:
-	std::function<void(Entity*)> logic;
 	Transform transform;
 	MeshRenderer renderer;
 

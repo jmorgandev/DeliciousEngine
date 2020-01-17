@@ -9,7 +9,7 @@
 typedef unsigned int console_symbol;
 
 struct ConsoleVariable {
-	void* data;
+	
 	enum Type { BOOL, INT, FLOAT, SYM } type;
 };
 

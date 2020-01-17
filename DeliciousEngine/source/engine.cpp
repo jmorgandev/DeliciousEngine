@@ -91,7 +91,7 @@ int DeliciousEngine::run(int argc, char** argv) {
 
 bool DeliciousEngine::load() {
 
-	add_default_modules();
+	add_default_modules(); // @temp
 
 	for (auto id : module_load_order) {
 		if (!modules[id]->load())

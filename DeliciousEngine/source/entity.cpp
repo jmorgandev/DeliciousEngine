@@ -9,7 +9,7 @@ void Entity::begin() {
 	
 }
 void Entity::update() {
-	if (logic) logic(this);
+	
 }
 void Entity::end() {
 	
